@@ -16,7 +16,7 @@ public class WebMvcConfiguration {
         http
                 .authorizeHttpRequests(matchers -> matchers
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-                        .requestMatchers("/", "/register").permitAll()
+                        .requestMatchers("/", "/plans", "/register").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(login -> login

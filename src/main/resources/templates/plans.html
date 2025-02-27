@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClientFlow - Pricing</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/plans.css">
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <a th:href="@{'/'}">
+           <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+        </a>
+    </div>
+</header>
+
+<main>
+    <section class="pricing-plans">
+        <div class="plan">
+            <h2>Simple Start</h2>
+            <p>Perfect for individual users.</p>
+            <ul>
+                <li>Single user</li>
+                <li>Basic features</li>
+                <li>Email support</li>
+            </ul>
+            <p class="price">$9.99<span>/month</span></p>
+            <a th:href="@{/register(plan='Simple_Start')}" class="btn">Get Started</a>
+        </div>
+
+        <div class="plan">
+            <h2>Essentials</h2>
+            <p>Ideal for small teams.</p>
+            <ul>
+                <li>Up to 5 users</li>
+                <li>Advanced features</li>
+                <li>Priority email support</li>
+            </ul>
+            <p class="price">$19.99<span>/month</span></p>
+            <a th:href="@{/register(plan='Essentials')}" class="btn">Get Started</a>
+        </div>
+
+        <div class="plan">
+            <h2>Plus</h2>
+            <p>For growing teams.</p>
+            <ul>
+                <li>Up to 15 users</li>
+                <li>All features included</li>
+                <li>24/7 priority support</li>
+            </ul>
+            <p class="price">$39.99<span>/month</span></p>
+            <a th:href="@{/register(plan='Plus')}" class="btn">Get Started</a>
+        </div>
+    </section>
+
+    <p id="sign-in">Already have an account? <a th:href="@{/login}">Sign In</a></p>
+</main>
+
+<footer>
+    <p>&copy; 2025 ClientFlow. All rights reserved.</p>
+</footer>
+</body>
+</html>

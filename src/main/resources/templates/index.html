@@ -1,29 +1,115 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml"><head>
+<html lang="en">
+<head>
   <meta charset="UTF-8">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&amp;display=swap" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="/css/common.css">
-  <link rel="stylesheet" type="text/css" href="/css/index.css">
-  <title>Home</title>
+  <title>ClientFlow - Home</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
-<header class="header">
-  <div class="header-inner">
-    <nav class="nav">
-      <a th:href="@{/login}" class="button login">Login</a>
-      <a th:href="@{/plans}" class="button plan">Plans</a>
-    </nav>
-  </div>
-</header>
-<main>
+<header>
   <div class="logo-container">
-    <a href="/" class="logo-big">
-      <img src="/images/logo.png" alt="Logo Image">
+    <a href="/">
+      <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
     </a>
   </div>
+</header>
+
+<main>
+  <!-- Full-Width Slider -->
+  <div class="slider">
+    <!-- Login Button -->
+    <div class="login-button">
+      <a th:href="@{/login}" class="btn">Sign In</a>
+    </div>
+
+    <!-- Slides -->
+    <div class="slides">
+      <div class="slide active">
+        <img src="/images/slide1.jpg" alt="Slide 1">
+        <div class="slide-content">
+          <h2>Streamline Your Business</h2>
+          <p>Manage your customers effortlessly with ClientFlow.</p>
+          <a th:href="@{/plans}" class="btn">Get Started</a>
+        </div>
+      </div>
+      <div class="slide">
+        <img src="/images/slide2.jpg" alt="Slide 2">
+        <div class="slide-content">
+          <h2>Grow Your Team</h2>
+          <p>Scale your business with tools designed for teams.</p>
+          <a th:href="@{/plans}" class="btn">Learn More</a>
+        </div>
+      </div>
+      <div class="slide">
+        <img src="/images/slide3.jpg" alt="Slide 3">
+        <div class="slide-content">
+          <h2>24/7 Support</h2>
+          <p>We're here to help you every step of the way.</p>
+          <a th:href="@{/plans}" class="btn">Explore Plans</a>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- Slider Dots -->
+    <div class="slider-dots">
+      <span class="dot active" onclick="goToSlide(0)"></span>
+      <span class="dot" onclick="goToSlide(1)"></span>
+      <span class="dot" onclick="goToSlide(2)"></span>
+    </div>
+  <!-- Home Page Content -->
+  <div class="home-content">
+    <h1>Welcome to ClientFlow</h1>
+    <p>Streamline your customer management with our powerful tools designed for teams of all sizes.</p>
+  </div>
 </main>
-<div class="footer"><p>© 2025 Client Flow. All rights reserved.</p></div>
-</body></html>
+
+<footer>
+  <p>&copy; 2025 ClientFlow. All rights reserved.</p>
+</footer>
+
+<script>
+  // Slider Functionality
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.dot');
+
+  function showSlide(index) {
+    // Hide all slides
+    slides.forEach((slide) => {
+      slide.classList.remove('active');
+    });
+    // Show the current slide
+    slides[index].classList.add('active');
+
+    // Update dots
+    dots.forEach((dot) => {
+      dot.classList.remove('active');
+    });
+    dots[index].classList.add('active');
+  }
+
+  function nextSlide() {
+    currentSlide = (currentSlide + 1) % slides.length;
+    showSlide(currentSlide);
+  }
+
+  function prevSlide() {
+    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+    showSlide(currentSlide);
+  }
+
+  function goToSlide(index) {
+    currentSlide = index;
+    showSlide(currentSlide);
+  }
+
+  // Auto-slide every 5 seconds
+  setInterval(nextSlide, 5000);
+
+  // Initialize the first slide
+  showSlide(currentSlide);
+</script>
+</body>
+</html>

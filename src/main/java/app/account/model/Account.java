@@ -1,5 +1,6 @@
 package app.account.model;
 
+import app.plan.model.Plan;
 import app.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -23,10 +24,6 @@ public class Account {
     @Column(nullable = false, unique = true)
     private String domainName;
 
-    @Column(nullable = false)
-    private Type type;
-
-    @Column(nullable = false, unique = true)
     private String businessName;
 
     @Column(nullable = false)
@@ -38,7 +35,16 @@ public class Account {
     private String companyLogo;
 
     @Column(nullable = false)
-    public boolean isActive;
+    public boolean isActive = false;
+
+    @ManyToOne
+    private Plan plan;
+
+    @Column(nullable = false)
+    public boolean isAutoRenewalEnabled = false;
+
+    @OneToMany
+    List<User> userList;
 
     @Column(nullable = false)
     private LocalDateTime createdOn;
@@ -46,6 +52,4 @@ public class Account {
     @Column(nullable = false)
     private LocalDateTime updatedOn;
 
-    @OneToMany
-    List<User> userList;
 }

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - ClientFlow</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/register.css">
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <a th:href="@{'/'}">
+            <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+        </a>
+    </div>
+</header>
+
+<main class="register-container">
+    <!-- Registration Form -->
+    <div class="register-form">
+        <h1>Create Your Account</h1>
+        <p>Please fill out the form below to get started.</p>
+        <form th:action="@{/register}" th:method="POST" th:object="registerRequest">
+            <div class="form-group">
+                <label for="firstName">First Name <span class="required">*</span></label>
+                <input type="text" id="firstName" name="firstName" required>
+            </div>
+            <div class="form-group">
+                <label for="lastName">Last Name <span class="required">*</span></label>
+                <input type="text" id="lastName" name="lastName" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address <span class="required">*</span></label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number <span class="required">*</span></label>
+                <input type="tel" id="phone" name="phone" required>
+            </div>
+            <div class="form-group">
+                <label for="companyName">Company Name</label>
+                <input type="text" id="companyName" name="companyName">
+            </div>
+            <div class="form-group">
+                <label for="website">Business Website Address</label>
+                <input type="url" id="website" name="website">
+            </div>
+            <p class="required-description"><span class="required">*</span> Required fields</p>
+            <button type="submit" class="btn">Create Account</button>
+        </form>
+    </div>
+
+    <!-- Chosen Plan Section -->
+    <div class="chosen-plan">
+        <h2>Your Plan</h2>
+        <div class="plan-details">
+            <p>
+                <span id="plan-name" th:text="${plan.name.toString()}"></span>
+                <span id="plan-price" th:text="'$' + ${plan.pricePerMonth.toString()} + '/month'"></span>
+            </p>
+            <p>
+                <span class="green-checkmark">✔</span> Product support
+                <span class="green-checkmark">✔</span> No annual contract
+                <span class="green-checkmark">✔</span> Cancel anytime
+            </p>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2025 ClientFlow. All rights reserved.</p>
+</footer>
+</body>
+</html>

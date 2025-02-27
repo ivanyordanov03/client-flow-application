@@ -1,7 +1,101 @@
-.logo-container {
-    height: 80vh;
+/* Full-Width Slider */
+.slider {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.slides {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    transition: transform 0.5s ease;
+}
+
+.slide {
+    min-width: 100%;
+    position: relative;
+    display: none; /* Hide all slides by default */
+}
+
+.slide.active {
+    display: block; /* Show the active slide */
+}
+
+.slide img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.slide-content {
+    position: absolute;
+    bottom: 0; /* Position at the bottom */
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.3); /* Semi-transparent background */
+    color: white;
+    padding: 1.5em;
+    text-align: center;
+}
+
+.slide-content h2 {
+    font-size: 2.5em;
+    margin-bottom: 0.5em;
+}
+
+.slide-content p {
+    font-size: 1.2em;
+    margin-bottom: 1.5em;
+}
+
+/* Slider Dots */
+.slider-dots {
+    text-align: center;
+    margin: 1.5em 0; /* Space above and below the dots */
+}
+
+.slider-dots .dot {
+    width: 0.75em;
+    height: 0.75em;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 0.5em;
+    transition: background-color 0.3s ease;
+}
+
+.slider-dots .dot.active {
+    background-color: #4BBF89;
+}
+
+.slider-dots .dot:hover {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Login Button in Slider */
+.login-button {
+    position: absolute;
+    top: 3em;
+    right: 3em;
+    z-index: 10; /* Ensure the button is above the slider content */
+}
+
+/* Home Page Content */
+.home-content {
+    text-align: center;
+    padding: 2em 1.25em;
+}
+
+.home-content h1 {
+    font-size: 2.5em;
+    color: #4BBF89;
+    margin-bottom: 0.625em;
+}
+
+.home-content p {
+    font-size: 1.2em;
+    color: #666;
+    max-width: 800px;
+    margin: 0 auto;
 }

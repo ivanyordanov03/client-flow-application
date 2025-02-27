@@ -1,129 +1,77 @@
-*:after,
-*:before {
-  box-sizing: border-box;
-}
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
+/* General Styles */
 body {
-  margin: 0;
-  background-size: cover;
-  background: white;
-  font-style: normal;
-  font-family: 'Poppins', sans-serif;
-  color: #4BBF89;
-  letter-spacing: 0.5px;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F5F5F5;
+    color: #333;
+    line-height: 1.6;
+    font-size: 1em;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-.header {
-  padding: 2% 6%;
+header {
+    text-align: center;
+    padding: 1.25em;
+    background: radial-gradient(
+            circle at 90% top,
+            #4BBF89 0%,       /* Lightest green */
+            #45B07F 10%,     /* Slightly darker */
+            #3EA175 20%,     /* Darker */
+            #38926B 30%,     /* Darker */
+            #328361 40%,     /* Darker */
+            #2C7457 50%,     /* Darker */
+            #26654D 60%,     /* Darker */
+            #205643 70%,     /* Darker */
+            #1A4739 80%,     /* Darker */
+            #14382F 90%,     /* Darker */
+            #0E2925 100%     /* Darkest green */
+    );
+    color: white;
 }
 
-.header-inner {
-  display: flex;
+.logo-container {
+    background-color: transparent;
+    padding: 0;
+    border-radius: 0.625em;
+    display: inline-block;
 }
 
-.nav {
-  display: flex;
-  align-items: center;
-  gap: 20px;
+.logo {
+    width: 15em;
+    height: auto;
 }
 
-.header-inner .nav {
-  margin-left: auto;
+footer {
+    text-align: center;
+    padding: 1.25em;
+    background-color: #0E2925;
+    color: white;
+    font-size: 1em;
+    font-weight: 400;
+    margin-top: auto; /* Ensure footer sticks to the bottom */
 }
 
-.button {
-  display: inline-block;
-  text-decoration: none;
-  appearance: none;
-  padding: 10px 15px;
-  /*background-color: transparent;*/
-  background: radial-gradient(
-          circle at 90% top,
-          #FFFFFF 0%,       /* Almost white */
-          #E0F5EC 10%,     /* Very light green */
-          #C2EBD9 20%,     /* Light green */
-          #A3E1C6 30%,     /* Slightly darker */
-          #85D7B3 40%,     /* Medium light green */
-          #66CDA0 50%,     /* Medium green */
-          #4BBF89 100%     /* Full green at center */
-  );
-  font-size: 20px;
-  font-weight: 300;
-  line-height: 1;
-  color: #fff;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  cursor: pointer;
-  border-radius: 5px;
-  border: 1px solid #f1f5ff;
-  transition: box-shadow 0.2s ease;
-  box-shadow: inset 0 1px 9px rgba(255, 255, 255, 0.5); /* Inset shadow with transparency */
+/* Common Button Styles */
+.btn {
+    background-color: #4BBF89;
+    color: #0E2925;
+    padding: 0.75em 1.5em;
+    border-radius: 0.3em;
+    text-decoration: none;
+    font-size: 1em;
+    font-weight: 500;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: inline-block;
+    cursor: pointer;
+    border: none;
 }
 
-.button.login:hover, .button.register:hover {
-  background: radial-gradient(
-          circle at 90% top,
-          #4BBF89 0%,       /* Lightest green */
-          #45B07F 10%,     /* Slightly darker */
-          #3EA175 20%,     /* Darker */
-          #38926B 30%,     /* Darker */
-          #328361 40%,     /* Darker */
-          #2C7457 50%,     /* Darker */
-          #26654D 60%,     /* Darker */
-          #205643 70%,     /* Darker */
-          #1A4739 80%,     /* Darker */
-          #14382F 90%,     /* Darker */
-          #0E2925 100%     /* Darkest green */
-  );
-  color: #4BBF89;
-  box-shadow: inset 0 1px 9px rgba(255, 255, 255, 0.8); /* Inset shadow with transparency */
-}
-
-
-.logo-big {
-  display: inline-block;
-  max-width: 700px;
-}
-
-.logo-big img {
-  display: inline-block;
-  width: 100%;
-  height: auto;
-}
-
-.footer {
-  color: rgba(255, 255, 255, 0.69);
-  text-align: center;
-  margin-top: auto;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 300;
-  letter-spacing: 0.5px;
-}
-
-.alert-warning {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 300;
-  font-size: 14px;
-  letter-spacing: 0.5px;
-  background: linear-gradient(to left, #f88e8e, #f56767, #f53b3b);
-  background-size: 200%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-p.alert-warning {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 300;
-  font-size: 14px;
-  letter-spacing: 0.5px;
-  background: linear-gradient(to left, #f88e8e, #f56767, #f53b3b);
-  background-size: 200%;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin: 5px 0 0;
+.btn:hover {
+    background-color: #0E2925;
+    color: #4BBF89;
 }

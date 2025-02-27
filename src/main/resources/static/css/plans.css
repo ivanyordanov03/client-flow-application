@@ -1,0 +1,79 @@
+/* Pricing Plans Specific Styles */
+.pricing-plans {
+    display: flex;
+    justify-content: center;
+    gap: 1.25em;
+    padding: 2.5em 1.25em;
+    flex-wrap: wrap;
+}
+
+.plan {
+    background: white;
+    border-radius: 0.625em;
+    box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
+    padding: 1.25em;
+    text-align: center;
+    flex: 1;
+    min-width: 15em;
+    max-width: 15em;
+    transition: transform 0.3s ease;
+}
+
+.plan:hover {
+    transform: translateY(-0.625em);
+}
+
+.plan h2 {
+    font-size: 1.8em;
+    color: #4BBF89;
+    margin-bottom: 0.625em;
+    font-weight: 600;
+}
+
+.plan p {
+    font-size: 1em;
+    color: #666;
+    font-weight: 400;
+}
+
+.plan .price {
+    font-size: 2em;
+    color: #4BBF89;
+    margin: 1.25em 0;
+    font-weight: 600;
+}
+
+.plan .price span {
+    font-size: 0.5em;
+    color: #666;
+    font-weight: 400;
+}
+
+.plan ul {
+    list-style: none;
+    padding: 0;
+    margin: 1.25em 0;
+}
+
+.plan ul li {
+    margin: 0.625em 0;
+    color: #555;
+    font-weight: 400;
+}
+
+#sign-in {
+    text-align: center;
+    margin: 2em 0;
+}
+
+@media (max-width: 15em) {
+    .pricing-plans {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .plan {
+        width: 100%;
+        max-width: 15em;
+    }
+}
