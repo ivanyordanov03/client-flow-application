@@ -17,14 +17,14 @@
 </header>
 
 <main>
-  <!-- Full-Width Slider -->
+
   <div class="slider">
-    <!-- Login Button -->
+
     <div class="login-button">
       <a th:href="@{/login}" class="btn">Sign In</a>
     </div>
 
-    <!-- Slides -->
+
     <div class="slides">
       <div class="slide active">
         <img src="/images/slide1.jpg" alt="Slide 1">
@@ -52,13 +52,13 @@
       </div>
     </div>
   </div>
-    <!-- Slider Dots -->
-    <div class="slider-dots">
-      <span class="dot active" onclick="goToSlide(0)"></span>
-      <span class="dot" onclick="goToSlide(1)"></span>
-      <span class="dot" onclick="goToSlide(2)"></span>
-    </div>
-  <!-- Home Page Content -->
+
+  <div class="slider-dots">
+    <span class="dot active" onclick="goToSlide(0)"></span>
+    <span class="dot" onclick="goToSlide(1)"></span>
+    <span class="dot" onclick="goToSlide(2)"></span>
+  </div>
+
   <div class="home-content">
     <h1>Welcome to ClientFlow</h1>
     <p>Streamline your customer management with our powerful tools designed for teams of all sizes.</p>
@@ -69,47 +69,6 @@
   <p>&copy; 2025 ClientFlow. All rights reserved.</p>
 </footer>
 
-<script>
-  // Slider Functionality
-  let currentSlide = 0;
-  const slides = document.querySelectorAll('.slide');
-  const dots = document.querySelectorAll('.dot');
-
-  function showSlide(index) {
-    // Hide all slides
-    slides.forEach((slide) => {
-      slide.classList.remove('active');
-    });
-    // Show the current slide
-    slides[index].classList.add('active');
-
-    // Update dots
-    dots.forEach((dot) => {
-      dot.classList.remove('active');
-    });
-    dots[index].classList.add('active');
-  }
-
-  function nextSlide() {
-    currentSlide = (currentSlide + 1) % slides.length;
-    showSlide(currentSlide);
-  }
-
-  function prevSlide() {
-    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
-    showSlide(currentSlide);
-  }
-
-  function goToSlide(index) {
-    currentSlide = index;
-    showSlide(currentSlide);
-  }
-
-  // Auto-slide every 5 seconds
-  setInterval(nextSlide, 5000);
-
-  // Initialize the first slide
-  showSlide(currentSlide);
-</script>
+<script src="/js/scripts.js"></script>
 </body>
 </html>

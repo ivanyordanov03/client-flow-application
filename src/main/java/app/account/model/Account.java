@@ -21,35 +21,33 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
-    private String domainName;
-
     private String businessName;
 
-    @Column(nullable = false)
     private String address;
-
-    @Column(nullable = false)
-    private String phoneNumber;
 
     private String companyLogo;
 
     @Column(nullable = false)
-    public boolean isActive = false;
+    private String phoneNumber;
+
+    @Column(nullable = false)
+    private boolean isActive = false;
 
     @ManyToOne
     private Plan plan;
 
     @Column(nullable = false)
-    public boolean isAutoRenewalEnabled = false;
+    private boolean isAutoRenewalEnabled = false;
 
     @OneToMany
     List<User> userList;
+
+    @OneToOne
+    private User owner;
 
     @Column(nullable = false)
     private LocalDateTime createdOn;
 
     @Column(nullable = false)
     private LocalDateTime updatedOn;
-
 }

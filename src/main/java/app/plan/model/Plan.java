@@ -20,7 +20,7 @@ public class Plan {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private PlanName name;
+    private PlanType planType;
 
     @Column(nullable = false)
     private BigDecimal pricePerMonth;

@@ -18,9 +18,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
-    private String username;
-
     @Column(nullable = false)
     private String password;
 
@@ -38,7 +35,10 @@ public class User {
     private UserRole userRole;
 
     @Column(nullable = false)
-    public boolean isActive;
+    public boolean isActive = true;
+
+    @Column(nullable = false)
+    public boolean isOwner = false;
 
     @Column(nullable = false)
     private LocalDateTime createdOn;

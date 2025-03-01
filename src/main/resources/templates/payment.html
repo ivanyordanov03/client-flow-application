@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment - ClientFlow</title>
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/payment.css">
+</head>
+<body>
+<header>
+  <div class="logo-container">
+    <a th:href="@{'/'}">
+      <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+    </a>
+  </div>
+</header>
+
+<main class="payment-container">
+  <h1>Payment Information</h1>
+  <p>Please enter your credit/debit card details to complete your purchase.</p>
+
+  <!-- Payment Form -->
+  <form th:action="@{/payment}" th:method="POST">
+    <div class="form-group">
+      <label for="cardNumber">Card Number <span class="required">*</span></label>
+      <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" required>
+    </div>
+
+    <div class="form-group">
+      <label for="cardHolder">Cardholder Name <span class="required">*</span></label>
+      <input type="text" id="cardHolder" name="cardHolder" placeholder="John Doe" required>
+    </div>
+
+    <div class="form-group-row">
+      <div class="form-group">
+        <label for="expiryDate">Expiry Date <span class="required">*</span></label>
+        <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" required>
+      </div>
+
+      <div class="form-group">
+        <label for="cvv">CVV <span class="required">*</span></label>
+        <input type="text" id="cvv" name="cvv" placeholder="123" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="transactionType">Transaction Type <span class="required">*</span></label>
+      <select id="transactionType" name="transactionType" required>
+        <option value="successful">Successful</option>
+        <option value="unsuccessful">Unsuccessful</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn">Submit Payment</button>
+  </form>
+</main>
+
+<footer>
+  <p>&copy; 2025 ClientFlow. All rights reserved.</p>
+</footer>
+</body>
+</html>

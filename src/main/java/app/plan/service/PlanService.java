@@ -1,7 +1,7 @@
 package app.plan.service;
 
 import app.plan.model.Plan;
-import app.plan.model.PlanName;
+import app.plan.model.PlanType;
 import app.plan.properties.PlanProperties;
 import app.plan.repository.PlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,29 +27,29 @@ public class PlanService {
         return planRepository.findAll();
     }
 
-    public void create(PlanName name) {
+    public void create(PlanType planType) {
 
-        planRepository.save(initializePlan(name));
+        planRepository.save(initializePlan(planType));
     }
 
-    private Plan initializePlan(PlanName name) {
+    private Plan initializePlan(PlanType planType) {
 
         BigDecimal price;
-        switch (name) {
-            case BASIC -> price = planProperties.getSimpleStartPrice();
+        switch (planType) {
+            case SIMPLE_START -> price = planProperties.getSimpleStartPrice();
             case ESSENTIALS -> price = planProperties.getEssentialsPrice();
             case PLUS -> price = planProperties.getPlusPrice();
-            default -> throw new IllegalStateException("Unexpected value: " + name);
+            default -> throw new IllegalStateException("Unexpected value: " + planType);
         }
 
         return Plan.builder()
-                .name(name)
+                .planType(planType)
                 .pricePerMonth(price)
                 .build();
     }
 
-    public Plan getByName(PlanName planName) {
+    public Plan getByType(PlanType planType) {
 
-        return planRepository.getByName(planName).orElseThrow(() -> new IllegalArgumentException("Plan with name [%s] not found".formatted(planName)));
+        return planRepository.getByPlanType(planType).orElseThrow(() -> new IllegalArgumentException("Plan with name [%s] not found".formatted(planType)));
     }
 }

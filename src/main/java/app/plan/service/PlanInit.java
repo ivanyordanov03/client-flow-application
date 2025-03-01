@@ -1,6 +1,6 @@
 package app.plan.service;
 
-import app.plan.model.PlanName;
+import app.plan.model.PlanType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -15,14 +15,14 @@ public class PlanInit implements CommandLineRunner {
         this.planService = planService;
     }
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
 
         if (!planService.getPlans().isEmpty()) {
             return;
         }
 
-        for (PlanName name : PlanName.values()) {
-            planService.create(name);
+        for (PlanType planType : PlanType.values()) {
+            planService.create(planType);
         }
     }
 }

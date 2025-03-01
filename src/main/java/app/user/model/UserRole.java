@@ -1,5 +1,5 @@
 package app.user.model;
 
 public enum UserRole {
-    ADMINISTRATOR, MODERATOR, USER
+    MASTER_ADMIN, ADMINISTRATOR, OWNER, MODERATOR, USER
 }

@@ -1,0 +1,71 @@
+/* Payment Page Styles */
+.payment-container {
+    max-width: 800px;
+    margin: 2em auto;
+    padding: 2em;
+    background: white;
+    border-radius: 0.3em;
+    box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
+}
+
+.payment-container h1 {
+    font-size: 2em;
+    color: #4BBF89;
+    margin-bottom: 0.5em;
+}
+
+.payment-container p {
+    font-size: 1.2em;
+    color: #666;
+    margin-bottom: 1.5em;
+}
+
+.form-group {
+    margin-bottom: 1.5em;
+}
+
+.form-group label {
+    display: block;
+    font-size: 1em;
+    color: #333;
+    margin-bottom: 0.5em;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.75em;
+    border: 1px solid #ccc;
+    border-radius: 0.3em;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box; /* Ensure padding is included in the width */
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: #4BBF89;
+    outline: none;
+}
+
+.form-group-row {
+    display: flex;
+    gap: 1em;
+}
+
+.form-group-row .form-group {
+    flex: 1;
+}
+
+/* Required Fields Styles */
+.required {
+    color: red;
+    font-size: 1.2em;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-group-row {
+        flex-direction: column;
+    }
+}

@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-/* General Styles */
 body {
     font-family: 'Poppins', sans-serif;
     margin: 0;
@@ -19,17 +18,17 @@ header {
     padding: 1.25em;
     background: radial-gradient(
             circle at 90% top,
-            #4BBF89 0%,       /* Lightest green */
-            #45B07F 10%,     /* Slightly darker */
-            #3EA175 20%,     /* Darker */
-            #38926B 30%,     /* Darker */
-            #328361 40%,     /* Darker */
-            #2C7457 50%,     /* Darker */
-            #26654D 60%,     /* Darker */
-            #205643 70%,     /* Darker */
-            #1A4739 80%,     /* Darker */
-            #14382F 90%,     /* Darker */
-            #0E2925 100%     /* Darkest green */
+            #4BBF89 0%,
+            #45B07F 10%,
+            #3EA175 20%,
+            #38926B 30%,
+            #328361 40%,
+            #2C7457 50%,
+            #26654D 60%,
+            #205643 70%,
+            #1A4739 80%,
+            #14382F 90%,
+            #0E2925 100%
     );
     color: white;
 }
@@ -53,10 +52,9 @@ footer {
     color: white;
     font-size: 1em;
     font-weight: 400;
-    margin-top: auto; /* Ensure footer sticks to the bottom */
+    margin-top: auto;
 }
 
-/* Common Button Styles */
 .btn {
     background-color: #4BBF89;
     color: #0E2925;
@@ -74,4 +72,81 @@ footer {
 .btn:hover {
     background-color: #0E2925;
     color: #4BBF89;
+}
+
+.form-group {
+    margin-bottom: 1.5em;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    font-size: 1em;
+    color: #333;
+    margin-bottom: 0.5em;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75em;
+    border: 1px solid #ccc;
+    border-radius: 0.3em;
+    font-size: 1em;
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    border-color: #4BBF89;
+    outline: none;
+}
+
+.password-group {
+    position: relative;
+}
+
+.password-input-container {
+    position: relative;
+}
+
+.password-input-container input {
+    width: 100%;
+    padding-right: 2.5em;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 0.5em;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    padding: 0;
+    font-size: 1em;
+}
+
+.password-toggle i {
+    font-size: 1.2em;
+}
+
+.password-toggle:hover {
+    color: #4BBF89;
+}
+
+.required {
+    color: red;
+    font-size: 1.2em;
+}
+
+.error {
+    color: red;
+    font-size: 0.9em;
+}
+
+.required-description {
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 1.5em;
 }
