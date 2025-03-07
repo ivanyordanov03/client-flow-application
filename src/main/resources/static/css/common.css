@@ -13,6 +13,13 @@ body {
     min-height: 100vh;
 }
 
+/* Add shared h1 and h2 styles here */
+h1, h2 {
+    font-size: 2em;
+    color: #4BBF89;
+    margin-bottom: 0.5em;
+}
+
 header {
     text-align: center;
     padding: 1.25em;
@@ -31,6 +38,7 @@ header {
             #0E2925 100%
     );
     color: white;
+    position: relative;
 }
 
 .logo-container {
@@ -74,6 +82,18 @@ footer {
     color: #4BBF89;
 }
 
+.btn-secondary {
+    background-color: #0E2925;
+    color: #4BBF89;
+    border: 2px solid #4BBF89;
+}
+
+.btn-secondary:hover {
+    background-color: #4BBF89;
+    color: #0E2925;
+    border-color: #0E2925;
+}
+
 .form-group {
     margin-bottom: 1.5em;
     text-align: left;
@@ -86,7 +106,8 @@ footer {
     margin-bottom: 0.5em;
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
     width: 100%;
     padding: 0.75em;
     border: 1px solid #ccc;
@@ -96,7 +117,8 @@ footer {
     box-sizing: border-box;
 }
 
-.form-group input:focus {
+.form-group input:focus,
+.form-group select:focus {
     border-color: #4BBF89;
     outline: none;
 }
@@ -140,13 +162,68 @@ footer {
     font-size: 1.2em;
 }
 
-.error {
-    color: red;
-    font-size: 0.9em;
+.alert-warning {
+    color: red !important;
+    font-size: 0.9em !important;
 }
 
 .required-description {
     font-size: 0.9em;
     color: #666;
     margin-bottom: 1.5em;
+}
+
+.payment-container,
+.register-container {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 900px;
+    margin: 2em auto;
+    background: white;
+    border-radius: 0.3em;
+    box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
+}
+
+.payment-form,
+.register-form {
+    flex: 2;
+}
+
+.purchase-details,
+.chosen-plan {
+    flex: 1;
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.form-group-row {
+    display: flex;
+    gap: 1rem;
+}
+
+.form-group-row .form-group {
+    flex: 1;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5em;
+}
+
+.checkbox-group input[type="checkbox"] {
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .payment-container,
+    .register-container {
+        flex-direction: column;
+    }
+
+    .form-group-row {
+        flex-direction: column;
+    }
 }

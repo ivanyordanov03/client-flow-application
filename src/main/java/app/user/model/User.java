@@ -1,5 +1,6 @@
 package app.user.model;
 
+import app.account.model.Account;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,14 +36,14 @@ public class User {
     private UserRole userRole;
 
     @Column(nullable = false)
-    public boolean isActive = true;
-
-    @Column(nullable = false)
-    public boolean isOwner = false;
+    private boolean isActive = true;
 
     @Column(nullable = false)
     private LocalDateTime createdOn;
 
     @Column(nullable = false)
     private LocalDateTime updatedOn;
+
+    @ManyToOne
+    private Account account;
 }

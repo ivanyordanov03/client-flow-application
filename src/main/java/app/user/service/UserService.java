@@ -1,41 +1,62 @@
 package app.user.service;
 
+import app.account.service.AccountService;
+import app.plan.model.Plan;
 import app.security.AuthenticationMetadata;
 import app.user.model.User;
 import app.user.model.UserRole;
 import app.user.repository.UserRepository;
 import app.web.dto.RegisterOwnerRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AccountService accountService;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository,
+                       PasswordEncoder passwordEncoder,
+                       AccountService accountService) {
+
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.accountService = accountService;
     }
 
-    public User registerAccountOwner(RegisterOwnerRequest registerOwnerRequest) {
+    @Transactional
+    public void registerAccountOwner(RegisterOwnerRequest registerOwnerRequest, Plan plan) {
 
-        User owner = createNew(registerOwnerRequest);
-        owner.setUserRole(UserRole.OWNER);
+        User owner = userToOwner(registerOwnerRequest);
+        userRepository.save(owner);
+        log.info("Registered new account owner with id [%s]".formatted(owner.getId()));
 
-        return userRepository.save(owner);
+        accountService.createNew(registerOwnerRequest, owner, plan);
+
     }
 
-    private User createNew(RegisterOwnerRequest registerOwnerRequest) {
+    private User userToOwner(RegisterOwnerRequest registerOwnerRequest) {
+        User user = initiateNewUser(registerOwnerRequest);
+        user.setUserRole(UserRole.OWNER);
+
+        return user;
+    }
+
+
+    private User initiateNewUser(RegisterOwnerRequest registerOwnerRequest) {
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -44,7 +65,8 @@ public class UserService implements UserDetailsService {
                 .lastName(registerOwnerRequest.getLastName())
                 .email(registerOwnerRequest.getEmail())
                 .password(passwordEncoder.encode(registerOwnerRequest.getPassword()))
-                .userRole(UserRole.USER)
+                .userRole(UserRole.OWNER)
+                .isActive(true)
                 .createdOn(now)
                 .updatedOn(now)
                 .build();
@@ -60,6 +82,6 @@ public class UserService implements UserDetailsService {
 
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User with email [%s] does not exist.".formatted(email)));
 
-        return new AuthenticationMetadata(user.getId(), user.getEmail(), user.getPassword(), user.getUserRole(), user.isActive);
+        return new AuthenticationMetadata(user.getId(), user.getEmail(), user.getPassword(), user.getUserRole(), user.isActive());
     }
 }

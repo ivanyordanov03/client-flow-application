@@ -21,21 +21,23 @@
     <div class="register-form">
         <h1>Create Your Account</h1>
         <p>Please fill out the form below to get started.</p>
-        <form th:action="@{/register(plan=${registerOwnerRequest.plan.planType})}" th:method="POST" th:object="${registerOwnerRequest}">
+
+        <form th:action="@{/register}" th:method="POST" th:object="${registerOwnerRequest}">
+            <input type="hidden" th:field="*{planName}" />
             <div class="form-group">
                 <label for="firstName">First Name <span class="required">*</span></label>
                 <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required>
-                <p class="error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></p>
+                <p class="alert-warning" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></p>
             </div>
             <div class="form-group">
                 <label for="lastName">Last Name <span class="required">*</span></label>
                 <input type="text" id="lastName" name="lastName" th:field="*{lastName}" required>
-                <p class="error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></p>
+                <p class="alert-warning" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></p>
             </div>
             <div class="form-group">
                 <label for="email">Email Address <span class="required">*</span></label>
                 <input type="email" id="email" name="email" th:field="*{email}" required>
-                <p class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+                <p class="alert-warning" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
             </div>
             <div class="form-group password-group">
                 <label for="password">Password <span class="required">*</span></label>
@@ -44,17 +46,18 @@
                     <button type="button" id="togglePassword" class="password-toggle">
                         <i class="fas fa-eye"></i>
                     </button>
-                    <p class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
                 </div>
+                <p class="alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
             </div>
             <div class="form-group">
-                <label for="phone">Phone Number <span class="required">*</span></label>
-                <input type="tel" id="phone" name="phone" th:field="*{phoneNumber}" required>
-                <p class="error" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></p>
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="e.g. 2025550123" th:field="*{phoneNumber}">
+                <p class="alert-warning" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></p>
             </div>
             <div class="form-group">
                 <label for="companyName">Company Name</label>
                 <input type="text" id="companyName" name="companyName" th:field="*{businessName}">
+                <p class="alert-warning" th:if="${#fields.hasErrors('businessName')}" th:errors="*{businessName}"></p>
             </div>
             <p class="required-description"><span class="required">*</span> Required fields</p>
             <button class="btn" type="submit">Create Account</button>
@@ -65,10 +68,10 @@
         <h2>Your Plan</h2>
         <div class="plan-details">
             <p>
-                <span th:if="${registerOwnerRequest.plan.planType.name()} == 'SIMPLE_START'">Simple Start</span>
-                <span th:if="${registerOwnerRequest.plan.planType.name()} == 'ESSENTIALS'">Essentials</span>
-                <span th:if="${registerOwnerRequest.plan.planType.name()} == 'PLUS'">Plus</span>
-                <span th:text="'$' + ${registerOwnerRequest.plan.pricePerMonth.toString()} + '/month'"></span>
+                <span th:if="${currentPlan.planType.name()} == 'SIMPLE_START'">Simple Start</span>
+                <span th:if="${currentPlan.planType.name()} == 'ESSENTIALS'">Essentials</span>
+                <span th:if="${currentPlan.planType.name()} == 'PLUS'">Plus</span>
+                <span th:text="'$' + ${currentPlan.pricePerMonth.toString()} + '/month'"></span>
             </p>
             <br>
             <br>

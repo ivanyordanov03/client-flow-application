@@ -2,9 +2,118 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Dashboard</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ClientFlow</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/nav-side-bar.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
+<header>
+    <div class="logo-container">
+        <a th:href="@{'/dashboard'}">
+            <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+        </a>
+    </div>
+</header>
 
+<main class="dashboard-container">
+    <div class="nav-bar">
+        <div class="side-bar-container">
+            <nav>
+                <div class="side_navbar">
+                    <div class="func-block">
+                        <a href="/dashboard" class="active">
+                            <p>Dashboard</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"></path>
+                            </svg>
+                        </a>
+                        <a href="/customers">
+                            <p>Customers</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm-7 7a7 7 0 0 1 14 0"></path>
+                            </svg>
+                        </a>
+                        <a href="/invoices">
+                            <p>Invoices</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h14v14H5V5Zm2 2h10M7 10h10M7 13h10M7 16h10"></path>
+                            </svg>
+                        </a>
+                        <a href="/quotes">
+                            <p>Quotes</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9h8M8 13h8M4 5h16v14H4V5Z"></path>
+                            </svg>
+                        </a>
+                        <a href="/tasks">
+                            <p>Tasks</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5h10M9 9h10M9 13h10M5 5h2M5 9h2M5 13h2"></path>
+                            </svg>
+                        </a>
+                        <a href="/team">
+                            <p>Team</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-7 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm14 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-7 7a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5"></path>
+                            </svg>
+                        </a>
+                        <a href="/account">
+                            <p>Account</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-3 0-6 1.5-6 4v2h12v-2c0-2.5-3-4-6-4Z"></path>
+                            </svg>
+                        </a>
+                        <a href="/notifications">
+                            <p>Notifications</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m0 12v3m-7-7H4m16 0h-1M6 6l1.5 1.5m10 10L19 19"></path>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="func-block">
+                        <a class="logout" href="/logout">
+                            <p>Log Out</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <div class="dashboard-content">
+        <h1>Welcome to Your Dashboard</h1>
+        <p>Hello,<span th:text="' ' + ${user.firstName} + '! '"></span> Here's an overview of your ClientFlow account.</p>
+
+        <div class="dashboard-widgets">
+            <div class="widget">
+                <h2>Customers</h2>
+                <p>Total: <span th:text="${customerCount != null ? customerCount : '0'}"></span></p>
+                <a href="/customers" class="btn">View Customers</a>
+            </div>
+            <div class="widget">
+                <h2>Invoices</h2>
+                <p>Pending: <span th:text="${pendingInvoices != null ? pendingInvoices : '0'}"></span></p>
+                <a href="/invoices" class="btn">View Invoices</a>
+            </div>
+            <div class="widget">
+                <h2>Tasks</h2>
+                <p>Due Today: <span th:text="${tasksDueToday != null ? tasksDueToday : '0'}"></span></p>
+                <a href="/tasks" class="btn">View Tasks</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2025 ClientFlow. All rights reserved.</p>
+</footer>
+
+<script src="/js/scripts.js"></script>
 </body>
 </html>

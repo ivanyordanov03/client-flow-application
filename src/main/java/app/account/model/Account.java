@@ -1,11 +1,15 @@
 package app.account.model;
 
+import app.client.model.Client;
+import app.payment.model.Payment;
+import app.paymentMethod.model.PaymentMethod;
 import app.plan.model.Plan;
 import app.user.model.User;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,7 +31,6 @@ public class Account {
 
     private String companyLogo;
 
-    @Column(nullable = false)
     private String phoneNumber;
 
     @Column(nullable = false)
@@ -39,8 +42,17 @@ public class Account {
     @Column(nullable = false)
     private boolean isAutoRenewalEnabled = false;
 
-    @OneToMany
-    List<User> userList;
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    List<User> userList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    List<Payment> paymentHistory = new ArrayList<>();
+
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    List<PaymentMethod> paymentMethods = new ArrayList<>();
+
+    @OneToMany(mappedBy = "account", fetch = FetchType.EAGER)
+    List<Client> clients = new ArrayList<>();
 
     @OneToOne
     private User owner;

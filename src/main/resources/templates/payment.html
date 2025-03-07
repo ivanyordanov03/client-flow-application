@@ -6,6 +6,7 @@
   <title>Payment - ClientFlow</title>
   <link rel="stylesheet" href="/css/common.css">
   <link rel="stylesheet" href="/css/payment.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
 <header>
@@ -17,47 +18,97 @@
 </header>
 
 <main class="payment-container">
-  <h1>Payment Information</h1>
-  <p>Please enter your credit/debit card details to complete your purchase.</p>
-
-  <!-- Payment Form -->
-  <form th:action="@{/payment}" th:method="POST">
-    <div class="form-group">
-      <label for="cardNumber">Card Number <span class="required">*</span></label>
-      <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" required>
-    </div>
-
-    <div class="form-group">
-      <label for="cardHolder">Cardholder Name <span class="required">*</span></label>
-      <input type="text" id="cardHolder" name="cardHolder" placeholder="John Doe" required>
-    </div>
-
-    <div class="form-group-row">
+  <div class="payment-form">
+    <h1>Payment Information</h1>
+    <p>Please enter your credit/debit card details to complete your purchase.</p>
+    <p class="alert-warning" th:if="${errorMessage}" th:text="${errorMessage}"></p>
+    <form th:action="@{/payments}" th:method="POST" th:object="${paymentRequest}">
       <div class="form-group">
-        <label for="expiryDate">Expiry Date <span class="required">*</span></label>
-        <input type="text" id="expiryDate" name="expiryDate" placeholder="MM/YY" required>
+        <label for="cardNumber">Card Number <span class="required">*</span></label>
+        <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" th:field="*{cardNumber}" required>
+        <p class="alert-warning" th:if="${#fields.hasErrors('cardNumber')}" th:errors="*{cardNumber}"></p>
       </div>
 
       <div class="form-group">
-        <label for="cvv">CVV <span class="required">*</span></label>
-        <input type="text" id="cvv" name="cvv" placeholder="123" required>
+        <label for="cardHolder">Cardholder Name <span class="required">*</span></label>
+        <input type="text" id="cardHolder" name="cardHolder" placeholder="John Doe" th:field="*{cardholderName}" required>
+        <p class="alert-warning" th:if="${#fields.hasErrors('cardholderName')}" th:errors="*{cardholderName}"></p>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label for="transactionType">Transaction Type <span class="required">*</span></label>
-      <select id="transactionType" name="transactionType" required>
-        <option value="successful">Successful</option>
-        <option value="unsuccessful">Unsuccessful</option>
-      </select>
-    </div>
+      <div class="form-group-row payment-row">
+        <div class="form-group expiry-date">
+          <label for="expirationDate">Expiry Date <span class="required">*</span></label>
+          <input type="text" id="expirationDate" name="expirationDate" placeholder="MM/YY" th:field="*{expirationDate}" required>
+          <p class="alert-warning" th:if="${#fields.hasErrors('expirationDate')}" th:errors="*{expirationDate}"></p>
+        </div>
 
-    <button type="submit" class="btn">Submit Payment</button>
-  </form>
+        <div class="form-group cvv">
+          <label for="cvv">CVV <span class="required">*</span></label>
+          <input type="text" id="cvv" name="cvv" placeholder="123" th:field="*{CVV}" required>
+          <p class="alert-warning" th:if="${#fields.hasErrors('CVV')}" th:errors="*{CVV}"></p>
+        </div>
+
+        <div class="form-group transaction-type">
+          <label for="transactionType">Transaction Type <span class="required">*</span></label>
+          <select id="transactionType" name="transactionType" th:field="*{transactionType}" required>
+            <option value="successful">Successful</option>
+            <option value="unsuccessful">Unsuccessful</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox-group">
+          <input type="checkbox" id="savePaymentMethod" name="savePaymentMethod" th:field="*{savePaymentMethod}">
+          <label for="savePaymentMethod">Save payment method.</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox-group">
+          <input type="checkbox" id="autoRenewal" name="autoRenewal" th:field="*{autoRenewal}">
+          <label for="autoRenewal">I agree to subscription auto-renewal.</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox-group">
+          <input type="checkbox" id="termsCheckbox" required>
+          <label for="termsCheckbox">I agree to the <a href="/terms" target="_blank">Terms and Conditions</a>.</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button type="submit" class="btn" id="submitPayment" disabled>Submit Payment</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="purchase-details">
+    <h2>Your Plan</h2>
+    <div class="plan-details">
+      <p>
+        <span th:if="${currentPlan.planType.name()} == 'SIMPLE_START'">Simple Start</span>
+        <span th:if="${currentPlan.planType.name()} == 'ESSENTIALS'">Essentials</span>
+        <span th:if="${currentPlan.planType.name()} == 'PLUS'">Plus</span>
+        <span th:text="'$' + ${currentPlan.pricePerMonth.toString()} + '/month'"></span>
+      </p>
+      <p><strong>Total Owed Today:</strong> <span th:text="'$' + ${currentPlan.pricePerMonth.toString()}"></span></p>
+      <br>
+      <br>
+      <p id="checkmarks">
+        <span><span class="green-checkmark">✔</span> Product support </span>
+        <span><span class="green-checkmark">✔</span> No annual contract </span>
+        <span><span class="green-checkmark">✔</span> Cancel anytime </span>
+      </p>
+    </div>
+  </div>
 </main>
 
 <footer>
-  <p>&copy; 2025 ClientFlow. All rights reserved.</p>
+  <p>© 2025 ClientFlow. All rights reserved.</p>
 </footer>
+
+<script src="/js/scripts.js"></script>
 </body>
 </html>

@@ -36,9 +36,9 @@ public class PlanService {
 
         BigDecimal price;
         switch (planType) {
-            case SIMPLE_START -> price = planProperties.getSimpleStartPrice();
-            case ESSENTIALS -> price = planProperties.getEssentialsPrice();
-            case PLUS -> price = planProperties.getPlusPrice();
+            case SIMPLE_START -> price = planProperties.getPriceSimpleStart();
+            case ESSENTIALS -> price = planProperties.getPriceEssentials();
+            case PLUS -> price = planProperties.getPricePlus();
             default -> throw new IllegalStateException("Unexpected value: " + planType);
         }
 

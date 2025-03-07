@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class IndexController {
+
+    private static final String LOGIN_ERROR_MESSAGE = "Incorrect username or password.";
 
     private final PlanService planService;
     private final UserService userService;
@@ -47,34 +50,27 @@ public class IndexController {
 
         ModelAndView modelAndView = new ModelAndView("login");
         if (errorParameter != null) {
-            modelAndView.addObject("errorMessage", "Incorrect username or password.");
+            modelAndView.addObject("errorMessage", LOGIN_ERROR_MESSAGE);
         }
 
         return modelAndView;
     }
 
     @GetMapping("/dashboard")
-    public ModelAndView getDashboardPage(@AuthenticationPrincipal AuthenticationMetadata data) {
+    public ModelAndView getDashboardPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
 
-        User user = userService.getById(data.getUserId());
+        User user = userService.getById(authenticationMetadata.getUserId());
         Account account = accountService.getByOwner(user);
+
+        if (!account.isActive()) {
+
+            return new ModelAndView("redirect:/payments");
+        }
 
         ModelAndView modelAndView = new ModelAndView("dashboard");
         modelAndView.addObject("user", user);
 
-        if (account != null) {
-            if (!account.isActive()) {
-                modelAndView.setViewName("payment");
-            }
-        }
-
         return modelAndView;
-    }
-
-    @GetMapping("/plans")
-    public String getPlansPage() {
-
-        return "plans";
     }
 
     @GetMapping("/register")
@@ -84,32 +80,34 @@ public class IndexController {
             return new ModelAndView("redirect:/plans");
         }
 
-        Plan plan = planService.getByType(Mapper.getPlanTypeFromString(planName));
+        Plan currentPlan = planService.getByType(Mapper.getPlanTypeFromString(planName));
 
         RegisterOwnerRequest registerOwnerRequest = new RegisterOwnerRequest();
-        registerOwnerRequest.setPlan(plan);
+        registerOwnerRequest.setPlanName(planName);
 
         ModelAndView modelAndView = new ModelAndView("register");
         modelAndView.addObject("registerOwnerRequest", registerOwnerRequest);
+        modelAndView.addObject("currentPlan", currentPlan);
 
         return modelAndView;
     }
 
     @PostMapping("/register")
-    public ModelAndView processRegisterRequest(@RequestParam(value = "plan")String planName, @Valid RegisterOwnerRequest registerOwnerRequest, BindingResult bindingResult) {
+    public String processRegisterRequest(@Valid RegisterOwnerRequest registerOwnerRequest,
+                                         BindingResult bindingResult,
+                                         Model model) {
 
-        Plan plan = planService.getByType(Mapper.getPlanTypeFromString(planName));
-        registerOwnerRequest.setPlan(plan);
-
-        ModelAndView modelAndView = new ModelAndView("register");
+        Plan currentPlan = planService.getByType(Mapper.getPlanTypeFromString(registerOwnerRequest.getPlanName()));
         if (bindingResult.hasErrors()) {
-            modelAndView.addObject("registerOwnerRequest", registerOwnerRequest);
-            return modelAndView;
+
+            model.addAttribute("registerOwnerRequest", registerOwnerRequest);
+            model.addAttribute("planName", registerOwnerRequest.getPlanName());
+            model.addAttribute("currentPlan", currentPlan);
+            return "register";
         }
 
-        User owner = userService.registerAccountOwner(registerOwnerRequest);
-        modelAndView.setViewName("redirect:/login");
+        userService.registerAccountOwner(registerOwnerRequest, currentPlan);
 
-        return modelAndView;
+        return "redirect:/login";
     }
 }

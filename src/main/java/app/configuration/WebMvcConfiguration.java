@@ -13,7 +13,7 @@ public class WebMvcConfiguration {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http
+        return http
                 .authorizeHttpRequests(matchers -> matchers
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .requestMatchers("/", "/plans", "/register").permitAll()
@@ -29,8 +29,7 @@ public class WebMvcConfiguration {
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .logoutSuccessUrl("/login?logout")
-                );
-
-        return http.build();
+                )
+                .build();
     }
 }

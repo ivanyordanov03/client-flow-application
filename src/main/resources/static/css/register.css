@@ -1,58 +1,8 @@
-.register-container {
-    display: flex;
-    justify-content: space-between;
-    max-width: 1000px;
-    margin: 2em auto;
-    padding: 0 1.25em;
-    gap: 2em;
-}
-
-.register-form {
-    flex: 3;
-    background: white;
-    padding: 2rem;
-    border-radius: 0.3em;
-    box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 1.5em;
-}
-
-.register-form h1 {
-    font-size: 2em;
-    color: #4BBF89;
-    margin-bottom: 0.5em;
-}
-
-.register-form p {
+.register-form p,
+.plan-details p {
     font-size: 1em;
     color: #666;
     margin-bottom: 1.5em;
-}
-
-.chosen-plan {
-    flex: 2;
-    background: white;
-    padding: 2rem;
-    border-radius: 0.3em;
-    box-shadow: 0 0.25em 0.5em rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 1.5em;
-    align-self: flex-start;
-    position: relative;
-}
-
-.chosen-plan h2 {
-    font-size: 2em;
-    color: #4BBF89;
-    margin-bottom: 0.5em;
-}
-
-.plan-details p {
-    font-size: 1.2em;
-    color: #666;
-    margin-bottom: 1em;
 }
 
 .plan-details strong {
@@ -95,15 +45,4 @@
 
 #sign-in a:hover {
     color: #0E2925;
-}
-
-@media (max-width: 768px) {
-    .register-container {
-        flex-direction: column;
-        gap: 1em;
-    }
-
-    .register-form, .chosen-plan {
-        flex: 1;
-    }
 }

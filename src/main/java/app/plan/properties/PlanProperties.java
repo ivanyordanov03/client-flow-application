@@ -9,7 +9,11 @@ import java.math.BigDecimal;
 @ConfigurationProperties(prefix = "plans")
 public class PlanProperties {
 
-    private BigDecimal simpleStartPrice;
-    private BigDecimal essentialsPrice;
-    private BigDecimal plusPrice;
+    private BigDecimal priceSimpleStart;
+    private BigDecimal priceEssentials;
+    private BigDecimal pricePlus;
+
+    private int maxUsersSimpleStart;
+    private int maxUsersEssentials;
+    private int maxUsersPlus;
 }
