@@ -48,9 +48,9 @@ public class IndexController {
     }
 
     @GetMapping("/error") //Thymeleaf status: 999 error: "None"
-    public ModelAndView getErrorPage(@RequestParam(value = "continue", required = false) String errorParameter) {
+    public ModelAndView getErrorPage() {
 
-        ModelAndView modelAndView = new ModelAndView("redirect:login");
+        ModelAndView modelAndView = new ModelAndView("login");
         modelAndView.addObject("errorMessage", LOGIN_ERROR_MESSAGE);
 
         return modelAndView;

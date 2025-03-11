@@ -1,9 +1,7 @@
 package app.paymentMethod.service;
 
-import app.account.model.Account;
 import app.paymentMethod.model.PaymentMethod;
 import app.paymentMethod.repository.PaymentMethodRepository;
-import app.user.model.User;
 import app.web.dto.PaymentRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

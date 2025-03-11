@@ -10,7 +10,7 @@ import java.util.UUID;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, UUID> {
 
-    List<Task> findAllByAccountIdAndAssignedToUserId(UUID accountId, UUID assignedToUserId);
+    List<Task> findAllByAccountIdAndAssignedToId(UUID accountId, UUID assignedToUserId);
 
     List<Task> findAllByAccountId(UUID accountId);
 }

@@ -63,6 +63,6 @@ public class TaskService {
 
     public List<Task> getAllByAccountIdAndAssignedTo(UUID accountId, UUID assignedTo) {
 
-        return taskRepository.findAllByAccountIdAndAssignedToUserId(accountId, assignedTo);
+        return taskRepository.findAllByAccountIdAndAssignedToId(accountId, assignedTo);
     }
 }

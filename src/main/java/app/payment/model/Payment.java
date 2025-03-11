@@ -1,6 +1,5 @@
 package app.payment.model;
 
-import app.account.model.Account;
 import jakarta.persistence.*;
 import lombok.*;
 

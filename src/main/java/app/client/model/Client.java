@@ -1,10 +1,6 @@
 package app.client.model;
 
-import app.account.model.Account;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
@@ -18,6 +14,7 @@ import java.util.UUID;
 public class Client {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false)
