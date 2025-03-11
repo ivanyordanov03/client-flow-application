@@ -1,16 +1,10 @@
 package app.task.model;
 
-import app.account.model.Account;
-import app.user.model.User;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Builder
@@ -22,22 +16,36 @@ import java.util.UUID;
 public class Task {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(nullable = false)
     private String name;
 
-    @Size(max = 1500)
+    @Column(columnDefinition = "VARCHAR(1000)")
     private String description;
 
     @Column(nullable = false)
     private LocalDate dueDate;
 
-    private Priority priority;
+    private TaskPriority priority;
 
-    @ManyToOne
-    private Account account;
+    @Column(nullable = false)
+    private UUID accountId;
 
-    @ManyToOne
-    private User assignedTo;
+    @Column(nullable = false)
+    private UUID assignedToId;
+
+    @Column(nullable = false)
+    private UUID createdById;
+
+    @Column(nullable = false)
+    private boolean completed = false;
+
+    @Column(nullable = false)
+    private LocalDateTime createdOn;
+
+    @Column(nullable = false)
+    private LocalDateTime updatedOn;
+
 }

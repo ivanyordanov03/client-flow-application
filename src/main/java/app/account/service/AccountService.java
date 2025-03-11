@@ -2,68 +2,80 @@ package app.account.service;
 
 import app.account.model.Account;
 import app.account.repository.AccountRepository;
+import app.paymentMethod.model.PaymentMethod;
 import app.paymentMethod.service.PaymentMethodService;
 import app.plan.model.Plan;
-import app.user.model.User;
+import app.plan.service.PlanService;
 import app.web.dto.PaymentRequest;
-import app.web.dto.RegisterOwnerRequest;
+import app.web.dto.RegisterUserRequest;
+import app.web.mapper.Mapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @Service
 public class AccountService {
 
+    private static final String AUTO_RENEWAL_ENABLED_FOR_ACCOUNT_WITH_ID_S = "Auto-renewal enabled for account with id [%s]";
+    private static final String ACCOUNT_WITH_ID_ACTIVATED = "Account with id [%s] has been activated.";
+
     private final AccountRepository accountRepository;
+    private final PlanService planService;
     private final PaymentMethodService paymentMethodService;
 
     @Autowired
     public AccountService(AccountRepository accountRepository,
+                          PlanService planService,
                           PaymentMethodService paymentMethodService) {
 
         this.accountRepository = accountRepository;
+        this.planService = planService;
         this.paymentMethodService = paymentMethodService;
     }
 
-    public void createNew(RegisterOwnerRequest registerOwnerRequest, User owner, Plan plan) {
+    public Account createNew(RegisterUserRequest registerUserRequest) {
 
-        Account account = initialize(registerOwnerRequest, owner, plan);
+        Plan plan = planService.getByType(Mapper.getPlanTypeFromString(registerUserRequest.getPlanName()));
+
+        Account account = initialize(plan);
         accountRepository.save(account);
-        log.info("Created new account with id [%s] for user with id [%s].".formatted(account.getId(), owner.getId()));
+
+        return account;
     }
 
-    private Account initialize(RegisterOwnerRequest registerOwnerRequest, User owner, Plan plan) {
+    private Account initialize(Plan plan) {
 
         LocalDateTime now = LocalDateTime.now();
 
         return Account.builder()
-                .phoneNumber(registerOwnerRequest.getPhoneNumber())
                 .plan(plan)
-                .owner(owner)
                 .createdOn(now)
                 .updatedOn(now)
-                .owner(owner)
                 .build();
     }
 
-    public Account getByOwner(User user) {
+    public Account getByOwnerId(UUID ownerId) {
 
-        return accountRepository.findByOwner(user);
+        return accountRepository.findByOwnerId(ownerId);
     }
 
     public void allowAutoRenewal(PaymentRequest paymentRequest, Account account) {
 
-        if (account.getPaymentMethods().isEmpty()) {
-            paymentMethodService.createNew(paymentRequest, account);
+        List<PaymentMethod> paymentMethods = paymentMethodService.getAllByAccountId(account.getId());
+        if (paymentMethods.isEmpty()) {
+            paymentMethodService.createNew(paymentRequest, account.getId());
         }
 
-        account.setAutoRenewalEnabled(true); //add log what has been updated.
+        account.setAutoRenewalEnabled(true);
         account.setUpdatedOn(LocalDateTime.now());
         accountRepository.save(account);
-        log.info("Auto-renewal enabled for account with id [%s]".formatted(account.getId()));
+        log.info(AUTO_RENEWAL_ENABLED_FOR_ACCOUNT_WITH_ID_S.formatted(account.getId()));
+
     }
 
     public void setToActive(Account account) {
@@ -71,6 +83,6 @@ public class AccountService {
         account.setActive(true);
         account.setUpdatedOn(LocalDateTime.now());
         accountRepository.save(account);
-        log.info("Account with id [%s] has been activated.".formatted(account.getId()));
+        log.info(ACCOUNT_WITH_ID_ACTIVATED.formatted(account.getId()));
     }
 }

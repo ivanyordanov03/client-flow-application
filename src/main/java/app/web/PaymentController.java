@@ -42,7 +42,7 @@ public class PaymentController {
     public ModelAndView getPaymentsPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
 
         User user = userService.getById(authenticationMetadata.getUserId());
-        Account account = accountService.getByOwner(user);
+        Account account = accountService.getByOwnerId(user.getId());
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("payment");
@@ -57,8 +57,9 @@ public class PaymentController {
     public ModelAndView processNewPayment(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
                                           @Valid PaymentRequest paymentRequest,
                                           BindingResult bindingResult) {
+
         User user = userService.getById(authenticationMetadata.getUserId());
-        Account account = accountService.getByOwner(user);
+        Account account = accountService.getByOwnerId(user.getId());
 
         if (bindingResult.hasErrors()) {
             ModelAndView modelAndView = new ModelAndView("payment");

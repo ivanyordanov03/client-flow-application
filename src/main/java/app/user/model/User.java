@@ -39,11 +39,11 @@ public class User {
     private boolean isActive = true;
 
     @Column(nullable = false)
+    private UUID accountId;
+
+    @Column(nullable = false)
     private LocalDateTime createdOn;
 
     @Column(nullable = false)
     private LocalDateTime updatedOn;
-
-    @ManyToOne
-    private Account account;
 }

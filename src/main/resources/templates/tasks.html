@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks - ClientFlow</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/nav-side-bar.css">
+    <link rel="stylesheet" href="/css/tasks.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <a th:href="@{'/dashboard'}">
+            <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+        </a>
+    </div>
+</header>
+
+<main class="tasks-container">
+    <div class="nav-bar">
+        <div class="side-bar-container">
+            <nav>
+                <div class="side_navbar">
+                    <div class="func-block">
+                        <a href="/dashboard">
+                            <p>Dashboard</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"></path>
+                            </svg>
+                        </a>
+                        <a href="/customers">
+                            <p>Customers</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm-7 7a7 7 0 0 1 14 0"></path>
+                            </svg>
+                        </a>
+                        <a href="/invoices">
+                            <p>Invoices</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h14v14H5V5Zm2 2h10M7 10h10M7 13h10M7 16h10"></path>
+                            </svg>
+                        </a>
+                        <a href="/quotes">
+                            <p>Quotes</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9h8M8 13h8M4 5h16v14H4V5Z"></path>
+                            </svg>
+                        </a>
+                        <a href="/tasks" class="active">
+                            <p>Tasks</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5h10M9 9h10M9 13h10M5 5h2M5 9h2M5 13h2"></path>
+                            </svg>
+                        </a>
+                        <a href="/team">
+                            <p>Team</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-7 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm14 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-7 7a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5"></path>
+                            </svg>
+                        </a>
+                        <a href="/account">
+                            <p>Account</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-3 0-6 1.5-6 4v2h12v-2c0-2.5-3-4-6-4Z"></path>
+                            </svg>
+                        </a>
+                        <a href="/notifications">
+                            <p>Notifications</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m0 12v3m-7-7H4m16 0h-1M6 6l1.5 1.5m10 10L19 19"></path>
+                            </svg>
+                        </a>
+                    </div>
+                    <div class="func-block">
+                        <a class="logout" href="/logout">
+                            <p>Log Out</p>
+                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <div class="tasks-content">
+        <h1>Tasks</h1>
+        <div class="task-filters">
+            <button class="btn filter-btn active">All open tasks</button>
+            <button class="btn filter-btn">My tasks</button>
+            <button class="btn filter-btn">Due today</button>
+            <button class="btn filter-btn">Overdue</button>
+            <button class="btn filter-btn">Upcoming</button>
+            <button class="btn filter-btn">Completed</button>
+            <a th:href="@{/tasks/new-task}" class="btn btn-secondary add-task">+ Add task</a>
+        </div>
+        <div class="task-controls">
+            <button class="btn filter-toggle">Filters</button>
+        </div>
+        <div class="task-table">
+            <table>
+                <thead>
+                <tr>
+                    <th>Task name</th>
+                    <th>Priority <span class="sort-icon">↑</span></th>
+                    <th>Created by</th>
+                    <th>Assigned to</th>
+                    <th>Due date <span class="sort-icon">↑</span></th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="task : ${tasks}">
+                    <td>
+                        <button class="description-btn" th:attr="data-description=${task.description}">
+                            <svg width="1rem" height="1rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 6v12m6-6H6" stroke="#4BBF89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+                        <span th:text="${task.name} ?: 'No name'">Test</span>
+                    </td>
+                    <td>
+                        <select th:value="${task.priority}" disabled>
+                            <option value="Low">Low</option>
+                            <option value="Medium">Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </td>
+                    <td th:text="${task.createdBy} ?: 'Me'">Me</td>
+                    <td th:text="${task.assignedTo} ?: 'Me'">Me</td>
+                    <td th:text="${#dates.format(task.dueDate, 'dd/MM/yyyy')} ?: 'N/A'">03/07/2025</td>
+                    <td>
+                        <button class="btn btn-secondary small">Mark complete</button>
+                        <span class="dropdown-icon">▼</span>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(tasks)}" class="empty-state">
+                    <td colspan="6">
+                        <div class="empty-message">
+                            <svg width="3rem" height="3rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 7v10" stroke="#4BBF89" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M12 17l-4-4 4-4" stroke="#4BBF89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <p>You’re caught up!</p>
+                            <p>You don’t have any tasks to do. Check back soon to stay on top of things.</p>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<div id="descriptionModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn">×</span>
+        <h2>Task Description</h2>
+        <p id="modalDescription"></p>
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 ClientFlow. All rights reserved.</p>
+</footer>
+
+<script src="/js/scripts.js"></script>
+</body>
+</html>

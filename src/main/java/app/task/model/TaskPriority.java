@@ -1,5 +1,5 @@
 package app.task.model;
 
-public enum Priority {
+public enum TaskPriority {
     LOW, MEDIUM, HIGH, URGENT
 }

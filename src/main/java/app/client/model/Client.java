@@ -1,6 +1,7 @@
 package app.client.model;
 
 import app.account.model.Account;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -19,6 +20,6 @@ public class Client {
     @Id
     private UUID id;
 
-    @ManyToOne
-    private Account account;
+    @Column(nullable = false)
+    private UUID accountId;
 }

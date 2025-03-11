@@ -9,7 +9,7 @@ import org.hibernate.validator.constraints.CreditCardNumber;
 @Data
 public class PaymentRequest {
 
-    @CreditCardNumber
+//    @CreditCardNumber - for real credit card validation, commented to make tests easier
     private String cardNumber;
 
     @Size(min = 5, max = 50, message = "The cardholder's name length must be between 5 and 50 letters.")

@@ -8,6 +8,10 @@ import app.web.dto.PaymentRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+
 @Slf4j
 @Service
 public class PaymentMethodService {
@@ -20,26 +24,30 @@ public class PaymentMethodService {
         this.paymentMethodRepository = paymentMethodRepository;
     }
 
-    public void createNew(PaymentRequest paymentRequest, Account account) {
+    public void createNew(PaymentRequest paymentRequest, UUID accountId) {
 
         if(paymentMethodRepository.getByCreditCardNumberAndExpirationDate(paymentRequest.getCardNumber(),
                 paymentRequest.getExpirationDate()).isEmpty()) {
 
-            PaymentMethod paymentMethod = initiate(paymentRequest, account);
+            PaymentMethod paymentMethod = initiate(paymentRequest, accountId);
             paymentMethodRepository.save(paymentMethod);
-            log.info("New payment method added for account id [%s]".formatted(account.getId()) );
+            log.info("New payment method added for account id [%s]".formatted(accountId) );
         }
 
     }
 
-    private PaymentMethod initiate(PaymentRequest paymentRequest, Account account) {
+    private PaymentMethod initiate(PaymentRequest paymentRequest, UUID accountId) {
 
         return PaymentMethod.builder()
                 .creditCardNumber(paymentRequest.getCardNumber())
                 .cardHolderName(paymentRequest.getCardholderName())
                 .expirationDate(paymentRequest.getExpirationDate())
                 .CVV(paymentRequest.getCVV())
-                .account(account)
+                .accountId(accountId)
                 .build();
+    }
+
+    public List<PaymentMethod> getAllByAccountId(UUID accountId) {
+        return paymentMethodRepository.findAllByAccountId(accountId);
     }
 }

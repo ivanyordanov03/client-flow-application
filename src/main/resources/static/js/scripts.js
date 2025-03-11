@@ -2,6 +2,7 @@ let currentSlide = 0;
 
 document.addEventListener('DOMContentLoaded', function () {
 
+    // Slideshow functionality
     const slides = document.querySelectorAll('.slide');
     const dots = document.querySelectorAll('.dot');
 
@@ -23,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setInterval(nextSlide, 5000);
     }
 
+    // Password toggle functionality
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
     if (togglePassword && passwordInput) {
@@ -34,12 +36,51 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Terms checkbox functionality
     const termsCheckbox = document.getElementById('termsCheckbox');
     const submitButton = document.getElementById('submitPayment');
     if (termsCheckbox && submitButton) {
         submitButton.disabled = !termsCheckbox.checked;
         termsCheckbox.addEventListener('change', function () {
             submitButton.disabled = !this.checked;
+        });
+    }
+
+    // Description modal functionality
+    const descriptionButtons = document.querySelectorAll('.description-btn');
+    const descriptionModal = document.getElementById('descriptionModal');
+    const modalDescription = document.getElementById('modalDescription');
+    const closeBtn = document.querySelector('.close-btn');
+
+    if (descriptionButtons.length > 0 && descriptionModal && modalDescription && closeBtn) {
+        descriptionButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                modalDescription.textContent = this.getAttribute('data-description') || 'No description available.';
+                descriptionModal.style.display = 'block';
+            });
+        });
+
+        closeBtn.addEventListener('click', function () {
+            descriptionModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', function (event) {
+            if (event.target === descriptionModal) {
+                descriptionModal.style.display = 'none';
+            }
+        });
+    }
+
+    // Initialize Flatpickr for the dueDate field
+    const dueDateInput = document.getElementById('dueDate');
+    if (dueDateInput) {
+        flatpickr("#dueDate", {
+            dateFormat: "m/d/Y",
+            altInput: true,
+            altFormat:"Y-m-d",
+            defaultDate: dueDateInput.value,
+            minDate: "today",
+            allowInput: false,
         });
     }
 });

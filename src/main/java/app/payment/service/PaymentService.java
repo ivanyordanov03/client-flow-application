@@ -5,7 +5,6 @@ import app.account.service.AccountService;
 import app.payment.model.Payment;
 import app.payment.repository.PaymentRepository;
 import app.paymentMethod.service.PaymentMethodService;
-import app.user.model.User;
 import app.web.dto.PaymentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,7 +33,7 @@ public class PaymentService {
     public void insert(PaymentRequest paymentRequest, Account account) {
 
         if (paymentRequest.isSavePaymentMethod()) {
-            paymentMethodService.createNew(paymentRequest, account);
+            paymentMethodService.createNew(paymentRequest, account.getId());
         }
 
         if (paymentRequest.isAutoRenewal()) {
@@ -54,7 +53,7 @@ public class PaymentService {
 
         return Payment.builder()
                 .amount(account.getPlan().getPricePerMonth().toString())
-                .account(account)
+                .accountId(account.getId())
                 .last4Digits(last4)
                 .createdAt(LocalDateTime.now())
                 .build();

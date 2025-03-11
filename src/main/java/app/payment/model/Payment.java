@@ -28,6 +28,6 @@ public class Payment {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    @ManyToOne
-    private Account account;
+    @Column(nullable = false)
+    private UUID accountId;
 }

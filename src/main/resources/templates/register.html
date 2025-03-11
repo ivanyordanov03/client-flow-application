@@ -23,6 +23,7 @@
         <p>Please fill out the form below to get started.</p>
 
         <form th:action="@{/register}" th:method="POST" th:object="${registerOwnerRequest}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <input type="hidden" th:field="*{planName}" />
             <div class="form-group">
                 <label for="firstName">First Name <span class="required">*</span></label>
@@ -48,16 +49,6 @@
                     </button>
                 </div>
                 <p class="alert-warning" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
-            </div>
-            <div class="form-group">
-                <label for="phone">Phone Number</label>
-                <input type="tel" id="phone" name="phone" placeholder="e.g. 2025550123" th:field="*{phoneNumber}">
-                <p class="alert-warning" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"></p>
-            </div>
-            <div class="form-group">
-                <label for="companyName">Company Name</label>
-                <input type="text" id="companyName" name="companyName" th:field="*{businessName}">
-                <p class="alert-warning" th:if="${#fields.hasErrors('businessName')}" th:errors="*{businessName}"></p>
             </div>
             <p class="required-description"><span class="required">*</span> Required fields</p>
             <button class="btn" type="submit">Create Account</button>

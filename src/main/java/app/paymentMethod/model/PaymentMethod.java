@@ -30,6 +30,6 @@ public class PaymentMethod {
     @Column(nullable = false)
     private String CVV;
 
-    @ManyToOne
-    private Account account;
+    @Column(nullable = false)
+    private UUID accountId;
 }

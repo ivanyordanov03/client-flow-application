@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class RegisterOwnerRequest {
+public class RegisterUserRequest {
 
     @NotEmpty
     @Pattern(regexp = "^[A-Za-zÀ-ÿ]+(?:'[A-Za-zÀ-ÿ]+)?(?:[ -][A-Za-zÀ-ÿ]+)?$",
@@ -29,11 +29,11 @@ public class RegisterOwnerRequest {
     @Size(min = 3, max = 20, message = "Password must be between 3 and 20 characters long")
     private String password;
 
-    @Pattern(regexp = "^(?:[2-9]\\d{9})?$", message = "Phone number must be a valid USA format (e.g. 2025550123)")
-    private String phoneNumber;
-
-    @Pattern(regexp = "^(?:[A-Za-z0-9 .-]{3,30})?$", message = "Company name must be 3-30 characters")
-    private String businessName;
+//    @Pattern(regexp = "^(?:[2-9]\\d{9})?$", message = "Phone number must be a valid USA format (e.g. 2025550123)")
+//    private String phoneNumber;
+//
+//    @Pattern(regexp = "^(?:[A-Za-z0-9 .-]{3,30})?$", message = "Company name must be 3-30 characters")
+//    private String businessName;
 
     private String planName;
 }

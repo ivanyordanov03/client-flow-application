@@ -7,7 +7,7 @@ import app.plan.service.PlanService;
 import app.security.AuthenticationMetadata;
 import app.user.model.User;
 import app.user.service.UserService;
-import app.web.dto.RegisterOwnerRequest;
+import app.web.dto.RegisterUserRequest;
 import app.web.mapper.Mapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +17,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
+@RequestMapping("/")
 public class IndexController {
 
     private static final String LOGIN_ERROR_MESSAGE = "Incorrect username or password.";
@@ -45,6 +47,15 @@ public class IndexController {
         return "index";
     }
 
+    @GetMapping("/error") //Thymeleaf status: 999 error: "None"
+    public ModelAndView getErrorPage(@RequestParam(value = "continue", required = false) String errorParameter) {
+
+        ModelAndView modelAndView = new ModelAndView("redirect:login");
+        modelAndView.addObject("errorMessage", LOGIN_ERROR_MESSAGE);
+
+        return modelAndView;
+    }
+
     @GetMapping("/login")
     public ModelAndView getLoginPage(@RequestParam(value = "error", required = false) String errorParameter) {
 
@@ -60,7 +71,7 @@ public class IndexController {
     public ModelAndView getDashboardPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
 
         User user = userService.getById(authenticationMetadata.getUserId());
-        Account account = accountService.getByOwner(user);
+        Account account = accountService.getByOwnerId(user.getId());
 
         if (!account.isActive()) {
 
@@ -82,31 +93,31 @@ public class IndexController {
 
         Plan currentPlan = planService.getByType(Mapper.getPlanTypeFromString(planName));
 
-        RegisterOwnerRequest registerOwnerRequest = new RegisterOwnerRequest();
-        registerOwnerRequest.setPlanName(planName);
+        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
+        registerUserRequest.setPlanName(planName);
 
         ModelAndView modelAndView = new ModelAndView("register");
-        modelAndView.addObject("registerOwnerRequest", registerOwnerRequest);
+        modelAndView.addObject("registerOwnerRequest", registerUserRequest);
         modelAndView.addObject("currentPlan", currentPlan);
 
         return modelAndView;
     }
 
     @PostMapping("/register")
-    public String processRegisterRequest(@Valid RegisterOwnerRequest registerOwnerRequest,
+    public String processRegisterRequest(@Valid RegisterUserRequest registerUserRequest,
                                          BindingResult bindingResult,
                                          Model model) {
 
-        Plan currentPlan = planService.getByType(Mapper.getPlanTypeFromString(registerOwnerRequest.getPlanName()));
+        Plan currentPlan = planService.getByType(Mapper.getPlanTypeFromString(registerUserRequest.getPlanName()));
         if (bindingResult.hasErrors()) {
 
-            model.addAttribute("registerOwnerRequest", registerOwnerRequest);
-            model.addAttribute("planName", registerOwnerRequest.getPlanName());
+            model.addAttribute("registerOwnerRequest", registerUserRequest);
+            model.addAttribute("planName", registerUserRequest.getPlanName());
             model.addAttribute("currentPlan", currentPlan);
             return "register";
         }
 
-        userService.registerAccountOwner(registerOwnerRequest, currentPlan);
+        userService.registerAccountOwner(registerUserRequest);
 
         return "redirect:/login";
     }
