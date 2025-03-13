@@ -43,6 +43,7 @@ public class TaskService {
 
         LocalDateTime now = LocalDateTime.now();
         User user = userService.getById(userId);
+        User assignee = userService.getById(UUID.fromString(taskRequest.getAssignedTo()));
 
         return Task.builder()
                 .name(taskRequest.getName())
@@ -51,6 +52,8 @@ public class TaskService {
                 .accountId(user.getAccountId())
                 .assignedToId(UUID.fromString(taskRequest.getAssignedTo()))
                 .createdById(userId)
+                .assignedToName(assignee.getFirstName() + " " + assignee.getLastName().charAt(0) + ".")
+                .createdByName(user.getFirstName() + " " + user.getLastName().charAt(0) + ".")
                 .createdOn(now)
                 .updatedOn(now)
                 .build();
@@ -61,8 +64,8 @@ public class TaskService {
         return taskRepository.findAllByAccountId(accountId);
     }
 
-    public List<Task> getAllByAccountIdAndAssignedTo(UUID accountId, UUID assignedTo) {
+    public List<Task> getAllByAccountIdAndAssignedToIdOrCreatedById(UUID accountId, UUID assignedToId, UUID createdById) {
 
-        return taskRepository.findAllByAccountIdAndAssignedToId(accountId, assignedTo);
+        return taskRepository.findAllByAccountIdAndAssignedToIdOrCreatedById(accountId, assignedToId, createdById);
     }
 }

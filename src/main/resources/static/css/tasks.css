@@ -1,36 +1,20 @@
 .tasks-container {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 2em auto;
-    background: white;
-    border-radius: 0.3rem;
-    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
-    flex: 1;
-}
-
-.nav-bar {
-    flex: 0 0 12rem;
 }
 
 .tasks-content {
-    flex: 3;
-    padding: 1rem;
 }
 
-.tasks-content h1 {
-    font-size: 2rem;
-    color: #4BBF89;
-    margin-top: 0;
-    margin-bottom: 1rem;
+.task-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
 }
 
 .task-filters {
     display: flex;
     gap: 0.5rem;
-    margin-bottom: 1rem;
     flex-wrap: wrap;
 }
 
@@ -41,7 +25,7 @@
     border-radius: 0.3rem;
     border: none;
     cursor: pointer;
-    font-size: 0.875rem; /
+    font-size: 0.875rem;
     transition: background-color 0.3s ease;
 }
 
@@ -54,63 +38,34 @@
     background-color: #d0d0d0;
 }
 
-.add-task {
-    background-color: #4BBF89;
-    color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.3rem;
-    font-size: 0.875rem;
-    margin-left: auto;
-}
-
-.add-task:hover {
-    background-color: #2C8475;
-    color: white;
-}
-
-.task-controls {
-    margin-bottom: 1rem;
-}
-
 .filter-toggle {
     background-color: #4BBF89;
     color: white;
-    padding: 0.25rem 0.75rem;
+    padding: 0.125rem 0.5rem;
     border-radius: 0.3rem;
     border: none;
     cursor: pointer;
-    font-size: 0.875rem;
+    font-size: 0.75rem;
+    margin-bottom: 1rem;
+    display: block;
 }
 
 .filter-toggle:hover {
     background-color: #2C8475;
 }
 
+.add-task {
+    margin-left: auto;
+}
+
 .task-table table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
 }
 
-.task-table th,
-.task-table td {
-    padding: 1rem 1.5rem;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-}
-
-.task-table th {
-    background-color: #f9f9f9;
-    color: #666;
-    font-weight: 500;
-}
-
-.task-table td {
-    color: #333;
-}
-
-.task-table td:first-child {
-    padding-left: 1.5rem;
+/* Removed positioning from td:last-child since we'll handle it with the container */
+.action-container {
+    display: inline-flex;
+    align-items: center;
+    position: relative; /* Positioning context for the dropdown */
 }
 
 .description-btn {
@@ -130,33 +85,39 @@
     transform: scale(1.1);
 }
 
-.small {
-    padding: 0.25rem 0.75rem;
-    font-size: 0.875rem;
-    border-radius: 0.3rem;
-}
-
-.small:hover {
-    background-color: #2C8475;
-}
-
 .dropdown-icon {
     margin-left: 0.5rem;
     cursor: pointer;
 }
 
-.empty-state {
-    text-align: center;
-    padding: 2rem;
+/* Adjusted dropdown styles */
+.task-dropdown {
+    display: none;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 0.3rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    min-width: 100px;
+    padding: 0.5rem 0;
+    /* Removed right: 0 and top: 100% to handle dynamically */
 }
 
-.empty-message svg {
-    margin-bottom: 1rem;
+.task-dropdown.active {
+    display: block;
 }
 
-.empty-message p {
-    color: #666;
-    margin: 0.5rem 0;
+.task-dropdown a {
+    display: block;
+    padding: 0.25rem 1rem;
+    color: #333;
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.task-dropdown a:hover {
+    background-color: #f0f0f0;
 }
 
 .modal {
@@ -187,7 +148,7 @@
     right: 0.5rem;
     font-size: 1.5rem;
     cursor: pointer;
-    color: #666;
+    color: #667;
 }
 
 .close-btn:hover {
@@ -205,13 +166,9 @@
 }
 
 @media (max-width: 768px) {
-    .tasks-container {
+    .task-controls {
         flex-direction: column;
-    }
-
-    .nav-bar {
-        flex: 1;
-        width: 100%;
+        align-items: stretch;
     }
 
     .task-filters {
@@ -221,6 +178,10 @@
 
     .add-task {
         margin-left: 0;
+        margin-top: 0.5rem;
+    }
+
+    .filter-toggle {
         margin-top: 0.5rem;
     }
 }

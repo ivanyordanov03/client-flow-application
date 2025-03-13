@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -23,6 +24,8 @@ public class AccountService {
 
     private static final String AUTO_RENEWAL_ENABLED_FOR_ACCOUNT_WITH_ID_S = "Auto-renewal enabled for account with id [%s]";
     private static final String ACCOUNT_WITH_ID_ACTIVATED = "Account with id [%s] has been activated.";
+    private static final String ACCOUNT_WITH_ID_DOES_NOT_EXIST = "Account with id [%s] does not exist.";
+    private static final String NO_ACCOUNT_ASSOCIATED_WITH_USER_WITH_ID = "There is no account associated with user with id [%s].";
 
     private final AccountRepository accountRepository;
     private final PlanService planService;
@@ -59,11 +62,6 @@ public class AccountService {
                 .build();
     }
 
-    public Account getByOwnerId(UUID ownerId) {
-
-        return accountRepository.findByOwnerId(ownerId);
-    }
-
     public void allowAutoRenewal(PaymentRequest paymentRequest, Account account) {
 
         List<PaymentMethod> paymentMethods = paymentMethodService.getAllByAccountId(account.getId());
@@ -84,5 +82,25 @@ public class AccountService {
         account.setUpdatedOn(LocalDateTime.now());
         accountRepository.save(account);
         log.info(ACCOUNT_WITH_ID_ACTIVATED.formatted(account.getId()));
+    }
+
+    public Account getId(UUID accountId) {
+
+        Optional<Account> optional = accountRepository.findById(accountId);
+        if (optional.isEmpty()) {
+            throw new IllegalArgumentException(ACCOUNT_WITH_ID_DOES_NOT_EXIST.formatted(accountId));
+        }
+
+        return optional.get();
+    }
+
+    public Account getByOwnerId(UUID ownerId) {
+
+        Optional<Account> optional = accountRepository.findByOwnerId(ownerId);
+        if (optional.isEmpty()) {
+            throw new IllegalArgumentException(NO_ACCOUNT_ASSOCIATED_WITH_USER_WITH_ID.formatted(ownerId));
+        }
+
+        return optional.get();
     }
 }

@@ -31,9 +31,6 @@ public class RegisterUserRequest {
 
 //    @Pattern(regexp = "^(?:[2-9]\\d{9})?$", message = "Phone number must be a valid USA format (e.g. 2025550123)")
 //    private String phoneNumber;
-//
-//    @Pattern(regexp = "^(?:[A-Za-z0-9 .-]{3,30})?$", message = "Company name must be 3-30 characters")
-//    private String businessName;
 
     private String planName;
 }

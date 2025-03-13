@@ -1,0 +1,23 @@
+.users-container {
+}
+
+.users-content {
+}
+
+.users-controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+}
+
+.add-member {
+}
+
+.users-table table {
+}
+
+@media (max-width: 768px) {
+    .users-controls {
+        justify-content: center;
+    }
+}

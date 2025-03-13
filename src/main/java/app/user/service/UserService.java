@@ -50,14 +50,14 @@ public class UserService implements UserDetailsService {
 
         Account account = accountService.createNew(registerUserRequest);
 
-        User user = registerUser(registerUserRequest, account.getId());
-        user.setUserRole(UserRole.OWNER);
+        User user = register(registerUserRequest, account.getId());
+        user.setUserRole(UserRole.PRIMARY_ADMIN);
         account.setOwnerId(user.getId());
 
         log.info(CREATED_NEW_ACCOUNT_FOR_USER_ID.formatted(account.getId(), account.getOwnerId()));
     }
 
-    public User registerUser(RegisterUserRequest registerUserRequest, UUID accountId) {
+    public User register(RegisterUserRequest registerUserRequest, UUID accountId) {
 
         Optional<User> optionUser = userRepository.findByEmail(registerUserRequest.getEmail());
         if (optionUser.isPresent()) {
@@ -82,7 +82,7 @@ public class UserService implements UserDetailsService {
                 .email(registerUserRequest.getEmail())
                 .password(passwordEncoder.encode(registerUserRequest.getPassword()))
                 .userRole(UserRole.USER)
-                .isActive(true)
+                .active(true)
                 .accountId(accountId)
                 .createdOn(now)
                 .updatedOn(now)

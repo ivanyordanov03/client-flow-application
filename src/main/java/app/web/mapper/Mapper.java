@@ -35,7 +35,7 @@ public class Mapper {
     public static LocalDate getDateFromStringIsoFormat(String dateString) {
 
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             return LocalDate.parse(dateString, formatter);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Invalid date format. Expected format: M/d/yyyy, got: " + dateString, e);

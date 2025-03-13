@@ -48,13 +48,13 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9h8M8 13h8M4 5h16v14H4V5Z"></path>
                             </svg>
                         </a>
-                        <a href="/tasks">
+                        <a href="/taskmanager">
                             <p>Tasks</p>
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5h10M9 9h10M9 13h10M5 5h2M5 9h2M5 13h2"></path>
                             </svg>
                         </a>
-                        <a href="/team">
+                        <a href="/users">
                             <p>Team</p>
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-7 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm14 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-7 7a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5"></path>
@@ -92,9 +92,9 @@
 
         <div class="dashboard-widgets">
             <div class="widget">
-                <h2>Customers</h2>
+                <h2>Clients</h2>
                 <p>Total: <span th:text="${customerCount != null ? customerCount : '0'}"></span></p>
-                <a href="/customers" class="btn">View Customers</a>
+                <a href="/customers" class="btn">View Clients</a>
             </div>
             <div class="widget">
                 <h2>Invoices</h2>
@@ -104,7 +104,7 @@
             <div class="widget">
                 <h2>Tasks</h2>
                 <p>Due Today: <span th:text="${tasksDueToday != null ? tasksDueToday : '0'}"></span></p>
-                <a href="/tasks" class="btn">View Tasks</a>
+                <a href="/taskmanager" class="btn">View Tasks</a>
             </div>
         </div>
     </div>

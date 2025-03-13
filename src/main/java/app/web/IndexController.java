@@ -26,6 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class IndexController {
 
     private static final String LOGIN_ERROR_MESSAGE = "Incorrect username or password.";
+    private static final String THYMELEAF_ERROR_MESSAGE = "Thymeleaf status: 999 error: \"None\"";
 
     private final PlanService planService;
     private final UserService userService;
@@ -47,11 +48,11 @@ public class IndexController {
         return "index";
     }
 
-    @GetMapping("/error") //Thymeleaf status: 999 error: "None"
+    @GetMapping("/error") //
     public ModelAndView getErrorPage() {
 
         ModelAndView modelAndView = new ModelAndView("login");
-        modelAndView.addObject("errorMessage", LOGIN_ERROR_MESSAGE);
+        modelAndView.addObject("errorMessage", THYMELEAF_ERROR_MESSAGE);
 
         return modelAndView;
     }
@@ -71,11 +72,16 @@ public class IndexController {
     public ModelAndView getDashboardPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
 
         User user = userService.getById(authenticationMetadata.getUserId());
-        Account account = accountService.getByOwnerId(user.getId());
+        Account account = accountService.getId(user.getAccountId());
 
         if (!account.isActive()) {
 
-            return new ModelAndView("redirect:/payments");
+            if (user.getUserRole().toString().equals("PRIMARY_ADMIN")) {
+                return new ModelAndView("redirect:/payments");
+            } else {
+                return new ModelAndView("login");
+            }
+
         }
 
         ModelAndView modelAndView = new ModelAndView("dashboard");

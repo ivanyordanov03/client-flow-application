@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New User - ClientFlow</title>
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/new-user.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <a th:href="@{'/dashboard'}">
+            <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+        </a>
+    </div>
+</header>
+
+<main class="container form-container">
+    <div class="content form-content">
+        <h1>Create New User</h1>
+        <form th:action="@{/users}" th:method="POST" th:object="${registerUserRequest}">
+            <div class="form-group-row">
+                <div class="form-group">
+                    <label for="firstName">First Name<span class="required">*</span></label>
+                    <input type="text" id="firstName" th:field="*{firstName}" required>
+                    <div th:errors="*{firstName}" class="alert-warning"></div>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name<span class="required">*</span></label>
+                    <input type="text" id="lastName" th:field="*{lastName}" required>
+                    <div th:errors="*{lastName}" class="alert-warning"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address<span class="required">*</span></label>
+                <input type="email" id="email" th:field="*{email}" required>
+                <div th:errors="*{email}" class="alert-warning"></div>
+            </div>
+            <div class="form-group password-group">
+                <label for="password">Password<span class="required">*</span></label>
+                <div class="password-input-container">
+                    <input type="password" id="password" th:field="*{password}" required>
+                    <button type="button" id="togglePassword" class="password-toggle">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div th:errors="*{password}" class="alert-warning"></div>
+            </div>
+            <div class="form-controls">
+                <button type="submit" class="btn btn-secondary">Create User</button>
+                <a th:href="@{/users}" class="btn">Cancel</a>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer>
+    <p>© 2025 ClientFlow. All rights reserved.</p>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="/js/scripts.js"></script>
+</body>
+</html>

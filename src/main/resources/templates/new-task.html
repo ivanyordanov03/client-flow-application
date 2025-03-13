@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Task - ClientFlow</title>
+    <title>New Task - ClientFlow</title>
     <link rel="stylesheet" href="/css/common.css">
-    <link rel="stylesheet" href="/css/nav-side-bar.css">
     <link rel="stylesheet" href="/css/new-task.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -18,120 +17,59 @@
         </a>
     </div>
 </header>
-
-<main class="add-task-container">
-    <div class="nav-bar">
-        <div class="side-bar-container">
-            <nav>
-                <div class="side_navbar">
-                    <div class="func-block">
-                        <a href="/dashboard">
-                            <p>Dashboard</p>
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"></path>
-                            </svg>
-                        </a>
-                        <a href="/customers">
-                            <p>Customers</p>
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm-7 7a7 7 0 0 1 14 0"></path>
-                            </svg>
-                        </a>
-                        <a href="/invoices">
-                            <p>Invoices</p>
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h14v14H5V5Zm2 2h10M7 10h10M7 13h10M7 16h10"></path>
-                            </svg>
-                        </a>
-                        <a href="/quotes">
-                            <p>Quotes</p>
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9h8M8 13h8M4 5h16v14H4V5Z"></path>
-                            </svg>
-                        </a>
-                        <a href="/tasks">
-                            <p>Tasks</p>
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5h10M9 9h10M9 13h10M5 5h2M5 9h2M5 13h2"></path>
-                            </svg>
-                        </a>
-                        <a href="/team">
-                            <p>Team</p>
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-7 7a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm14 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-7 7a5 5 0 0 1 5-5h2a5 5 0 0 1 5 5"></path>
-                            </svg>
-                        </a>
-                        <a href="/account">
-                            <p>Account</p>
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-3 0-6 1.5-6 4v2h12v-2c0-2.5-3-4-6-4Z"></path>
-                            </svg>
-                        </a>
-                        <a href="/notifications">
-                            <p>Notifications</p>
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m0 12v3m-7-7H4m16 0h-1M6 6l1.5 1.5m10 10L19 19"></path>
-                            </svg>
-                        </a>
-                    </div>
-                    <div class="func-block">
-                        <a class="logout" href="/logout">
-                            <p>Log Out</p>
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2"></path>
-                            </svg>
-                        </a>
-                    </div>
+<main class="container new-task-container">
+    <div class="content new-task-content">
+        <h1>Create New Task</h1>
+        <form th:action="@{/tasks}" th:method="POST" th:object="${taskRequest}">
+            <div class="form-group">
+                <label for="name">Task Name<span class="required">*</span></label>
+                <input type="text" id="name" th:field="*{name}" required>
+                <div th:errors="*{name}" class="alert-warning"></div>
+            </div>
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" th:field="*{description}" rows="4"></textarea>
+                <div th:errors="*{description}" class="alert-warning"></div>
+            </div>
+            <div class="form-group narrow-select">
+                <label for="assignedTo">Assigned To<span class="required">*</span></label>
+                <select id="assignedTo" th:field="*{assignedTo}" required>
+                    <option value="">Select one</option>
+                    <option th:each="user : ${accountUsers}"
+                            th:value="${user.id}"
+                            th:text="${user.firstName} + ' ' + ${user.lastName.charAt(0)} + '.'"></option>
+                </select>
+                <div th:errors="*{assignedTo}" class="alert-warning"></div>
+            </div>
+            <div class="form-group narrow-select">
+                <label for="dueDate">Due Date<span class="required">*</span></label>
+                <div class="date-input-container">
+                    <input type="text" id="dueDate" th:field="*{dueDate}" th:value="${defaultDueDate}" class="datepicker" required>
+                    <span class="calendar-icon"><i class="fas fa-calendar-alt"></i></span>
                 </div>
-            </nav>
-        </div>
-    </div>
-
-    <div class="add-task-content">
-        <div class="modal-content">
-            <span class="close-btn">×</span>
-            <h2>Add task</h2>
-            <form th:action="@{/tasks}" th:method="POST" th:object="${taskRequest}">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <div class="form-group">
-                    <label for="taskName">Task name</label>
-                    <input type="text" id="taskName" name="name" th:field="*{name}" required>
-                </div>
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" name="description" th:field="*{description}" rows="4"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="assignTo">Assign to</label>
-                    <select id="assignTo" name="assignedTo" th:field="*{assignedTo}" required>
-                        <option value="">Select one</option>
-                        <option th:each="accountUser : ${accountUsers}" th:value="${accountUser.id}" th:text="${accountUser.firstName} + ' ' + ${accountUser.lastName}"></option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="priority">Priority</label>
-                    <select id="priority" name="priority" th:field="*{priority}">
-                        <option value="">Select one</option>
-                        <option th:each="priority : ${T(app.task.model.TaskPriority).values()}" th:value="${priority}" th:text="${#strings.capitalize(#strings.toLowerCase(priority))}"></option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="dueDate">Due date</label>
-                    <input type="text" id="dueDate" name="dueDate" th:field="*{dueDate}" th:value="${defaultDueDate}" class="datepicker" required>
-                </div>
-                <div class="form-group">
-                    <button type="submit" class="btn btn-secondary save-task">Save task</button>
-                </div>
-            </form>
-        </div>
+                <div th:errors="*{dueDate}" class="alert-warning"></div>
+            </div>
+            <div class="form-group narrow-select">
+                <label for="priority">Priority</label>
+                <select id="priority" th:field="*{priority}">
+                    <option value="">Select one</option>
+                    <option th:each="priority : ${T(app.task.model.TaskPriority).values()}"
+                            th:value="${priority}"
+                            th:text="${#strings.capitalize(#strings.toLowerCase(priority))}"></option>
+                </select>
+            </div>
+            <div class="form-controls">
+                <button type="submit" class="btn btn-secondary">Create Task</button>
+                <a th:href="@{/tasks}" class="btn">Cancel</a>
+            </div>
+        </form>
     </div>
 </main>
-
 <footer>
     <p>© 2025 ClientFlow. All rights reserved.</p>
 </footer>
 
-<script src="/js/scripts.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="/js/scripts.js"></script>
 </body>
 </html>

@@ -35,7 +35,7 @@ public class User {
     private UserRole userRole;
 
     @Column(nullable = false)
-    private boolean isActive = true;
+    private boolean active = true;
 
     @Column(nullable = false)
     private UUID accountId;

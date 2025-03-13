@@ -75,12 +75,63 @@ document.addEventListener('DOMContentLoaded', function () {
     const dueDateInput = document.getElementById('dueDate');
     if (dueDateInput) {
         flatpickr("#dueDate", {
-            dateFormat: "m/d/Y",
+            dateFormat: "Y-m-d",
             altInput: true,
-            altFormat:"Y-m-d",
-            defaultDate: dueDateInput.value,
+            altFormat: "m/d/Y",
+            defaultDate: dueDateInput.value || "today",
             minDate: "today",
             allowInput: false,
         });
     }
+
+    // Dropdown menu functionality
+    const dropdownIcons = document.querySelectorAll('.dropdown-icon');
+    const taskDropdowns = document.querySelectorAll('.task-dropdown');
+
+    dropdownIcons.forEach((icon, index) => {
+        const dropdown = taskDropdowns[index];
+        icon.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            // Get the position of the arrow
+            const rect = icon.getBoundingClientRect();
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+            // Position the dropdown with its top-left corner at the arrow's bottom-left
+            dropdown.style.left = `${rect.left}px`;
+            dropdown.style.top = `${rect.bottom + scrollTop}px`;
+
+            dropdown.classList.toggle('active');
+
+            // Close other dropdowns if open
+            taskDropdowns.forEach((otherDropdown, otherIndex) => {
+                if (otherDropdown !== dropdown && otherDropdown.classList.contains('active')) {
+                    otherDropdown.classList.remove('active');
+                }
+            });
+        });
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function (event) {
+        taskDropdowns.forEach(dropdown => {
+            if (!dropdown.contains(event.target) && !event.target.classList.contains('dropdown-icon')) {
+                dropdown.classList.remove('active');
+            }
+        });
+    });
+
+    // Delete functionality (placeholder)
+    const deleteLinks = document.querySelectorAll('.delete-link');
+    deleteLinks.forEach(link => {
+        link.addEventListener('click', function (event) {
+            event.preventDefault();
+            const taskId = this.getAttribute('data-task-id');
+            if (confirm(`Are you sure you want to delete task with ID ${taskId}?`)) {
+                console.log(`Delete task with ID: ${taskId}`);
+                this.closest('tr').remove();
+            }
+        });
+    });
 });

@@ -19,7 +19,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 @Controller
-@RequestMapping("/tasks")
+@RequestMapping("/taskmanager")
 public class TaskController {
 
     private final TaskService taskService;
@@ -35,12 +35,15 @@ public class TaskController {
     public ModelAndView getTasksPage(@AuthenticationPrincipal AuthenticationMetadata data) {
 
         User user = userService.getById(data.getUserId());
+        String userFirstAndLastName = user.getFirstName() + " " + user.getLastName();
+
         ModelAndView modelAndView = new ModelAndView("tasks");
         modelAndView.addObject("user", user);
-        modelAndView.addObject("userTasks", taskService.getAllByAccountIdAndAssignedTo(user.getAccountId(), user.getId()));
+        modelAndView.addObject("userTasks", taskService.getAllByAccountIdAndAssignedToIdOrCreatedById(user.getAccountId(), user.getId(), user.getId()));
         modelAndView.addObject("accountTasks", taskService.getAllByAccountId(user.getAccountId()));
+        modelAndView.addObject("userFirstAndLastName", userFirstAndLastName);
 
-        return modelAndView;
+        return modelAndView; // display all, connect all buttons from the menu above and create all filters for them
     }
 
     @GetMapping("/new-task")
@@ -61,14 +64,14 @@ public class TaskController {
                                            @AuthenticationPrincipal AuthenticationMetadata data,
                                            BindingResult bindingResult) {
 
+        User user = userService.getById(data.getUserId());
         ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("user", user);
 
         if (bindingResult.hasErrors()) {
 
-            User user = userService.getById(data.getUserId());
-            modelAndView.addObject("user", user);
-            modelAndView.addObject("accountUsers", userService.getAllByAccountId(user.getAccountId()));
             modelAndView.addObject("defaultDueDate", LocalDate.now().format(DateTimeFormatter.ofPattern("M/d/yyyy")));
+            modelAndView.addObject("accountUsers", userService.getAllByAccountId(user.getAccountId()));
             modelAndView.setViewName("new-task");
             return modelAndView; // add error messages in the html
         }
@@ -76,6 +79,16 @@ public class TaskController {
         taskService.createNew(taskRequest, data.getUserId());
 
         modelAndView.setViewName("redirect:/tasks");
+        return modelAndView;
+    }
+
+    @GetMapping("/my-tasks")
+    public ModelAndView getMyTasksPage(@AuthenticationPrincipal AuthenticationMetadata data) {
+
+        User user = userService.getById(data.getUserId());
+        ModelAndView modelAndView = new ModelAndView("tasks");
+        modelAndView.addObject("user", user);
+
         return modelAndView;
     }
 }

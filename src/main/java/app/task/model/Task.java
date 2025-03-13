@@ -28,6 +28,7 @@ public class Task {
     @Column(nullable = false)
     private LocalDate dueDate;
 
+    @Enumerated(EnumType.STRING)
     private TaskPriority priority;
 
     @Column(nullable = false)
@@ -37,7 +38,13 @@ public class Task {
     private UUID assignedToId;
 
     @Column(nullable = false)
+    private String assignedToName;
+
+    @Column(nullable = false)
     private UUID createdById;
+
+    @Column(nullable = false)
+    private String createdByName;
 
     @Column(nullable = false)
     private boolean completed = false;
