@@ -22,7 +22,7 @@ public class TaskService {
     private final UserService userService;
 
     @Autowired
-    public TaskService(TaskRepository taskRepository, UserService userService) {
+    public TaskService(TaskRepository taskRepository, UserService userService) { // more tasks filters as well as action buttons
 
         this.taskRepository = taskRepository;
         this.userService = userService;
@@ -52,8 +52,8 @@ public class TaskService {
                 .accountId(user.getAccountId())
                 .assignedToId(UUID.fromString(taskRequest.getAssignedTo()))
                 .createdById(userId)
-                .assignedToName(assignee.getFirstName() + " " + assignee.getLastName().charAt(0) + ".")
-                .createdByName(user.getFirstName() + " " + user.getLastName().charAt(0) + ".")
+                .assignedToName(assignee.getFirstName() + " " + assignee.getLastName())
+                .createdByName(user.getFirstName() + " " + user.getLastName())
                 .createdOn(now)
                 .updatedOn(now)
                 .build();

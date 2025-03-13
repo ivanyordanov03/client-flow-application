@@ -1,6 +1,7 @@
 package app.web;
 
 import app.security.AuthenticationMetadata;
+import app.task.model.Task;
 import app.task.service.TaskService;
 import app.user.model.User;
 import app.user.service.UserService;
@@ -17,9 +18,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Controller
-@RequestMapping("/taskmanager")
+@RequestMapping("/tasks")
 public class TaskController {
 
     private final TaskService taskService;
@@ -86,7 +88,10 @@ public class TaskController {
     public ModelAndView getMyTasksPage(@AuthenticationPrincipal AuthenticationMetadata data) {
 
         User user = userService.getById(data.getUserId());
+        List<Task> userTasks = taskService.getAllByAccountIdAndAssignedToIdOrCreatedById(user.getAccountId(), user.getId(), user.getId());
+
         ModelAndView modelAndView = new ModelAndView("tasks");
+        modelAndView.addObject("userTasks", userTasks);
         modelAndView.addObject("user", user);
 
         return modelAndView;

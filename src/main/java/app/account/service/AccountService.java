@@ -32,9 +32,9 @@ public class AccountService {
     private final PaymentMethodService paymentMethodService;
 
     @Autowired
-    public AccountService(AccountRepository accountRepository,
-                          PlanService planService,
-                          PaymentMethodService paymentMethodService) {
+    public AccountService(AccountRepository accountRepository,          // create account page visible only to Primary admin with upgrade button
+                          PlanService planService,                      // check if owner can add team members account limits
+                          PaymentMethodService paymentMethodService) {  // upgrade account page
 
         this.accountRepository = accountRepository;
         this.planService = planService;

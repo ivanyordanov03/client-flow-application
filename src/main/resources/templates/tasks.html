@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tasks - ClientFlow</title>
+    <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/nav-side-bar.css">
     <link rel="stylesheet" href="/css/tasks.css">
@@ -48,7 +49,7 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9h8M8 13h8M4 5h16v14H4V5Z"></path>
                             </svg>
                         </a>
-                        <a href="/taskmanager" class="active">
+                        <a href="/tasks" class="active">
                             <p>Tasks</p>
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5h10M9 9h10M9 13h10M5 5h2M5 9h2M5 13h2"></path>
@@ -99,7 +100,7 @@
             </div>
             <a th:href="@{/tasks/new-task}" class="btn btn-secondary add-action add-task">+ Add task</a>
         </div>
-        <button class="btn filter-toggle">Filters</button>
+<!--        <button class="btn filter-toggle">Filters</button>-->
         <div class="task-table">
             <table class="table">
                 <thead>
@@ -132,7 +133,7 @@
                             <span class="dropdown-icon">▼</span>
                         </div>
                         <div class="task-dropdown">
-                            <a th:href="@{'/tasks/edit/' + ${task.id}}" class="edit-link">Edit</a>
+                            <a th:href="@{'/tasks/' + ${task.id}}" class="edit-link">Edit</a>
                             <a href="#" class="delete-link" th:attr="data-task-id=${task.id}">Delete</a>
                         </div>
                     </td>
@@ -146,13 +147,15 @@
                             </svg>
                         </button>
                     </td>
-                    <td th:text="${#strings.capitalize(#strings.toLowerCase(task.priority.name()))}"></td>
+                    <td th:text="${task.priority == null} ? '---' : ${#strings.capitalize(#strings.toLowerCase(task.priority.name()))}"></td>
                     <td th:text="${task.createdByName == userFirstAndLastName} ? 'Me' : ${task.createdByName}"></td>
                     <td th:text="${task.assignedToName== userFirstAndLastName} ? 'Me' : ${task.assignedToName}">Me</td>
                     <td th:text="${#temporals.format(task.dueDate, 'M/d/yyyy')}">03/07/2025</td>
                     <td>
                         <div class="action-container">
-                            <button class="btn btn-secondary btn-small">Mark complete</button>
+                            <form th:action="@{'/tasks/' + ${task.id} + '/completed'}" th:method="PUT">
+                                <button class="btn btn-secondary btn-small">Mark complete</button>
+                            </form>
                             <span class="dropdown-icon">▼</span>
                         </div>
                         <div class="task-dropdown">
