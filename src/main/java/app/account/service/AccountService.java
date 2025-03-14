@@ -26,6 +26,7 @@ public class AccountService {
     private static final String ACCOUNT_WITH_ID_ACTIVATED = "Account with id [%s] has been activated.";
     private static final String ACCOUNT_WITH_ID_DOES_NOT_EXIST = "Account with id [%s] does not exist.";
     private static final String NO_ACCOUNT_ASSOCIATED_WITH_USER_WITH_ID = "There is no account associated with user with id [%s].";
+    private static final String ACCOUNT_WITH_ID_NOT_FOUND = "Account with id [%s] was not found.";
 
     private final AccountRepository accountRepository;
     private final PlanService planService;
@@ -99,6 +100,16 @@ public class AccountService {
         Optional<Account> optional = accountRepository.findByOwnerId(ownerId);
         if (optional.isEmpty()) {
             throw new IllegalArgumentException(NO_ACCOUNT_ASSOCIATED_WITH_USER_WITH_ID.formatted(ownerId));
+        }
+
+        return optional.get();
+    }
+
+    public Account getById(UUID id) {
+
+        Optional<Account> optional = accountRepository.findById(id);
+        if (optional.isEmpty()) {
+            throw new IllegalArgumentException(ACCOUNT_WITH_ID_NOT_FOUND.formatted(id));
         }
 
         return optional.get();

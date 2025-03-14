@@ -10,10 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
@@ -34,18 +31,18 @@ public class TaskController {
     }
 
     @GetMapping
-    public ModelAndView getTasksPage(@AuthenticationPrincipal AuthenticationMetadata data) {
+    public ModelAndView getTasksPage(@AuthenticationPrincipal AuthenticationMetadata data, @RequestParam(value = "filter", required = false)String filter) {
 
         User user = userService.getById(data.getUserId());
         String userFirstAndLastName = user.getFirstName() + " " + user.getLastName();
 
         ModelAndView modelAndView = new ModelAndView("tasks");
         modelAndView.addObject("user", user);
-        modelAndView.addObject("userTasks", taskService.getAllByAccountIdAndAssignedToIdOrCreatedById(user.getAccountId(), user.getId(), user.getId()));
-        modelAndView.addObject("accountTasks", taskService.getAllByAccountId(user.getAccountId()));
+        modelAndView.addObject("userRoleTasks", taskService.getAllForUserRoleByAccountUserAndFilter(user.getAccountId(), user.getId(), filter));
+        modelAndView.addObject("accountTasks", taskService.getAllByAccountIdAndFilter(user.getAccountId(), user.getId(), filter));
         modelAndView.addObject("userFirstAndLastName", userFirstAndLastName);
 
-        return modelAndView; // display all, connect all buttons from the menu above and create all filters for them
+        return modelAndView;
     }
 
     @GetMapping("/new-task")

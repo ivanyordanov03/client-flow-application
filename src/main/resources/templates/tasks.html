@@ -91,12 +91,12 @@
         <h1>Tasks</h1>
         <div class="task-controls">
             <div class="task-filters">
-                <button class="btn filter-btn active">All open tasks</button>
-                <button th:unless="${user.userRole.name() == 'USER'}" class="btn filter-btn">My tasks</button>
-                <button class="btn filter-btn">Due today</button>
-                <button class="btn filter-btn">Overdue</button>
-                <button class="btn filter-btn">Upcoming</button>
-                <button class="btn filter-btn">Completed</button>
+                <a th:href="@{/tasks(filter='my-tasks')}" th:class="${param.filter == 'my-tasks' || (user.userRole.name() == 'USER' and #strings.isEmpty(param.filter))} ? 'btn filter-btn active' : 'btn filter-btn'">My tasks</a>
+                <a th:href="@{/tasks(filter='due-today')}" th:class="${param.filter == 'due-today'} ? 'btn filter-btn active' : 'btn filter-btn'">Due today</a>
+                <a th:href="@{/tasks(filter='overdue')}" th:class="${param.filter == 'overdue'} ? 'btn filter-btn active' : 'btn filter-btn'">Overdue</a>
+                <a th:href="@{/tasks(filter='upcoming')}" th:class="${param.filter == 'upcoming'} ? 'btn filter-btn active' : 'btn filter-btn'">Upcoming</a>
+                <a th:href="@{/tasks(filter='completed')}" th:class="${param.filter == 'completed'} ? 'btn filter-btn active' : 'btn filter-btn'">Completed</a>
+                <a th:unless="${user.userRole.name() == 'USER'}" th:href="@{/tasks}" th:class="${param.filter == 'all-open' || (not user.userRole.name() == 'USER' and #strings.isEmpty(param.filter))} ? 'btn filter-btn active' : 'btn filter-btn'">All open tasks</a>
             </div>
             <a th:href="@{/tasks/new-task}" class="btn btn-secondary add-action add-task">+ Add task</a>
         </div>
@@ -123,7 +123,7 @@
                             </svg>
                         </button>
                     </td>
-                    <td th:text="${#strings.capitalize(#strings.toLowerCase(task.priority.name()))}"></td>
+                    <td th:text="${task.priority == null} ? '---' : ${#strings.capitalize(#strings.toLowerCase(task.priority.name()))}"></td>
                     <td th:text="${task.createdByName == userFirstAndLastName} ? 'Me' : ${task.createdByName}"></td>
                     <td th:text="${task.assignedToName== userFirstAndLastName} ? 'Me' : ${task.assignedToName}">Me</td>
                     <td th:text="${#temporals.format(task.dueDate, 'M/d/yyyy')}">03/07/2025</td>
@@ -134,7 +134,9 @@
                         </div>
                         <div class="task-dropdown">
                             <a th:href="@{'/tasks/' + ${task.id}}" class="edit-link">Edit</a>
-                            <a href="#" class="delete-link" th:attr="data-task-id=${task.id}">Delete</a>
+                            <form th:action="@{'/tasks/' + ${task.id}}" th:method="DELETE">
+                                <button class="delete-link">Delete</button>
+                            </form>
                         </div>
                     </td>
                 </tr>

@@ -37,7 +37,7 @@ public class UserController {
     public ModelAndView getTeamPage(@AuthenticationPrincipal AuthenticationMetadata data) {
 
         User user = userService.getById(data.getUserId());
-        Account account = accountService.getByOwnerId(user.getId());
+        Account account = accountService.getById(user.getAccountId());
         List<User> users = userService.getAllByAccountId(account.getId());
 
         ModelAndView modelAndView = new ModelAndView("users");

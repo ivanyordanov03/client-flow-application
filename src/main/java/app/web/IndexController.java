@@ -52,7 +52,7 @@ public class IndexController {
     public ModelAndView getErrorPage() {
 
         ModelAndView modelAndView = new ModelAndView("login");
-        modelAndView.addObject("errorMessage", THYMELEAF_ERROR_MESSAGE);
+        modelAndView.addObject("errorMessage", THYMELEAF_ERROR_MESSAGE); //
 
         return modelAndView;
     }

@@ -38,7 +38,7 @@ public class Mapper {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             return LocalDate.parse(dateString, formatter);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Invalid date format. Expected format: M/d/yyyy, got: " + dateString, e);
+            throw new IllegalArgumentException("Invalid date format. Expected format: yyyy-MM-dd, got: " + dateString, e);
         }
     }
 }
