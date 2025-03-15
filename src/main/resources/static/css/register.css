@@ -1,24 +1,11 @@
+
 .register-form p,
 .plan-details p {
-    font-size: 1em;
-    color: #667;
-    margin-bottom: 1.5em;
+    margin-bottom: 0;
 }
 
 .plan-details strong {
     color: #333;
-}
-
-.plan-details > p:first-child {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.green-checkmark {
-    color: #4BBF89;
-    font-weight: bold;
-    margin-right: 0.5em;
 }
 
 #checkmarks {
@@ -32,7 +19,6 @@
     font-size: 0.9em;
     color: #667;
     text-align: center;
-    margin-top: auto;
     padding-top: 1.5em;
     border-top: 1px solid #eee;
 }

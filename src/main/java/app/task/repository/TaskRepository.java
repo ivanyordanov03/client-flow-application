@@ -13,21 +13,25 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
 
     List<Task> findAllByAccountId(UUID accountId);
 
-    List<Task> findAllByAccountIdAndCompleted(UUID accountId, boolean b);
+    List<Task> findAllByAccountIdAndCompletedIsTrueOrderByCompletedOnDesc(UUID accountId);
 
-    List<Task> findAllByAccountIdAndCompletedAndDueDate(UUID accountId, boolean b, LocalDate now);
+    List<Task> findAllByAccountIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(UUID accountId);
 
-    List<Task> findAllByAccountIdAndCompletedAndDueDateBefore(UUID accountId, boolean b, LocalDate now);
+    List<Task> findAllByAccountIdAndDueDateAfterAndCompletedIsFalseOrderByDueDateAscPriorityDesc(UUID accountId, LocalDate now);
 
-    List<Task> findAllByAccountIdAndCompletedAndDueDateAfter(UUID accountId, boolean b, LocalDate now);
+    List<Task> findAllByAccountIdAndDueDateBeforeAndCompletedIsFalseOrderByPriorityDescDueDateAsc(UUID accountId, LocalDate now);
 
-    List<Task> findAllByAccountIdAndAssignedToIdOrCreatedById(UUID accountId, UUID assignedToId, UUID createdById);
+    List<Task> findAllByAccountIdAndDueDateAndCompletedIsFalseOrderByPriorityDesc(UUID accountId, LocalDate dueDate);
 
-    List<Task> findAllByAccountIdAndCompletedAndCreatedByIdOrAssignedToId(UUID accountId, boolean completed, UUID createdById, UUID assignedToId);
+    List<Task> findAllByAssignedToIdAndCompletedIsTrueOrderByCompletedOnDesc(UUID assignedToId);
 
-    List<Task> findAllByAccountIdAndCompletedAndDueDateAfterAndCreatedByIdOrAssignedToId(UUID accountId, boolean completed, LocalDate now, UUID userId, UUID userId1);
+    List<Task> findAllByCreatedByIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(UUID createdById);
 
-    List<Task> findAllByAccountIdAndCompletedAndDueDateAndCreatedByIdOrAssignedToId(UUID accountId, boolean completed, LocalDate dueDate, UUID createdById, UUID assignedToId);
+    List<Task> findAllByAssignedToIdAndDueDateAndCompletedIsFalseOrderByPriorityDesc(UUID assignedToId, LocalDate now);
 
-    List<Task> findAllByAccountIdAndCompletedAndDueDateBeforeAndCreatedByIdOrAssignedToId(UUID accountId, boolean completed, LocalDate dueDateBefore, UUID createdById, UUID assignedToId);
+    List<Task> findAllByAssignedToIdAndDueDateAfterAndCompletedIsFalseOrderByDueDateAscPriorityDesc(UUID assignedToId, LocalDate now);
+
+    List<Task> findAllByAssignedToIdAndDueDateBeforeAndCompletedIsFalseOrderByPriorityDescDueDateAsc(UUID assignedToId, LocalDate now);
+
+    List<Task> findAllByAssignedToIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(UUID assignedToId);
 }

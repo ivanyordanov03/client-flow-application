@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,19 +31,19 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M5 7h14M5 12h14M5 17h14"></path>
                             </svg>
                         </a>
-                        <a href="/customers">
+                        <a href="/dashboard">
                             <p>Customers</p>
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm-7 7a7 7 0 0 1 14 0"></path>
                             </svg>
                         </a>
-                        <a href="/invoices">
+                        <a href="/dashboard">
                             <p>Invoices</p>
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5h14v14H5V5Zm2 2h10M7 10h10M7 13h10M7 16h10"></path>
                             </svg>
                         </a>
-                        <a href="/quotes">
+                        <a href="/dashboard">
                             <p>Quotes</p>
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9h8M8 13h8M4 5h16v14H4V5Z"></path>
@@ -67,7 +67,7 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm0 2c-3 0-6 1.5-6 4v2h12v-2c0-2.5-3-4-6-4Z"></path>
                             </svg>
                         </a>
-                        <a href="/notifications">
+                        <a href="/dashboard">
                             <p>Notifications</p>
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m0 12v3m-7-7H4m16 0h-1M6 6l1.5 1.5m10 10L19 19"></path>
@@ -91,30 +91,32 @@
         <h1>Tasks</h1>
         <div class="task-controls">
             <div class="task-filters">
-                <a th:href="@{/tasks(filter='my-tasks')}" th:class="${param.filter == 'my-tasks' || (user.userRole.name() == 'USER' and #strings.isEmpty(param.filter))} ? 'btn filter-btn active' : 'btn filter-btn'">My tasks</a>
-                <a th:href="@{/tasks(filter='due-today')}" th:class="${param.filter == 'due-today'} ? 'btn filter-btn active' : 'btn filter-btn'">Due today</a>
-                <a th:href="@{/tasks(filter='overdue')}" th:class="${param.filter == 'overdue'} ? 'btn filter-btn active' : 'btn filter-btn'">Overdue</a>
-                <a th:href="@{/tasks(filter='upcoming')}" th:class="${param.filter == 'upcoming'} ? 'btn filter-btn active' : 'btn filter-btn'">Upcoming</a>
-                <a th:href="@{/tasks(filter='completed')}" th:class="${param.filter == 'completed'} ? 'btn filter-btn active' : 'btn filter-btn'">Completed</a>
-                <a th:unless="${user.userRole.name() == 'USER'}" th:href="@{/tasks}" th:class="${param.filter == 'all-open' || (not user.userRole.name() == 'USER' and #strings.isEmpty(param.filter))} ? 'btn filter-btn active' : 'btn filter-btn'">All open tasks</a>
+                <a th:href="@{/tasks(filter='my-tasks')}" th:class="${#strings.equals(filter, 'my-tasks')} ? 'btn filter-btn active' : 'btn filter-btn'">My tasks</a>
+                <a th:href="@{/tasks(filter='tasks-created')}" th:class="${#strings.equals(filter, 'tasks-created')} ? 'btn filter-btn active' : 'btn filter-btn'">Tasks created</a>
+                <a th:href="@{/tasks(filter='due-today')}" th:class="${#strings.equals(filter, 'due-today')} ? 'btn filter-btn active' : 'btn filter-btn'">Due today</a>
+                <a th:href="@{/tasks(filter='overdue')}" th:class="${#strings.equals(filter, 'overdue')} ? 'btn filter-btn active' : 'btn filter-btn'">Overdue</a>
+                <a th:href="@{/tasks(filter='upcoming')}" th:class="${#strings.equals(filter, 'upcoming')} ? 'btn filter-btn active' : 'btn filter-btn'">Upcoming</a>
+                <a th:href="@{/tasks(filter='completed')}" th:class="${#strings.equals(filter, 'completed')} ? 'btn filter-btn active' : 'btn filter-btn'">Completed</a>
+                <a th:unless="${user.userRole.name() == 'USER'}" th:href="@{/tasks(filter='all-open')}" th:class="${#strings.equals(filter, 'all-open')} ? 'btn filter-btn active' : 'btn filter-btn'">All open tasks</a>
             </div>
             <a th:href="@{/tasks/new-task}" class="btn btn-secondary add-action add-task">+ Add task</a>
         </div>
-<!--        <button class="btn filter-toggle">Filters</button>-->
         <div class="task-table">
             <table class="table">
                 <thead>
                 <tr>
                     <th>Task name</th>
-                    <th>Priority <span class="sort-icon">↑</span></th>
+                    <th>Priority </th> <!-- TODO <span class="sort-icon">↑</span>-->
                     <th>Created by</th>
                     <th>Assigned to</th>
-                    <th>Due date <span class="sort-icon">↑</span></th>
+                    <th th:unless="${filter == 'completed'}">Due date</th> <!-- TODO <span class="sort-icon">↑</span>-->
+                    <th th:if="${filter == 'completed'}">Completed On</th>
                     <th>Actions</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:unless="${user.userRole.name() == 'USER'}" th:each="task : ${accountTasks}">
+                <tr th:unless="${user.userRole.name() == 'USER'}" th:each="task : ${accountTasks}"
+                    th:class="${task.dueDate.isBefore(#temporals.createToday()) and not task.completed} ? 'overdue-task'">
                     <td>
                         <span th:text="${task.name}"></span>
                         <button class="description-btn" th:attr="data-description=${task.description}">
@@ -124,23 +126,28 @@
                         </button>
                     </td>
                     <td th:text="${task.priority == null} ? '---' : ${#strings.capitalize(#strings.toLowerCase(task.priority.name()))}"></td>
-                    <td th:text="${task.createdByName == userFirstAndLastName} ? 'Me' : ${task.createdByName}"></td>
-                    <td th:text="${task.assignedToName== userFirstAndLastName} ? 'Me' : ${task.assignedToName}">Me</td>
-                    <td th:text="${#temporals.format(task.dueDate, 'M/d/yyyy')}">03/07/2025</td>
+                    <td th:text="${task.createdByName == userFirstNameAndLastNameInitial} ? 'Me' : ${task.createdByName}"></td>
+                    <td th:text="${task.assignedToName == userFirstNameAndLastNameInitial} ? 'Me' : ${task.assignedToName}"></td>
+                    <td th:text="${filter == 'completed'} ? ${#temporals.format(task.completedOn, 'M/d/yyyy')} : ${#temporals.format(task.dueDate, 'M/d/yyyy')}"
+                        th:class="${task.dueDate.isBefore(#temporals.createToday()) and not task.completed} ? 'overdue-date'"></td>
                     <td>
                         <div class="action-container">
-                            <button class="btn btn-secondary btn-small">Mark complete</button>
+                            <form th:action="@{'/tasks/' + ${task.id} + '/completed'}" th:method="PUT" th:unless="${task.completed || task.assignedToId != user.id}">
+                                <button class="btn btn-secondary btn-small">Mark complete</button>
+                            </form>
+                            <span th:if="${task.completed}" class="green-checkmark">✔</span>
                             <span class="dropdown-icon">▼</span>
                         </div>
                         <div class="task-dropdown">
                             <a th:href="@{'/tasks/' + ${task.id}}" class="edit-link">Edit</a>
-                            <form th:action="@{'/tasks/' + ${task.id}}" th:method="DELETE">
-                                <button class="delete-link">Delete</button>
+                            <form class="delete-link" th:action="@{'/tasks/' + ${task.id}}" th:method="DELETE">
+                                <button >Delete</button>
                             </form>
                         </div>
                     </td>
                 </tr>
-                <tr th:if="${user.userRole.name() == 'USER'}" th:each="task : ${userTasks}">
+                <tr th:if="${user.userRole.name() == 'USER'}" th:each="task : ${userRoleTasks}"
+                    th:class="${(task.dueDate.isBefore(#temporals.createToday()) and not task.completed)} ? 'overdue-task'">
                     <td>
                         <span th:text="${task.name}"></span>
                         <button class="description-btn" th:attr="data-description=${task.description}">
@@ -150,14 +157,16 @@
                         </button>
                     </td>
                     <td th:text="${task.priority == null} ? '---' : ${#strings.capitalize(#strings.toLowerCase(task.priority.name()))}"></td>
-                    <td th:text="${task.createdByName == userFirstAndLastName} ? 'Me' : ${task.createdByName}"></td>
-                    <td th:text="${task.assignedToName== userFirstAndLastName} ? 'Me' : ${task.assignedToName}">Me</td>
-                    <td th:text="${#temporals.format(task.dueDate, 'M/d/yyyy')}">03/07/2025</td>
+                    <td th:text="${task.createdByName == userFirstNameAndLastNameInitial} ? 'Me' : ${task.createdByName}"></td>
+                    <td th:text="${task.assignedToName == userFirstNameAndLastNameInitial} ? 'Me' : ${task.assignedToName}"></td>
+                    <td th:text="${filter == 'completed'} ? ${#temporals.format(task.completedOn, 'M/d/yyyy')} : ${#temporals.format(task.dueDate, 'M/d/yyyy')}"
+                        th:class="${task.dueDate.isBefore(#temporals.createToday()) and not task.completed} ? 'overdue-date'"></td>
                     <td>
                         <div class="action-container">
-                            <form th:action="@{'/tasks/' + ${task.id} + '/completed'}" th:method="PUT">
+                            <form th:action="@{'/tasks/' + ${task.id} + '/completed'}" th:method="PUT" th:unless="${task.completed}">
                                 <button class="btn btn-secondary btn-small">Mark complete</button>
                             </form>
+                            <span th:if="${task.completed}" class="green-checkmark">✔</span>
                             <span class="dropdown-icon">▼</span>
                         </div>
                         <div class="task-dropdown">
@@ -166,7 +175,7 @@
                         </div>
                     </td>
                 </tr>
-                <tr th:if="${#lists.isEmpty(accountTasks)}" class="empty-state">
+                <tr th:if="${#lists.isEmpty(allAccountTasks)}" class="empty-state">
                     <td colspan="6">
                         <div class="empty-message">
                             <svg width="3rem" height="3rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

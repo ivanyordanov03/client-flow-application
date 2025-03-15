@@ -1,7 +1,10 @@
 .tasks-container {
+    width: 1300px;
 }
 
 .tasks-content {
+    display: block;
+    width: 100%;
 }
 
 .task-controls {
@@ -59,13 +62,14 @@
 }
 
 .task-table table {
+    width: 100%;
 }
 
-/* Removed positioning from td:last-child since we'll handle it with the container */
 .action-container {
-    display: inline-flex;
+    display: flex;
+    justify-content: flex-end;
     align-items: center;
-    position: relative; /* Positioning context for the dropdown */
+    position: relative;
 }
 
 .description-btn {
@@ -88,12 +92,13 @@
 .dropdown-icon {
     margin-left: 0.5rem;
     cursor: pointer;
+    font-size: 0.875rem;
 }
 
-/* Adjusted dropdown styles */
 .task-dropdown {
     display: none;
     position: absolute;
+    right: 0;
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 0.3rem;
@@ -101,21 +106,24 @@
     z-index: 10;
     min-width: 100px;
     padding: 0.5rem 0;
-    /* Removed right: 0 and top: 100% to handle dynamically */
 }
 
 .task-dropdown.active {
     display: block;
+    width: 5rem;
 }
 
-.task-dropdown a {
+.task-dropdown a,
+.delete-link {
     display: block;
     padding: 0.25rem 1rem;
     color: #333;
     text-decoration: none;
     font-size: 0.875rem;
+    cursor: pointer;
 }
 
+.delete-link:hover,
 .task-dropdown a:hover {
     background-color: #f0f0f0;
 }

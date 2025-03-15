@@ -67,7 +67,7 @@
 .func-block a:hover,
 .func-block a.active {
     background: radial-gradient(circle at 90% top, #4BBF89 0%, #45B07F 20%, #328361 60%, #1A4739 100%);
-    color: white;
+    color: white !important;
     font-size: 0.875rem;
     font-weight: 300;
     transition: background 0.9s ease-in-out;

@@ -20,6 +20,7 @@ import java.util.UUID;
 public class TaskService {
 
     private static final String INVALID_TASK_FILTER_TYPE = "Invalid value [%s] for task filter.";
+    private static final String USER_FIRST_NAME_LAST_NAME_INITIAL = "%s %s.";
 
     private final TaskRepository taskRepository;
     private final UserService userService;
@@ -55,8 +56,8 @@ public class TaskService {
                 .accountId(user.getAccountId())
                 .assignedToId(UUID.fromString(taskRequest.getAssignedTo()))
                 .createdById(userId)
-                .assignedToName(assignee.getFirstName() + " " + assignee.getLastName())
-                .createdByName(user.getFirstName() + " " + user.getLastName())
+                .assignedToName(USER_FIRST_NAME_LAST_NAME_INITIAL.formatted(assignee.getFirstName(), assignee.getLastName().charAt(0)))
+                .createdByName(USER_FIRST_NAME_LAST_NAME_INITIAL.formatted(user.getFirstName(), user.getLastName().charAt(0)))
                 .createdOn(now)
                 .updatedOn(now)
                 .build();
@@ -67,31 +68,29 @@ public class TaskService {
         return taskRepository.findAllByAccountId(accountId);
     }
 
-    public List<Task> getAllByAccountIdAndAssignedToIdOrCreatedById(UUID accountId, UUID assignedToId, UUID createdById) {
-
-        return taskRepository.findAllByAccountIdAndAssignedToIdOrCreatedById(accountId, assignedToId, createdById);
-    }
-
-    public List<Task> getAllForUserRoleByAccountUserAndFilter(UUID accountId, UUID userId, String filter) {
+    public List<Task> getAllForUserRoleUserByAccountIdUserIdAndFilter(UUID userId, String filter) {
 
         return switch (filter) {
-            case "may-tasks" -> taskRepository.findAllByAccountIdAndAssignedToIdOrCreatedById(accountId, userId, userId);
-            case "due-today" -> taskRepository.findAllByAccountIdAndCompletedAndDueDateAndCreatedByIdOrAssignedToId(accountId, false, LocalDate.now(), userId, userId);
-            case "overdue" -> taskRepository.findAllByAccountIdAndCompletedAndDueDateBeforeAndCreatedByIdOrAssignedToId(accountId, false, LocalDate.now(), userId, userId);
-            case "upcoming" -> taskRepository.findAllByAccountIdAndCompletedAndDueDateAfterAndCreatedByIdOrAssignedToId(accountId, false, LocalDate.now(), userId, userId);
-            case "completed" -> taskRepository.findAllByAccountIdAndCompletedAndCreatedByIdOrAssignedToId(accountId, true, userId, userId);
+            case "my-tasks" -> taskRepository.findAllByAssignedToIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(userId);
+            case "tasks-created" -> taskRepository.findAllByCreatedByIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(userId);
+            case "due-today" -> taskRepository.findAllByAssignedToIdAndDueDateAndCompletedIsFalseOrderByPriorityDesc(userId, LocalDate.now());
+            case "overdue" -> taskRepository.findAllByAssignedToIdAndDueDateBeforeAndCompletedIsFalseOrderByPriorityDescDueDateAsc(userId, LocalDate.now());
+            case "upcoming" -> taskRepository.findAllByAssignedToIdAndDueDateAfterAndCompletedIsFalseOrderByDueDateAscPriorityDesc(userId, LocalDate.now());
+            case "completed" -> taskRepository.findAllByAssignedToIdAndCompletedIsTrueOrderByCompletedOnDesc(userId);
             default -> throw new IllegalStateException(INVALID_TASK_FILTER_TYPE.formatted(filter));
         };
     }
 
-    public List<Task> getAllByAccountIdAndFilter(UUID accountId, UUID userId, String filter) {
+    public List<Task> getAllByAccountIdUserIdAndFilter(UUID accountId, UUID userId, String filter) {
 
         return switch (filter) {
-            case "may-tasks" -> taskRepository.findAllByAccountIdAndAssignedToIdOrCreatedById(accountId, userId, userId);
-            case "due-today" -> taskRepository.findAllByAccountIdAndCompletedAndDueDate(accountId, false, LocalDate.now());
-            case "overdue" -> taskRepository.findAllByAccountIdAndCompletedAndDueDateBefore(accountId, false, LocalDate.now());
-            case "upcoming" -> taskRepository.findAllByAccountIdAndCompletedAndDueDateAfter(accountId, false, LocalDate.now());
-            case "completed" -> taskRepository.findAllByAccountIdAndCompleted(accountId, true);
+            case "all-open" -> taskRepository.findAllByAccountIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(accountId);
+            case "my-tasks" -> taskRepository.findAllByAssignedToIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(userId);
+            case "tasks-created" -> taskRepository.findAllByCreatedByIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(userId);
+            case "due-today" -> taskRepository.findAllByAccountIdAndDueDateAndCompletedIsFalseOrderByPriorityDesc(accountId, LocalDate.now());
+            case "overdue" -> taskRepository.findAllByAccountIdAndDueDateBeforeAndCompletedIsFalseOrderByPriorityDescDueDateAsc(accountId, LocalDate.now());
+            case "upcoming" -> taskRepository.findAllByAccountIdAndDueDateAfterAndCompletedIsFalseOrderByDueDateAscPriorityDesc(accountId, LocalDate.now());
+            case "completed" -> taskRepository.findAllByAccountIdAndCompletedIsTrueOrderByCompletedOnDesc(accountId);
             default -> throw new IllegalStateException(INVALID_TASK_FILTER_TYPE.formatted(filter));
         };
     }

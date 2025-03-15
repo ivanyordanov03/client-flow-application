@@ -34,13 +34,23 @@ public class TaskController {
     public ModelAndView getTasksPage(@AuthenticationPrincipal AuthenticationMetadata data, @RequestParam(value = "filter", required = false)String filter) {
 
         User user = userService.getById(data.getUserId());
-        String userFirstAndLastName = user.getFirstName() + " " + user.getLastName();
+        String userFirstNameAndLastNameInitial = ("%s %s.".formatted(user.getFirstName(), user.getLastName().charAt(0)));
+
+        if (filter == null) {
+            filter = user.getUserRole().name().equals("USER") ? "my-tasks" : "all-open";
+        }
 
         ModelAndView modelAndView = new ModelAndView("tasks");
+        if(user.getUserRole().name().equals("USER")) {
+            modelAndView.addObject("userRoleTasks", taskService.getAllForUserRoleUserByAccountIdUserIdAndFilter(user.getId(), filter));
+        } else {
+            modelAndView.addObject("accountTasks", taskService.getAllByAccountIdUserIdAndFilter(user.getAccountId(), user.getId(), filter));
+        }
+
         modelAndView.addObject("user", user);
-        modelAndView.addObject("userRoleTasks", taskService.getAllForUserRoleByAccountUserAndFilter(user.getAccountId(), user.getId(), filter));
-        modelAndView.addObject("accountTasks", taskService.getAllByAccountIdAndFilter(user.getAccountId(), user.getId(), filter));
-        modelAndView.addObject("userFirstAndLastName", userFirstAndLastName);
+        modelAndView.addObject("filter", filter);
+        modelAndView.addObject("userFirstNameAndLastNameInitial", userFirstNameAndLastNameInitial);
+        modelAndView.addObject("allAccountTasks", taskService.getAllByAccountId(user.getAccountId()));
 
         return modelAndView;
     }
@@ -78,19 +88,6 @@ public class TaskController {
         taskService.createNew(taskRequest, data.getUserId());
 
         modelAndView.setViewName("redirect:/tasks");
-        return modelAndView;
-    }
-
-    @GetMapping("/my-tasks")
-    public ModelAndView getMyTasksPage(@AuthenticationPrincipal AuthenticationMetadata data) {
-
-        User user = userService.getById(data.getUserId());
-        List<Task> userTasks = taskService.getAllByAccountIdAndAssignedToIdOrCreatedById(user.getAccountId(), user.getId(), user.getId());
-
-        ModelAndView modelAndView = new ModelAndView("tasks");
-        modelAndView.addObject("userTasks", userTasks);
-        modelAndView.addObject("user", user);
-
         return modelAndView;
     }
 }

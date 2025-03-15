@@ -1,7 +1,10 @@
 .users-container {
+    width: 1300px;
 }
 
 .users-content {
+    display: block;
+    width: 100%;
 }
 
 .users-controls {

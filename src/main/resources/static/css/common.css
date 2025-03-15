@@ -8,8 +8,6 @@
 
 body {
     font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
     background-color: #F5F5F5;
     color: #333;
     line-height: 1.6;
@@ -22,35 +20,18 @@ body {
 h1, h2 {
     font-size: 2rem;
     color: #4BBF89;
-    margin-top: 0;
     margin-bottom: 1rem;
 }
 
 header {
     text-align: center;
     padding: 1.25em;
-    background: radial-gradient(
-            circle at 90% top,
-            #4BBF89 0%,
-            #45B07F 10%,
-            #3EA175 20%,
-            #38926B 30%,
-            #328361 40%,
-            #2C7457 50%,
-            #26654D 60%,
-            #205643 70%,
-            #1A4739 80%,
-            #14382F 90%,
-            #0E2925 100%
-    );
+    background: radial-gradient(circle at 90% top, #4BBF89 0%, #0E2925 100%);
     color: white;
     position: relative;
 }
 
 .logo-container {
-    background-color: transparent;
-    padding: 0;
-    border-radius: 0.625em;
     display: inline-block;
 }
 
@@ -71,7 +52,6 @@ footer {
 
 .container {
     display: flex;
-    flex-direction: row;
     gap: 1rem;
     padding: 2rem;
     max-width: 1500px;
@@ -82,20 +62,7 @@ footer {
     flex: 1;
 }
 
-.form-container {
-    display: block;
-    min-width: 600px;
-}
-
-.form-content {
-    max-width: 600px;
-    margin: 0 auto;
-    width: 100%;
-    padding: 2rem;
-}
-
-.content {
-    flex: 3;
+.form-container, .content {
     padding: 1rem;
 }
 
@@ -105,8 +72,7 @@ footer {
     font-size: 0.875rem;
 }
 
-.table th,
-.table td {
+.table th, .table td {
     padding: 1rem 1.5rem;
     text-align: left;
     border-bottom: 1px solid #eee;
@@ -130,11 +96,11 @@ footer {
     background-color: #4BBF89;
     color: #0E2925;
     padding: 0.75em 1.5em;
-    border-radius: 0.3em;
+    border-radius: 0.3rem;
     text-decoration: none;
     font-size: 1em;
     font-weight: 500;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: all 0.3s ease;
     display: inline-block;
     cursor: pointer;
     border: none;
@@ -146,8 +112,8 @@ footer {
 }
 
 .btn-small {
-    padding: 0.25rem 0.75rem;
-    font-size: 0.875rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
 }
 
 .btn-small:hover {
@@ -176,6 +142,32 @@ footer {
 .btn-secondary.add-action:hover {
     background-color: #2C8475;
     color: white;
+}
+
+p {
+    font-size: 1em;
+    color: #667;
+    margin-bottom: 1.5em;
+}
+
+.plan-details > p:first-child {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.green-checkmark {
+    color: #4BBF89;
+    font-weight: bold;
+    margin-right: 0.5em;
+}
+
+.overdue-task {
+    background-color: #fff3cd;
+}
+
+.overdue-date {
+    color: #e74c3c !important;
 }
 
 .empty-state {
@@ -209,10 +201,9 @@ footer {
     width: 100%;
     padding: 0.75em;
     border: 1px solid #ccc;
-    border-radius: 0.3em;
+    border-radius: 0.3rem;
     font-size: 1em;
     transition: border-color 0.3s ease;
-    box-sizing: border-box;
 }
 
 .form-group input:focus,
@@ -327,7 +318,6 @@ footer {
     }
 
     .nav-bar {
-        flex: 1;
         width: 100%;
     }
 

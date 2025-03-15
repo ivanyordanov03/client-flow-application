@@ -1,23 +1,9 @@
 .payment-container p {
-    font-size: 1em;
-    color: #667;
-    margin-bottom: 1.5em;
+    margin-bottom: 0;
 }
 
 .plan-details strong {
     color: #333;
-}
-
-.plan-details > p:first-child {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.green-checkmark {
-    color: #4BBF89;
-    font-weight: bold;
-    margin-right: 0.5em;
 }
 
 #checkmarks {
@@ -28,28 +14,20 @@
 }
 
 .payment-form .checkbox-group {
-    display: flex;
-    align-items: flex-start;
     padding: 0;
     margin: 0;
-    gap: 0;
 }
 
 .payment-form .checkbox-group input[type="checkbox"] {
-    padding: 0;
     width: 1em;
     height: 1em;
     margin: 0 0.5em 0 0;
-    position: relative;
-    left: 0;
     vertical-align: bottom;
 }
 
 .payment-form .checkbox-group label {
     line-height: 1em;
     margin-bottom: 0;
-    position: relative;
-    top: 0;
 }
 
 .payment-form .form-group input,
