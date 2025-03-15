@@ -1,7 +1,6 @@
 package app.web;
 
 import app.security.AuthenticationMetadata;
-import app.task.model.Task;
 import app.task.service.TaskService;
 import app.user.model.User;
 import app.user.service.UserService;
@@ -15,7 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 @Controller
 @RequestMapping("/tasks")
