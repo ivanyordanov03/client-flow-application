@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
         descriptionButtons.forEach(button => {
             button.addEventListener('click', function () {
                 modalDescription.textContent = this.getAttribute('data-description') || 'No description available.';
-                descriptionModal.style.display = 'block';
+                descriptionModal.style.display = 'flex';
             });
         });
 
@@ -86,52 +86,69 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Dropdown menu functionality
     const dropdownIcons = document.querySelectorAll('.dropdown-icon');
-    const taskDropdowns = document.querySelectorAll('.task-dropdown');
-
-    dropdownIcons.forEach((icon, index) => {
-        const dropdown = taskDropdowns[index];
+    dropdownIcons.forEach(icon => {
         icon.addEventListener('click', function (event) {
             event.preventDefault();
             event.stopPropagation();
-
-            // Get the position of the arrow
-            const rect = icon.getBoundingClientRect();
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-
-            // Position the dropdown with its top-left corner at the arrow's bottom-left
-            dropdown.style.left = `${rect.left}px`;
-            dropdown.style.top = `${rect.bottom + scrollTop}px`;
-
-            dropdown.classList.toggle('active');
-
-            // Close other dropdowns if open
-            taskDropdowns.forEach((otherDropdown, otherIndex) => {
-                if (otherDropdown !== dropdown && otherDropdown.classList.contains('active')) {
-                    otherDropdown.classList.remove('active');
+            const dropdown = this.parentElement.nextElementSibling;
+            if (dropdown && dropdown.classList.contains('action-dropdown')) {
+                const isVisible = dropdown.classList.contains('active');
+                document.querySelectorAll('.action-dropdown').forEach(d => d.classList.remove('active'));
+                if (!isVisible) {
+                    dropdown.classList.add('active');
+                    const iconRect = icon.getBoundingClientRect();
+                    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                    dropdown.style.left = `${iconRect.left}px`;
+                    dropdown.style.top = `${iconRect.bottom + scrollTop}px`;
                 }
-            });
+            }
         });
     });
 
-    // Close dropdown when clicking outside
+    // Close dropdowns when clicking outside
     document.addEventListener('click', function (event) {
-        taskDropdowns.forEach(dropdown => {
+        const dropdowns = document.querySelectorAll('.action-dropdown');
+        dropdowns.forEach(dropdown => {
             if (!dropdown.contains(event.target) && !event.target.classList.contains('dropdown-icon')) {
                 dropdown.classList.remove('active');
             }
         });
     });
 
-    // Delete functionality (placeholder)
-    const deleteLinks = document.querySelectorAll('.delete-link');
-    deleteLinks.forEach(link => {
+    // Action functionality (delete and archive) with custom modal
+    const actionLinks = document.querySelectorAll('.delete-link, .archive-link');
+    const modal = document.getElementById('action-confirm-modal');
+    const title = document.getElementById('action-title');
+    const message = document.getElementById('action-message');
+    const form = document.getElementById('action-form');
+    const methodInput = document.getElementById('action-method');
+    const cancelBtn = document.getElementById('cancel-action');
+
+    actionLinks.forEach(link => {
         link.addEventListener('click', function (event) {
             event.preventDefault();
-            const taskId = this.getAttribute('data-task-id');
-            if (confirm(`Are you sure you want to delete task with ID ${taskId}?`)) {
-                console.log(`Delete task with ID: ${taskId}`);
-                this.closest('tr').remove();
-            }
+            const name = this.getAttribute('data-name');
+            const id = this.getAttribute('data-id');
+            const entityType = this.getAttribute('data-entity');
+            const filterValue = this.getAttribute('data-filter');
+            const isArchive = this.classList.contains('archive-link');
+
+            title.textContent = isArchive ? 'Confirm Archiving' : 'Confirm Deletion';
+            message.textContent = `Are you sure you would like to ${isArchive ? 'archive' : 'permanently delete'} the ${entityType} "${name}"?`;
+            form.action = `/${entityType}s/${id}${isArchive ? '/archive' : ''}?filter=${filterValue}`;
+            methodInput.value = isArchive ? 'PUT' : 'DELETE';
+
+            modal.style.display = 'flex';
         });
+    });
+
+    cancelBtn.addEventListener('click', function () {
+        modal.style.display = 'none';
+    });
+
+    window.addEventListener('click', function (event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
     });
 });

@@ -6,7 +6,8 @@ import app.security.AuthenticationMetadata;
 import app.user.model.User;
 import app.user.model.UserRole;
 import app.user.repository.UserRepository;
-import app.web.dto.RegisterUserRequest;
+import app.web.dto.UserRequest;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -30,6 +31,9 @@ public class UserService implements UserDetailsService {
     private static final String EMAIL_ALREADY_IN_USE = "Email address [%s] is already in use.";
     private static final String USER_WITH_ID_NOT_FOUND = "User with id [%s] not found";
     private static final String USER_WITH_EMAIL_DOES_NOT_EXIST = "User with email [%s] does not exist.";
+    private static final String DEFAULT_FILTER = "current";
+    private static final String USER_ROLE_USER = "USER";
+
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -46,7 +50,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void registerAccountOwner(RegisterUserRequest registerUserRequest) {
+    public void registerAccountOwner(UserRequest registerUserRequest) {
 
         Account account = accountService.createNew(registerUserRequest);
 
@@ -57,7 +61,7 @@ public class UserService implements UserDetailsService {
         log.info(CREATED_NEW_ACCOUNT_FOR_USER_ID.formatted(account.getId(), account.getOwnerId()));
     }
 
-    public User register(RegisterUserRequest registerUserRequest, UUID accountId) {
+    public User register(UserRequest registerUserRequest, UUID accountId) {
 
         Optional<User> optionUser = userRepository.findByEmail(registerUserRequest.getEmail());
         if (optionUser.isPresent()) {
@@ -72,7 +76,7 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    private User initiateNewUser(RegisterUserRequest registerUserRequest, UUID accountId) {
+    private User initiateNewUser(UserRequest registerUserRequest, UUID accountId) {
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -94,9 +98,13 @@ public class UserService implements UserDetailsService {
         return userRepository.findById(userId).orElseThrow(() -> new NullPointerException(USER_WITH_ID_NOT_FOUND.formatted(userId)));
     }
 
-    public List<User> getAllByAccountId(UUID accountId) {
+    public List<User> getAllByAccountIdAndFilterOrdered(UUID accountId, String filter, String userRole) {
 
-        return userRepository.findAllByAccountId(accountId);
+        if (userRole.equals(USER_ROLE_USER) || filter.equals(DEFAULT_FILTER)) {
+            return userRepository.findAllByAccountIdAndArchivedIsFalseOrderByUserRoleAscFirstNameAscLastNameAsc(accountId);
+        } else {
+            return userRepository.findAllByAccountIdAndArchivedIsTrueOrderByUserRoleAscFirstNameAscLastNameAsc(accountId);
+        }
     }
 
     @Override
@@ -105,5 +113,13 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(USER_WITH_EMAIL_DOES_NOT_EXIST.formatted(email)));
 
         return new AuthenticationMetadata(user.getId(), user.getEmail(), user.getPassword(), user.getUserRole(), user.isActive());
+    }
+
+    public List<User> getAllByAccountIdNotArchivedOrdered(UUID accountId) {
+
+        return userRepository.findAllByAccountIdAndArchivedIsFalseOrderByUserRoleAscFirstNameAscLastNameAsc(accountId);
+    }
+
+    public void edit(UUID id, UserRequest userRequest, UUID id1) {
     }
 }

@@ -13,5 +13,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByEmail(String email);
 
-    List<User> findAllByAccountId(UUID accountId);
+    List<User> findAllByAccountIdAndArchivedIsFalseOrderByUserRoleAscFirstNameAscLastNameAsc(UUID accountId);
+
+    List<User> findAllByAccountIdAndArchivedIsTrueOrderByUserRoleAscFirstNameAscLastNameAsc(UUID accountId);
 }

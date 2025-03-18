@@ -5,16 +5,14 @@ import app.account.service.AccountService;
 import app.security.AuthenticationMetadata;
 import app.user.model.User;
 import app.user.service.UserService;
-import app.web.dto.RegisterUserRequest;
+import app.web.dto.UserRequest;
+import app.web.mapper.Mapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
@@ -34,33 +32,35 @@ public class UserController {
     }
 
     @GetMapping
-    public ModelAndView getTeamPage(@AuthenticationPrincipal AuthenticationMetadata data) {
+    public ModelAndView getTeamPage(@RequestParam(value = "filter", required = false) String filter,
+                                    @AuthenticationPrincipal AuthenticationMetadata data) {
+
+        if (filter == null) {
+            filter = "current";
+        }
 
         User user = userService.getById(data.getUserId());
-        Account account = accountService.getById(user.getAccountId());
-        List<User> users = userService.getAllByAccountId(account.getId());
+        List<User> users = userService.getAllByAccountIdAndFilterOrdered(user.getAccountId(), filter, user.getUserRole().toString());
 
         ModelAndView modelAndView = new ModelAndView("users");
         modelAndView.addObject("user", user);
         modelAndView.addObject("users", users);
+        modelAndView.addObject("filter", filter);
 
         return modelAndView;
     }
 
     @GetMapping("/new-user")
-    public ModelAndView getNewUserPage(@AuthenticationPrincipal AuthenticationMetadata data) {
-
-        User user = userService.getById(data.getUserId());
+    public ModelAndView getNewUserPage() {
 
         ModelAndView modelAndView = new ModelAndView("new-user");
-        modelAndView.addObject("registerUserRequest", new RegisterUserRequest());
-        modelAndView.addObject("user", user);
+        modelAndView.addObject("userRequest", new UserRequest());
 
         return modelAndView;
     }
 
     @PostMapping
-    public ModelAndView processNewUserRequest(@Valid @ModelAttribute("registerUserRequest") RegisterUserRequest registerUserRequest,
+    public ModelAndView processNewUserRequest(@Valid @ModelAttribute("userRequest") UserRequest userRequest,
                                               @AuthenticationPrincipal AuthenticationMetadata data,
                                               BindingResult bindingResult) {
 
@@ -73,8 +73,39 @@ public class UserController {
         }
 
         UUID accountId = user.getAccountId();
-        userService.register(registerUserRequest, accountId);
+        userService.register(userRequest, accountId);
 
         return new ModelAndView("redirect:/users");
+    }
+
+    @GetMapping("/{id}")
+    public ModelAndView getEditUserPage(@PathVariable UUID id) {
+
+        User user = userService.getById(id);
+
+        ModelAndView modelAndView = new ModelAndView("new-user");
+        modelAndView.addObject("userId", id);
+        modelAndView.addObject("userRequest", Mapper.mapUserToUserRequest(user));
+
+        return modelAndView;
+    }
+
+    @PutMapping("/{id}")
+    public ModelAndView processEditUserRequest(@PathVariable("id") UUID id,
+                                               @RequestParam("filter") String filter,
+                                               @Valid UserRequest userRequest,
+                                               @AuthenticationPrincipal AuthenticationMetadata data,
+                                               BindingResult bindingResult) {
+
+        User loggedUser = userService.getById(data.getUserId());
+        ModelAndView modelAndView = new ModelAndView();
+        if (bindingResult.hasErrors()) {
+            modelAndView.setViewName("new-user");
+            modelAndView.addObject("filter", filter);
+            modelAndView.addObject("userRequest", userRequest);
+        }
+
+        userService.edit(id, userRequest, loggedUser.getId());
+        return modelAndView;
     }
 }

@@ -1,37 +1,19 @@
-.new-task-container {
-    min-width: 600px;
+.form-group textarea {
+    height: 100px;
+    resize: vertical;
 }
 
-.form-group textarea {
-    width: 100%;
-    height: 100px;
+.form-group.narrow-select {
+    width: 50%;
 }
 
 .form-group.narrow-select select,
 .form-group.narrow-select .date-input-container {
-    width: 50%;
-}
-
-.form-group select {
-    padding: 0.5rem;
-    margin: 0;
-}
-
-.date-input-container {
-    position: relative;
-    display: inline-block;
-}
-
-.date-input-container input {
-    padding-right: 2.5em;
     width: 100%;
 }
 
-.calendar-icon {
-    position: absolute;
-    right: 0.5em;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #667;
-    pointer-events: none;
+@media (max-width: 600px) {
+    .form-group.narrow-select {
+        width: 100%;
+    }
 }

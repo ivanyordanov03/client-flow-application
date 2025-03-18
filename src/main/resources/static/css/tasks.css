@@ -7,60 +7,6 @@
     width: 100%;
 }
 
-.task-controls {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.task-filters {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-}
-
-.filter-btn {
-    background-color: #e0e0e0;
-    color: #333;
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.3rem;
-    border: none;
-    cursor: pointer;
-    font-size: 0.875rem;
-    transition: background-color 0.3s ease;
-}
-
-.filter-btn.active {
-    background-color: #4BBF89;
-    color: white;
-}
-
-.filter-btn:hover {
-    background-color: #d0d0d0;
-}
-
-.filter-toggle {
-    background-color: #4BBF89;
-    color: white;
-    padding: 0.125rem 0.5rem;
-    border-radius: 0.3rem;
-    border: none;
-    cursor: pointer;
-    font-size: 0.75rem;
-    margin-bottom: 1rem;
-    display: block;
-}
-
-.filter-toggle:hover {
-    background-color: #2C8475;
-}
-
-.add-task {
-    margin-left: auto;
-}
-
 .task-table table {
     width: 100%;
 }
@@ -89,59 +35,20 @@
     transform: scale(1.1);
 }
 
-.dropdown-icon {
-    margin-left: 0.5rem;
-    cursor: pointer;
-    font-size: 0.875rem;
-}
-
-.task-dropdown {
-    display: none;
-    position: absolute;
-    right: 0;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 0.3rem;
-    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
-    z-index: 10;
-    min-width: 100px;
-    padding: 0.5rem 0;
-}
-
-.task-dropdown.active {
-    display: block;
-    width: 5rem;
-}
-
-.task-dropdown a,
-.delete-link {
-    display: block;
-    padding: 0.25rem 1rem;
-    color: #333;
-    text-decoration: none;
-    font-size: 0.875rem;
-    cursor: pointer;
-}
-
-.delete-link:hover,
-.task-dropdown a:hover {
-    background-color: #f0f0f0;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-}
+/*.modal {*/
+/*    display: none;*/
+/*    position: fixed;*/
+/*    top: 0;*/
+/*    left: 0;*/
+/*    width: 100%;*/
+/*    height: 100%;*/
+/*    background-color: rgba(0, 0, 0, 0.5);*/
+/*    z-index: 1000;*/
+/*}*/
 
 .modal-content {
     background-color: white;
-    margin: 10% auto;
+    /*margin: 10% auto;*/
     padding: 1.5rem;
     border-radius: 0.3rem;
     width: 80%;
@@ -153,7 +60,7 @@
 .close-btn {
     position: absolute;
     top: 0.5rem;
-    right: 0.5rem;
+    right: 1rem;
     font-size: 1.5rem;
     cursor: pointer;
     color: #667;

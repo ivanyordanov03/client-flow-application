@@ -63,6 +63,13 @@
 #sign-in {
     text-align: center;
     margin: 2em 0;
+    color: #667;
+}
+
+#sign-in a {
+    color: #4BBF89;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
 
 @media (max-width: 15em) {

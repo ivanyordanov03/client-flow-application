@@ -7,7 +7,7 @@ import app.plan.service.PlanService;
 import app.security.AuthenticationMetadata;
 import app.user.model.User;
 import app.user.service.UserService;
-import app.web.dto.RegisterUserRequest;
+import app.web.dto.UserRequest;
 import app.web.mapper.Mapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,7 +99,7 @@ public class IndexController {
 
         Plan currentPlan = planService.getByType(Mapper.getPlanTypeFromString(planName));
 
-        RegisterUserRequest registerUserRequest = new RegisterUserRequest();
+        UserRequest registerUserRequest = new UserRequest();
         registerUserRequest.setPlanName(planName);
 
         ModelAndView modelAndView = new ModelAndView("register");
@@ -110,7 +110,7 @@ public class IndexController {
     }
 
     @PostMapping("/register")
-    public String processRegisterRequest(@Valid RegisterUserRequest registerUserRequest,
+    public String processRegisterRequest(@Valid UserRequest registerUserRequest,
                                          BindingResult bindingResult,
                                          Model model) {
 

@@ -28,7 +28,7 @@ public class Task {
     @Column(nullable = false)
     private LocalDate dueDate;
 
-    private LocalDate completedOn;
+    private LocalDate dateCompleted;
 
     private TaskPriority priority; // 1 - Low, 2 - Medium, 3 - High, 4 - Urgent
 

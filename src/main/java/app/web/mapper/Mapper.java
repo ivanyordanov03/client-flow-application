@@ -1,7 +1,11 @@
 package app.web.mapper;
 
 import app.plan.model.PlanType;
+import app.task.model.Task;
 import app.task.model.TaskPriority;
+import app.user.model.User;
+import app.web.dto.TaskRequest;
+import app.web.dto.UserRequest;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDate;
@@ -40,5 +44,28 @@ public class Mapper {
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Invalid date format. Expected format: yyyy-MM-dd, got: " + dateString, e);
         }
+    }
+
+    public static TaskRequest mapTaskToTaskRequest(Task task) {
+
+        TaskRequest taskRequest = new TaskRequest();
+        taskRequest.setName(task.getName());
+        taskRequest.setDescription(task.getDescription());
+        taskRequest.setDueDate(task.getDueDate().toString());
+        taskRequest.setPriority(task.getPriority() != null ? task.getPriority().toString() : "");
+        taskRequest.setAssignedTo(task.getAssignedToId().toString());
+
+        return taskRequest;
+    }
+
+    public static UserRequest mapUserToUserRequest(User user) {
+
+        UserRequest userRequest = new UserRequest();
+        userRequest.setFirstName(user.getFirstName());
+        userRequest.setLastName(user.getLastName());
+        userRequest.setEmail(user.getEmail());
+        userRequest.setUserRoleString(user.getUserRole().toString());
+
+        return userRequest;
     }
 }

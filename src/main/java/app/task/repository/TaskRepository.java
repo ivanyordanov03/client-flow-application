@@ -13,7 +13,7 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
 
     List<Task> findAllByAccountId(UUID accountId);
 
-    List<Task> findAllByAccountIdAndCompletedIsTrueOrderByCompletedOnDesc(UUID accountId);
+    List<Task> findAllByAccountIdAndCompletedIsTrueOrderByDateCompletedDesc(UUID accountId);
 
     List<Task> findAllByAccountIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(UUID accountId);
 
@@ -23,7 +23,7 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
 
     List<Task> findAllByAccountIdAndDueDateAndCompletedIsFalseOrderByPriorityDesc(UUID accountId, LocalDate dueDate);
 
-    List<Task> findAllByAssignedToIdAndCompletedIsTrueOrderByCompletedOnDesc(UUID assignedToId);
+    List<Task> findAllByAssignedToIdAndCompletedIsTrueOrderByDateCompletedDesc(UUID assignedToId);
 
     List<Task> findAllByCreatedByIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(UUID createdById);
 

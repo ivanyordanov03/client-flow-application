@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class RegisterUserRequest {
+public class UserRequest {
 
     @NotEmpty
     @Pattern(regexp = "^[A-Za-zÀ-ÿ]+(?:'[A-Za-zÀ-ÿ]+)?(?:[ -][A-Za-zÀ-ÿ]+)?$",
@@ -28,6 +28,11 @@ public class RegisterUserRequest {
     @NotEmpty
     @Size(min = 3, max = 20, message = "Password must be between 3 and 20 characters long")
     private String password;
+
+    @NotEmpty
+    private String userRoleString;
+
+    private String statusString;
 
 //    @Pattern(regexp = "^(?:[2-9]\\d{9})?$", message = "Phone number must be a valid USA format (e.g. 2025550123)")
 //    private String phoneNumber;

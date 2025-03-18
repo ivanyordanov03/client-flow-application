@@ -7,7 +7,7 @@ import app.paymentMethod.service.PaymentMethodService;
 import app.plan.model.Plan;
 import app.plan.service.PlanService;
 import app.web.dto.PaymentRequest;
-import app.web.dto.RegisterUserRequest;
+import app.web.dto.UserRequest;
 import app.web.mapper.Mapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class AccountService {
         this.paymentMethodService = paymentMethodService;
     }
 
-    public Account createNew(RegisterUserRequest registerUserRequest) {
+    public Account createNew(UserRequest registerUserRequest) {
 
         Plan plan = planService.getByType(Mapper.getPlanTypeFromString(registerUserRequest.getPlanName()));
 

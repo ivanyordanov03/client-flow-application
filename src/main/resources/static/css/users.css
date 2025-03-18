@@ -19,6 +19,38 @@
 .users-table table {
 }
 
+.btn-status {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 70px;
+    text-align: center;
+}
+
+.btn-status-active {
+    background-color: #4BBF89;
+    color: #0E2925;
+    border: none;
+}
+
+.btn-status-active:hover {
+    background-color: #0E2925;
+    color: #4BBF89;
+}
+
+.btn-status-inactive {
+    background-color: transparent;
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+}
+
+.btn-status-inactive:hover {
+    background-color: rgba(231, 76, 60, 0.1);
+    color: #e74c3c;
+}
+
 @media (max-width: 768px) {
     .users-controls {
         justify-content: center;
