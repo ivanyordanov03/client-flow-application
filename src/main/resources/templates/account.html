@@ -33,7 +33,7 @@
         </div>
         <div class="entity-filters">
             <a th:href="@{/account/settings}" class="btn filter-btn">Edit Account</a>
-            <a th:href="@{/payment-methods}" class="btn filter-btn">Payment Settings</a>
+            <a th:href="@{/payment-settings}" class="btn filter-btn">Payment Settings</a>
         </div>
     </div>
     <div class="current-plan">
@@ -42,7 +42,7 @@
             <p>Plan Name:<span th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(currentPlan.planName.name(), '_', ' ')))}"></span></p>
             <p>Max Members: <span th:text="${currentPlan.maxUsers}"></span></p>
             <p>Price Per Month: <span th:text="'$' + ${currentPlan.pricePerMonth.toString()}"></span></p>
-            <p th:unless="${account.autoRenewalEnabled}">Expiring: <span th:text="${#temporals.format(account.dateExpiring, 'm/d/yyyy')}"></span></p>
+            <p th:unless="${account.autoRenewalEnabled}">Expiring: <span th:text="${#temporals.format(account.dateExpiring, 'M/d/yyyy')}"></span></p>
             <p>Auto Renewal: <span th:text="${account.autoRenewalEnabled ? 'Enabled' : 'Disabled'}"></span></p>
         </div>
         <p class="upgrade-link">

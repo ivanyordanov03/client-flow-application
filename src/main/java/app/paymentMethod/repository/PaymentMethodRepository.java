@@ -13,4 +13,6 @@ public interface PaymentMethodRepository extends JpaRepository<PaymentMethod, UU
     Optional<PaymentMethod> getByCreditCardNumberAndExpirationDate(String creditCardNumber, String expirationDate);
 
     List<PaymentMethod> findAllByAccountId(UUID accountId);
+
+    List<PaymentMethod> findByAccountIdAndDefaultMethodIsTrue(UUID accountId);
 }

@@ -2,7 +2,7 @@ package app.paymentMethod.service;
 
 import app.paymentMethod.model.PaymentMethod;
 import app.paymentMethod.repository.PaymentMethodRepository;
-import app.web.dto.PaymentRequest;
+import app.web.dto.PaymentSettingsRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,24 +17,31 @@ public class PaymentMethodService {
     private static final String PAYMENT_METHOD_WITH_CARD_NUMBER_EXISTS = "Payment method with card number [%s] already exists";
 
     private final PaymentMethodRepository paymentMethodRepository;
+    private final PaymentMethodDefaultService paymentMethodDefaultService;
 
     @Autowired
-    public PaymentMethodService(PaymentMethodRepository paymentMethodRepository) {
+    public PaymentMethodService(PaymentMethodRepository paymentMethodRepository,
+                                PaymentMethodDefaultService paymentMethodDefaultService) {
 
         this.paymentMethodRepository = paymentMethodRepository;
+        this.paymentMethodDefaultService = paymentMethodDefaultService;
     }
 
-    public void createNew(PaymentRequest paymentRequest, UUID accountId) {
+    public void createNew(PaymentSettingsRequest paymentSettingsRequest, UUID accountId) {
 
-        if (paymentMethodRepository.getByCreditCardNumberAndExpirationDate(paymentRequest.getCardNumber(),
-                paymentRequest.getExpirationDate()).isPresent()) {
-            throw new IllegalArgumentException(PAYMENT_METHOD_WITH_CARD_NUMBER_EXISTS.formatted(paymentRequest.getCardNumber()));
+        if (paymentMethodRepository.getByCreditCardNumberAndExpirationDate(paymentSettingsRequest.getCardNumber(),
+                paymentSettingsRequest.getExpirationDate()).isPresent()) {
+            throw new IllegalArgumentException(PAYMENT_METHOD_WITH_CARD_NUMBER_EXISTS.formatted(paymentSettingsRequest.getCardNumber()));
         }
 
-        PaymentMethod paymentMethod = initiate(paymentRequest, accountId);
+        PaymentMethod paymentMethod = initiate(paymentSettingsRequest, accountId);
 
         if (paymentMethodRepository.findAllByAccountId(accountId).isEmpty()) {
             paymentMethod.setDefaultMethod(true);
+        }
+
+        if (paymentSettingsRequest.isDefaultMethod()) {
+            paymentMethodDefaultService.setAsDefaultMethod(paymentMethod);
         }
 
         paymentMethodRepository.save(paymentMethod);
@@ -42,15 +49,20 @@ public class PaymentMethodService {
 
     }
 
-    private PaymentMethod initiate(PaymentRequest paymentRequest, UUID accountId) {
+    private PaymentMethod initiate(PaymentSettingsRequest paymentSettingsRequest, UUID accountId) {
 
         return PaymentMethod.builder()
-                .creditCardNumber(paymentRequest.getCardNumber())
-                .cardHolderName(paymentRequest.getCardholderName())
-                .expirationDate(paymentRequest.getExpirationDate())
-                .CVV(paymentRequest.getCVV())
+                .creditCardNumber(paymentSettingsRequest.getCardNumber())
+                .cardHolderName(paymentSettingsRequest.getCardholderName())
+                .expirationDate(paymentSettingsRequest.getExpirationDate())
+                .CVV(paymentSettingsRequest.getCvv())
                 .accountId(accountId)
                 .build();
+    }
+
+    public PaymentMethod getById(UUID id) {
+
+        return paymentMethodRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Payment method with id [%s] does not exist".formatted(id)));
     }
 
     public List<PaymentMethod> getAllByAccountId(UUID accountId) {
@@ -60,5 +72,17 @@ public class PaymentMethodService {
     public List<PaymentMethod> getAll() {
 
         return paymentMethodRepository.findAll();
+    }
+
+    public void edit(UUID id, PaymentSettingsRequest paymentSettingsRequest) {
+
+        PaymentMethod paymentMethod = getById(id);
+        paymentMethod.setCardHolderName(paymentSettingsRequest.getCardholderName());
+        paymentMethod.setCreditCardNumber(paymentSettingsRequest.getCardNumber());
+        paymentMethod.setExpirationDate(paymentSettingsRequest.getExpirationDate());
+        paymentMethod.setCVV(paymentSettingsRequest.getCvv());
+        paymentMethod.setDefaultMethod(paymentSettingsRequest.isDefaultMethod());
+
+        paymentMethodRepository.save(paymentMethod);
     }
 }

@@ -1,7 +1,5 @@
 package app.web;
 
-import app.account.model.Account;
-import app.account.service.AccountService;
 import app.security.AuthenticationMetadata;
 import app.user.model.User;
 import app.user.service.UserService;
@@ -23,12 +21,11 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
-    private final AccountService accountService;
 
     @Autowired
-    public UserController(UserService userService, AccountService accountService) {
+    public UserController(UserService userService) {
+
         this.userService = userService;
-        this.accountService = accountService;
     }
 
     @GetMapping

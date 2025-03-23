@@ -1,13 +1,12 @@
 package app.web.mapper;
 
 import app.account.model.Account;
+import app.paymentMethod.model.PaymentMethod;
 import app.plan.model.PlanName;
 import app.task.model.Task;
 import app.task.model.TaskPriority;
 import app.user.model.User;
-import app.web.dto.AccountRequest;
-import app.web.dto.TaskRequest;
-import app.web.dto.UserRequest;
+import app.web.dto.*;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDate;
@@ -80,5 +79,28 @@ public class Mapper {
         accountRequest.setPhoneNumber(account.getPhoneNumber());
 
         return accountRequest;
+    }
+
+    public static PaymentSettingsRequest mapPaymentRequestToPaymentMethodRequest(PaymentRequest paymentRequest) {
+
+        PaymentSettingsRequest paymentSettingsRequest = new PaymentSettingsRequest();
+        paymentSettingsRequest.setCardholderName(paymentRequest.getCardholderName());
+        paymentSettingsRequest.setCardNumber(paymentRequest.getCardNumber());
+        paymentSettingsRequest.setExpirationDate(paymentRequest.getExpirationDate());
+        paymentSettingsRequest.setCvv(paymentRequest.getCvv());
+
+        return paymentSettingsRequest;
+    }
+
+    public static PaymentSettingsRequest mapPaymentMethodToPaymentSettingsRequest(PaymentMethod paymentMethod) {
+
+        PaymentSettingsRequest paymentSettingsRequest = new PaymentSettingsRequest();
+        paymentSettingsRequest.setCardholderName(paymentMethod.getCardHolderName());
+        paymentSettingsRequest.setCardNumber(paymentMethod.getCreditCardNumber());
+        paymentSettingsRequest.setExpirationDate(paymentMethod.getExpirationDate());
+        paymentSettingsRequest.setCvv(paymentMethod.getCVV());
+        paymentSettingsRequest.setDefaultMethod(paymentMethod.isDefaultMethod());
+
+        return paymentSettingsRequest;
     }
 }

@@ -4,12 +4,11 @@ import app.validation.ValidExpirationDate;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.hibernate.validator.constraints.CreditCardNumber;
 
 @Data
-public class PaymentRequest {
+public class PaymentSettingsRequest {
 
-//    @CreditCardNumber - for real credit card validation, commented to make tests easier
+    //    @CreditCardNumber - for real credit card validation, commented to make tests easier
     private String cardNumber;
 
     @Size(min = 5, max = 50, message = "The cardholder's name length must be between 5 and 50 letters.")
@@ -21,10 +20,5 @@ public class PaymentRequest {
     @NotBlank(message = "CVV is required")
     private String cvv;
 
-    @NotBlank
-    private String transactionType;
-
-    private boolean savePaymentMethod;
-
-    private boolean autoRenewal;
+    private boolean defaultMethod;
 }

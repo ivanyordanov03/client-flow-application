@@ -34,5 +34,4 @@ public class PaymentMethod {
 
     @Column(nullable = false)
     private boolean defaultMethod = false;
-
 }

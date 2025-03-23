@@ -6,6 +6,7 @@ import app.payment.model.Payment;
 import app.payment.repository.PaymentRepository;
 import app.paymentMethod.service.PaymentMethodService;
 import app.web.dto.PaymentRequest;
+import app.web.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,7 @@ public class PaymentService {
     public void insert(PaymentRequest paymentRequest, Account account) {
 
         if (paymentRequest.isSavePaymentMethod()) {
-            paymentMethodService.createNew(paymentRequest, account.getId());
+            paymentMethodService.createNew(Mapper.mapPaymentRequestToPaymentMethodRequest(paymentRequest), account.getId());
         }
 
         if (paymentRequest.isAutoRenewal()) {

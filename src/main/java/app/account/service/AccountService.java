@@ -13,6 +13,7 @@ import app.web.mapper.Mapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -64,11 +65,12 @@ public class AccountService {
                 .build();
     }
 
+    @Transactional
     public void allowAutoRenewal(PaymentRequest paymentRequest, Account account) {
 
         List<PaymentMethod> paymentMethods = paymentMethodService.getAllByAccountId(account.getId());
         if (paymentMethods.isEmpty()) {
-            paymentMethodService.createNew(paymentRequest, account.getId());
+            paymentMethodService.createNew(Mapper.mapPaymentRequestToPaymentMethodRequest(paymentRequest), account.getId());
         }
 
         account.setAutoRenewalEnabled(true);
@@ -115,6 +117,14 @@ public class AccountService {
         account.setPhoneNumber(accountRequest.getPhoneNumber());
         account.setDateUpdated(LocalDateTime.now());
 
+        accountRepository.save(account);
+    }
+
+    public void setAutoRenewal(UUID id) {
+
+        Account account = getById(id);
+
+        account.setAutoRenewalEnabled(!account.isAutoRenewalEnabled());
         accountRepository.save(account);
     }
 }

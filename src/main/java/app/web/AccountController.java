@@ -12,10 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/account")
@@ -70,5 +70,13 @@ public class AccountController {
         modelAndView.setViewName("redirect:/account");
 
         return modelAndView;
+    }
+
+    @PutMapping("/{id}/auto-renewal")
+    public String setAutoRenewal (@PathVariable UUID id){
+
+        accountService.setAutoRenewal(id);
+
+        return "redirect:/payment-settings";
     }
 }
