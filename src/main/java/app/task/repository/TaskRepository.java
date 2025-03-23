@@ -34,4 +34,6 @@ public interface TaskRepository extends JpaRepository<Task, UUID> {
     List<Task> findAllByAssignedToIdAndDueDateBeforeAndCompletedIsFalseOrderByPriorityDescDueDateAsc(UUID assignedToId, LocalDate now);
 
     List<Task> findAllByAssignedToIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(UUID assignedToId);
+
+    List<Task> findAllByAssignedToId(UUID assignedToId);
 }

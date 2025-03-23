@@ -17,13 +17,11 @@
     </a>
   </div>
 </header>
-
 <main class="payment-container">
   <div class="payment-form">
     <h1>Payment Information</h1>
     <p>Please enter your credit/debit card details to complete your purchase.</p>
     <p class="alert-warning" th:if="${errorMessage}" th:text="${errorMessage}"></p>
-
     <form th:action="@{/payments}" th:method="POST" th:object="${paymentRequest}">
       <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
       <div class="form-group">
@@ -31,26 +29,22 @@
         <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456" th:field="*{cardNumber}" required>
         <p class="alert-warning" th:if="${#fields.hasErrors('cardNumber')}" th:errors="*{cardNumber}"></p>
       </div>
-
       <div class="form-group">
         <label for="cardHolder">Cardholder Name <span class="required">*</span></label>
         <input type="text" id="cardHolder" name="cardHolder" placeholder="John Doe" th:field="*{cardholderName}" required>
         <p class="alert-warning" th:if="${#fields.hasErrors('cardholderName')}" th:errors="*{cardholderName}"></p>
       </div>
-
       <div class="form-group-row payment-row">
         <div class="form-group expiry-date">
           <label for="expirationDate">Expiry Date <span class="required">*</span></label>
           <input type="text" id="expirationDate" name="expirationDate" placeholder="MM/YY" th:field="*{expirationDate}" required>
           <p class="alert-warning" th:if="${#fields.hasErrors('expirationDate')}" th:errors="*{expirationDate}"></p>
         </div>
-
         <div class="form-group cvv">
           <label for="cvv">CVV <span class="required">*</span></label>
           <input type="text" id="cvv" name="cvv" placeholder="123" th:field="*{CVV}" required>
           <p class="alert-warning" th:if="${#fields.hasErrors('CVV')}" th:errors="*{CVV}"></p>
         </div>
-
         <div class="form-group transaction-type">
           <label for="transactionType">Transaction Type <span class="required">*</span></label>
           <select id="transactionType" name="transactionType" th:field="*{transactionType}" required>
@@ -59,41 +53,45 @@
           </select>
         </div>
       </div>
-
       <div class="form-group">
         <div class="checkbox-group">
-          <input type="checkbox" id="savePaymentMethod" name="savePaymentMethod" th:field="*{savePaymentMethod}">
-          <label for="savePaymentMethod">Save payment method.</label>
+          <label class="custom-checkbox">
+            <input type="checkbox" id="savePaymentMethod" name="savePaymentMethod" th:field="*{savePaymentMethod}" hidden>
+            <div class="checkbox-box"></div>
+            <span>Save payment method.</span>
+          </label>
         </div>
       </div>
-
       <div class="form-group">
         <div class="checkbox-group">
-          <input type="checkbox" id="autoRenewal" name="autoRenewal" th:field="*{autoRenewal}">
-          <label for="autoRenewal">I agree to subscription auto-renewal.</label>
+          <label class="custom-checkbox">
+            <input type="checkbox" id="autoRenewal" name="autoRenewal" th:field="*{autoRenewal}" hidden>
+            <div class="checkbox-box"></div>
+            <span>I agree to subscription auto-renewal.</span>
+          </label>
         </div>
       </div>
-
       <div class="form-group">
         <div class="checkbox-group">
-          <input type="checkbox" id="termsCheckbox" required>
-          <label for="termsCheckbox">I agree to the <a href="/terms" target="_blank">Terms and Conditions</a>.</label>
+          <label class="custom-checkbox">
+            <input type="checkbox" id="termsCheckbox" required hidden>
+            <div class="checkbox-box"></div>
+            <span>I agree to the <a href="/terms" target="_blank">Terms and Conditions</a>.</span>
+          </label>
         </div>
       </div>
-
       <div class="form-group">
         <button type="submit" class="btn" id="submitPayment" disabled>Submit Payment</button>
       </div>
     </form>
   </div>
-
   <div class="purchase-details">
     <h2>Your Plan</h2>
     <div class="plan-details">
       <p>
-        <span th:if="${currentPlan.planType.name()} == 'SIMPLE_START'">Simple Start</span>
-        <span th:if="${currentPlan.planType.name()} == 'ESSENTIALS'">Essentials</span>
-        <span th:if="${currentPlan.planType.name()} == 'PLUS'">Plus</span>
+        <span th:if="${currentPlan.planName.name()} == 'SIMPLE_START'">Simple Start</span>
+        <span th:if="${currentPlan.planName.name()} == 'ESSENTIALS'">Essentials</span>
+        <span th:if="${currentPlan.planName.name()} == 'PLUS'">Plus</span>
         <span th:text="'$' + ${currentPlan.pricePerMonth.toString()} + '/month'"></span>
       </p>
       <p><strong>Total Owed Today:</strong> <span th:text="'$' + ${currentPlan.pricePerMonth.toString()}"></span></p>
@@ -107,7 +105,6 @@
     </div>
   </div>
 </main>
-
 <footer>
   <p>© 2025 ClientFlow. All rights reserved.</p>
 </footer>

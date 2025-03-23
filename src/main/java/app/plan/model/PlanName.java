@@ -1,5 +1,5 @@
 package app.plan.model;
 
-public enum PlanType {
+public enum PlanName {
     SIMPLE_START, ESSENTIALS, PLUS //, ENTERPRISE (25+ - to do)
 }

@@ -13,23 +13,6 @@
     gap: 1em;
 }
 
-.payment-form .checkbox-group {
-    padding: 0;
-    margin: 0;
-}
-
-.payment-form .checkbox-group input[type="checkbox"] {
-    width: 1em;
-    height: 1em;
-    margin: 0 0.5em 0 0;
-    vertical-align: bottom;
-}
-
-.payment-form .checkbox-group label {
-    line-height: 1em;
-    margin-bottom: 0;
-}
-
 .payment-form .form-group input,
 .payment-form .form-group select {
     max-width: 650px;

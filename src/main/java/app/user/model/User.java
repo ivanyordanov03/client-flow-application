@@ -43,8 +43,8 @@ public class User {
     private UUID accountId;
 
     @Column(nullable = false)
-    private LocalDateTime createdOn;
+    private LocalDateTime dateCreated;
 
     @Column(nullable = false)
-    private LocalDateTime updatedOn;
+    private LocalDateTime dateUpdated;
 }

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Settings - ClientFlow</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/nav-side-bar.css">
+    <link rel="stylesheet" href="/css/payment-settings.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <a th:href="@{/dashboard}">
+            <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+        </a>
+    </div>
+</header>
+
+<main class="container payment-settings-container">
+    <div th:replace="~{fragments/nav-side-bar :: navSideBar(activePage='account')}"></div>
+    <div class="content payment-settings-content">
+        <h1>Payment Settings</h1>
+        <div class="entity-controls">
+            <a th:href="@{/payment-settings/add}" class="btn btn-secondary add-action add-entity">+ Add Payment Method</a>
+        </div>
+        <div class="payment-methods-table">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Card Holder Name</th>
+                    <th>Credit Card Number</th>
+                    <th>Expiration Date</th>
+                    <th>Security Code</th>
+                    <th>Default Method</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="paymentMethod : ${paymentMethods}" th:class="${paymentMethod.defaultMethod} ? 'default-payment-method' : ''">
+                    <td th:text="${paymentMethod.cardHolderName}"></td>
+                    <td th:text="'**** **** **** ' + ${#strings.substring(paymentMethod.creditCardNumber, 12)}"></td>
+                    <td th:text="${paymentMethod.expirationDate}"></td>
+                    <td th:text="${paymentMethod.CVV}"></td>
+                    <td>
+                        <form th:action="@{'/payment-settings/set-default/' + ${paymentMethod.id}}" th:method="POST">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                            <label class="toggle-switch">
+                                <input type="checkbox" th:checked="${paymentMethod.defaultMethod}" onchange="this.form.submit()">
+                                <span class="slider"></span>
+                                <span class="sr-only">Set as default</span>
+                            </label>
+                        </form>
+                    </td>
+                    <td class="row-actions">
+                        <div class="action-container">
+                            <a th:href="@{'/payment-settings/edit/' + ${paymentMethod.id}}" class="btn btn-secondary btn-small">Edit</a>
+                            <span class="dropdown-icon">▼</span>
+                            <div class="action-dropdown">
+                                <a href="#" class="delete-link" th:attr="data-id=${paymentMethod.id}, data-entity='payment-method'">Delete</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(paymentMethods)}">
+                    <td colspan="5" class="empty-state">
+                        <div class="empty-message">
+                            <svg width="3rem" height="3rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 7v10" stroke="#4BBF89" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M12 17l-4-4 4-4" stroke="#4BBF89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <p>No payment methods saved.</p>
+                            <p>Add a payment method to get started.</p>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="auto-renewal">
+            <p>Auto Renewal: <span th:text="${account.autoRenewalEnabled ? 'Enabled' : 'Disabled'}" th:class="${account.autoRenewalEnabled} ? '' : 'disabled'"></span></p>
+            <form th:action="@{/payment-settings/auto-renewal}" th:method="PUT">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <label class="toggle-switch">
+                    <input type="checkbox" th:checked="${account.autoRenewalEnabled}" onchange="this.form.submit()">
+                    <span class="slider"></span>
+                    <span class="sr-only">Enable auto renewal</span>
+                </label>
+            </form>
+        </div>
+    </div>
+</main>
+
+<div id="action-confirm-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h2 id="action-title">Confirm Action</h2>
+        <p id="action-message"></p>
+        <div class="modal-buttons">
+            <form id="action-form" th:action="@{/payment-settings/0}" th:method="POST">
+                <input type="hidden" name="_method" id="action-method" value="POST" />
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="btn">Confirm</button>
+            </form>
+            <button id="cancel-action" class="btn btn-secondary">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>&copy; 2025 ClientFlow. All rights reserved.</p>
+</footer>
+
+<script src="/js/scripts.js"></script>
+</body>
+</html>

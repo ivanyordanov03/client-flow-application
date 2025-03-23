@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings - ClientFlow</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/nav-side-bar.css">
+    <link rel="stylesheet" href="/css/account-settings.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <a th:href="@{/dashboard}">
+            <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+        </a>
+    </div>
+</header>
+<main class="container form-page-container">
+    <div class="content">
+        <h1>Account Settings</h1>
+        <form th:action="@{/account}" th:method="POST" th:object="${account}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <div class="form-group">
+                <label for="logoURL">Business logo URL</label>
+                <input type="text" id="logoURL" name="logoURL" th:field="*{logoURL}" placeholder="Enter business logo URL.">
+            </div><div class="form-group">
+                <label for="businessName">Business Name</label>
+                <input type="text" id="businessName" name="businessName" th:field="*{businessName}" placeholder="Enter business name.">
+            </div>
+            <div class="form-group">
+                <label for="address">Business Address</label>
+                <input type="text" id="address" name="address" th:field="*{address}" placeholder="Enter business address.">
+            </div>
+            <div class="form-group">
+                <label for="phoneNumber">Business Phone Number</label>
+                <input type="text" id="phoneNumber" name="phoneNumber" th:field="*{phoneNumber}" placeholder="Enter phone number.">
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn">Save Changes</button>
+                <button id="cancel-action" class="btn btn-secondary">Cancel</button>
+            </div>
+        </form>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2025 ClientFlow. All rights reserved.</p>
+</footer>
+
+<script src="/js/scripts.js"></script>
+</body>
+</html>

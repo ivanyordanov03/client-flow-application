@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account - ClientFlow</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/nav-side-bar.css">
+    <link rel="stylesheet" href="/css/account.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <a th:href="@{/dashboard}">
+            <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+        </a>
+    </div>
+</header>
+
+<main class="container account-container">
+    <div th:replace="~{fragments/nav-side-bar :: navSideBar(activePage='account')}"></div>
+    <div class="account-info">
+        <h1>Account Information</h1>
+        <div class="company-logo">
+            <img th:src="${#strings.isEmpty(account.companyLogo) ? 'https://images.freecreatives.com/wp-content/uploads/2015/04/logo025.png' : account.companyLogo}" alt="Company Logo" class="logo">
+        </div>
+        <div class="company-details">
+            <p>Company Name: <span th:text="${#strings.isEmpty(account.businessName) ? 'Your business name' : account.businessName}"></span></p>
+            <p class="business-address">Address: <span th:text="${#strings.isEmpty(account.address) ? 'Your business address' : account.address}"></span></p>
+            <p>Phone Number: <span th:text="${#strings.isEmpty(account.phoneNumber) ? 'Your business phone number' : account.phoneNumber}"></span></p>
+        </div>
+        <div class="entity-filters">
+            <a th:href="@{/account/settings}" class="btn filter-btn">Edit Account</a>
+            <a th:href="@{/payment-methods}" class="btn filter-btn">Payment Settings</a>
+        </div>
+    </div>
+    <div class="current-plan">
+        <h2>Your Current Plan</h2>
+        <div class="plan-details">
+            <p>Plan Name:<span th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(currentPlan.planName.name(), '_', ' ')))}"></span></p>
+            <p>Max Members: <span th:text="${currentPlan.maxUsers}"></span></p>
+            <p>Price Per Month: <span th:text="'$' + ${currentPlan.pricePerMonth.toString()}"></span></p>
+            <p th:unless="${account.autoRenewalEnabled}">Expiring: <span th:text="${#temporals.format(account.dateExpiring, 'm/d/yyyy')}"></span></p>
+            <p>Auto Renewal: <span th:text="${account.autoRenewalEnabled ? 'Enabled' : 'Disabled'}"></span></p>
+        </div>
+        <p class="upgrade-link">
+            Not the right plan for you? <a th:href="@{/upgrade}">Upgrade</a>
+        </p>
+    </div>
+</main>
+
+<footer>
+    <p>&copy; 2025 ClientFlow. All rights reserved.</p>
+</footer>
+
+<script src="/js/scripts.js"></script>
+</body>
+</html>

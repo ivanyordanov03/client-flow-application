@@ -55,7 +55,7 @@ public class PaymentService {
                 .amount(account.getPlan().getPricePerMonth().toString())
                 .accountId(account.getId())
                 .last4Digits(last4)
-                .createdAt(LocalDateTime.now())
+                .paymentDate(LocalDateTime.now())
                 .build();
     }
 

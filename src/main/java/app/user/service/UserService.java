@@ -7,7 +7,6 @@ import app.user.model.User;
 import app.user.model.UserRole;
 import app.user.repository.UserRepository;
 import app.web.dto.UserRequest;
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -88,8 +87,8 @@ public class UserService implements UserDetailsService {
                 .userRole(UserRole.USER)
                 .active(true)
                 .accountId(accountId)
-                .createdOn(now)
-                .updatedOn(now)
+                .dateCreated(now)
+                .dateUpdated(now)
                 .build();
     }
 

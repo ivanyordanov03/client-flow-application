@@ -72,7 +72,7 @@ public class IndexController {
     public ModelAndView getDashboardPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
 
         User user = userService.getById(authenticationMetadata.getUserId());
-        Account account = accountService.getId(user.getAccountId());
+        Account account = accountService.getById(user.getAccountId());
 
         if (!account.isActive()) {
 
@@ -97,33 +97,36 @@ public class IndexController {
             return new ModelAndView("redirect:/plans");
         }
 
-        Plan currentPlan = planService.getByType(Mapper.getPlanTypeFromString(planName));
+        Plan currentPlan = planService.getByName(Mapper.getPlanTypeFromString(planName));
 
-        UserRequest registerUserRequest = new UserRequest();
-        registerUserRequest.setPlanName(planName);
+        UserRequest userRequest = new UserRequest();
+        userRequest.setPlanName(planName);
+        userRequest.setUserRoleString("USER");
 
         ModelAndView modelAndView = new ModelAndView("register");
-        modelAndView.addObject("registerOwnerRequest", registerUserRequest);
+        modelAndView.addObject("ownerRequest", userRequest);
         modelAndView.addObject("currentPlan", currentPlan);
 
         return modelAndView;
     }
 
     @PostMapping("/register")
-    public String processRegisterRequest(@Valid UserRequest registerUserRequest,
+    public String processRegisterRequest(@Valid UserRequest userRequest,
                                          BindingResult bindingResult,
                                          Model model) {
 
-        Plan currentPlan = planService.getByType(Mapper.getPlanTypeFromString(registerUserRequest.getPlanName()));
+        String role = userRequest.getUserRoleString();
+
+        Plan currentPlan = planService.getByName(Mapper.getPlanTypeFromString(userRequest.getPlanName()));
         if (bindingResult.hasErrors()) {
 
-            model.addAttribute("registerOwnerRequest", registerUserRequest);
-            model.addAttribute("planName", registerUserRequest.getPlanName());
+            model.addAttribute("ownerRequest", userRequest);
+            model.addAttribute("planName", userRequest.getPlanName());
             model.addAttribute("currentPlan", currentPlan);
             return "register";
         }
 
-        userService.registerAccountOwner(registerUserRequest);
+        userService.registerAccountOwner(userRequest);
 
         return "redirect:/login";
     }

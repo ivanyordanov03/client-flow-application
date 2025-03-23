@@ -3,17 +3,15 @@
     resize: vertical;
 }
 
-.form-group.narrow-select {
-    width: 50%;
-}
-
-.form-group.narrow-select select,
-.form-group.narrow-select .date-input-container {
+.input-with-icon {
+    position: relative;
     width: 100%;
 }
 
-@media (max-width: 600px) {
-    .form-group.narrow-select {
-        width: 100%;
-    }
+.input-with-icon .input-icon.calendar {
+    position: absolute;
+    right: 0.75em;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
 }

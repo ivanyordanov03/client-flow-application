@@ -1,0 +1,86 @@
+.account-container {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    width: 1300px;
+    margin: 2em auto;
+    background: white;
+    border-radius: 0.3rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+}
+
+.account-info {
+    flex: 2;
+    padding: 1rem;
+}
+
+.company-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 3rem;
+}
+
+.company-logo img {
+    width: auto;
+    max-height: 200px;
+}
+
+.company-details p {
+    font-size: 1em;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.company-details span {
+    font-weight: normal;
+    padding-left: 1em;
+}
+
+.current-plan {
+    flex: 1;
+    background-color: #f9f9f9;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.plan-details p {
+    font-size: 1em;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.upgrade-link {
+    font-size: 0.9em;
+    color: #667;
+    border-top: 1px solid #eee;
+    text-align: center;
+    padding-top: 1.5em;
+    margin-top: 3em;
+}
+
+.upgrade-link a {
+    color: #4BBF89;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.upgrade-link a:hover {
+    color: #0E2925;
+}
+
+.account-info .entity-filters {
+    margin-bottom: 1.5rem;
+}
+
+.entity-filters {
+    margin-top: 3.5em;
+}
+
+.business-address {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

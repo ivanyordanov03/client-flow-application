@@ -37,10 +37,13 @@ public class Account {
     private boolean isAutoRenewalEnabled = false;
 
     @Column(nullable = false)
-    private LocalDateTime createdOn;
+    private LocalDateTime dateCreated;
 
     @Column(nullable = false)
-    private LocalDateTime updatedOn;
+    private LocalDateTime dateUpdated;
+
+    @Column(nullable = false)
+    private LocalDateTime dateExpiring;
 
     private UUID ownerId;
 }

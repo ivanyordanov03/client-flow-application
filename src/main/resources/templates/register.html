@@ -23,9 +23,10 @@
         <h1>Create Your Account</h1>
         <p>Please fill out the form below to get started.</p>
 
-        <form th:action="@{/register}" th:method="POST" th:object="${registerOwnerRequest}">
+        <form th:action="@{/register}" th:method="POST" th:object="${ownerRequest}">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <input type="hidden" th:field="*{planName}" />
+            <input type="hidden" th:field="*{userRoleString}" />
             <div class="form-group">
                 <label for="firstName">First Name <span class="required">*</span></label>
                 <input type="text" id="firstName" name="firstName" th:field="*{firstName}" required>
@@ -57,23 +58,22 @@
     </div>
 
     <div class="chosen-plan">
-        <h2>Your Plan</h2>
         <div class="plan-details">
+            <h2>Your Plan</h2>
             <p>
-                <span th:if="${currentPlan.planType.name()} == 'SIMPLE_START'">Simple Start</span>
-                <span th:if="${currentPlan.planType.name()} == 'ESSENTIALS'">Essentials</span>
-                <span th:if="${currentPlan.planType.name()} == 'PLUS'">Plus</span>
+                <span th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(currentPlan.planName.name(), '_', ' ')))}"></span>
                 <span th:text="'$' + ${currentPlan.pricePerMonth.toString()} + '/month'"></span>
             </p>
-            <br>
-            <br>
             <p id="checkmarks">
-                <span><span class="green-checkmark">✔</span> Product support &nbsp;</span>
-                <span><span class="green-checkmark">✔</span> No annual contract &nbsp;</span>
-                <span><span class="green-checkmark">✔</span> Cancel anytime &nbsp;</span>
+                <span><span class="green-checkmark">✔</span>Product support</span>
+                <span><span class="green-checkmark">✔</span>No annual contract</span>
+                <span><span class="green-checkmark">✔</span>Cancel anytime</span>
             </p>
+            <p id="to-plans">Not the right plan for you? <a th:href="@{/plans}">Go back</a></p>
         </div>
-        <p id="sign-in">Already have an account? <a th:href="@{/login}">Sign In</a></p>
+        <div>
+            <p id="sign-in">Already have an account? <a th:href="@{/login}">Sign In</a></p>
+        </div>
     </div>
 </main>
 

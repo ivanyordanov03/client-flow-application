@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -47,7 +47,9 @@
                 <tr th:each="currentUser : ${users}">
                     <td th:text="${currentUser.firstName}"></td>
                     <td th:text="${currentUser.lastName}"></td>
-                    <td th:text="${currentUser.email}"></td>
+                    <td>
+                        <span class="email" th:text="${currentUser.email}" th:attr="title=${currentUser.email}"></span>
+                    </td>
                     <td th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(currentUser.userRole.name(), '_', ' ')))}"></td>
                     <td th:unless="${user.userRole.name() == 'USER'}">
                         <form th:action="@{'/change-status/' + ${currentUser.id}}" th:method="PUT">
@@ -57,7 +59,7 @@
                                     class="btn btn-small btn-status"></button>
                         </form>
                     </td>
-                    <td>
+                    <td class="action-container">
                         <div th:unless="${user.userRole.name() == 'USER'}">
                             <a th:href="@{'/users/' + ${currentUser.id}}" class="btn btn-secondary btn-small">Edit</a>
                             <span class="dropdown-icon">▼</span>
@@ -85,9 +87,9 @@
             <form id="action-form" th:action="@{/users/0}" th:method="POST">
                 <input type="hidden" name="_method" id="action-method" value="POST" />
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <button type="submit" class="btn">Yes</button>
+                <button type="submit" class="btn">Confirm</button>
             </form>
-            <button id="cancel-action" class="btn btn-secondary">No</button>
+            <button id="cancel-action" class="btn btn-secondary">Cancel</button>
         </div>
     </div>
 </div>

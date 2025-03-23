@@ -14,6 +14,8 @@ import java.util.UUID;
 @Service
 public class PaymentMethodService {
 
+    private static final String PAYMENT_METHOD_WITH_CARD_NUMBER_EXISTS = "Payment method with card number [%s] already exists";
+
     private final PaymentMethodRepository paymentMethodRepository;
 
     @Autowired
@@ -24,13 +26,19 @@ public class PaymentMethodService {
 
     public void createNew(PaymentRequest paymentRequest, UUID accountId) {
 
-        if(paymentMethodRepository.getByCreditCardNumberAndExpirationDate(paymentRequest.getCardNumber(),
-                paymentRequest.getExpirationDate()).isEmpty()) {
-
-            PaymentMethod paymentMethod = initiate(paymentRequest, accountId);
-            paymentMethodRepository.save(paymentMethod);
-            log.info("New payment method added for account id [%s]".formatted(accountId) );
+        if (paymentMethodRepository.getByCreditCardNumberAndExpirationDate(paymentRequest.getCardNumber(),
+                paymentRequest.getExpirationDate()).isPresent()) {
+            throw new IllegalArgumentException(PAYMENT_METHOD_WITH_CARD_NUMBER_EXISTS.formatted(paymentRequest.getCardNumber()));
         }
+
+        PaymentMethod paymentMethod = initiate(paymentRequest, accountId);
+
+        if (paymentMethodRepository.findAllByAccountId(accountId).isEmpty()) {
+            paymentMethod.setDefaultMethod(true);
+        }
+
+        paymentMethodRepository.save(paymentMethod);
+        log.info("New payment method added for account id [%s]".formatted(accountId) );
 
     }
 
@@ -47,5 +55,10 @@ public class PaymentMethodService {
 
     public List<PaymentMethod> getAllByAccountId(UUID accountId) {
         return paymentMethodRepository.findAllByAccountId(accountId);
+    }
+
+    public List<PaymentMethod> getAll() {
+
+        return paymentMethodRepository.findAll();
     }
 }

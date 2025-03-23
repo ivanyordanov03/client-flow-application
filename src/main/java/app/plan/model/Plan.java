@@ -19,9 +19,12 @@ public class Plan {
     private UUID id;
 
     @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private PlanType planType;
+    @Enumerated(EnumType.ORDINAL)
+    private PlanName planName;
 
     @Column(nullable = false)
     private BigDecimal pricePerMonth;
+
+    @Column(nullable = false)
+    private int maxUsers;
 }

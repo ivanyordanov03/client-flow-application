@@ -31,4 +31,8 @@ public class PaymentMethod {
 
     @Column(nullable = false)
     private UUID accountId;
+
+    @Column(nullable = false)
+    private boolean defaultMethod = false;
+
 }

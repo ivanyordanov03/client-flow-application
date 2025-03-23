@@ -3,6 +3,7 @@ package app.web;
 import app.account.model.Account;
 import app.account.service.AccountService;
 import app.payment.service.PaymentService;
+import app.paymentMethod.service.PaymentMethodService;
 import app.security.AuthenticationMetadata;
 import app.user.model.User;
 import app.user.service.UserService;
@@ -27,15 +28,18 @@ public class PaymentController {
     private final UserService userService;
     private final AccountService accountService;
     private final PaymentService paymentService;
+    private final PaymentMethodService paymentMethodService;
 
     @Autowired
     public PaymentController(UserService userService,
                              AccountService accountService,
-                             PaymentService paymentService) {
+                             PaymentService paymentService,
+                             PaymentMethodService paymentMethodService) {
 
         this.userService = userService;
         this.accountService = accountService;
         this.paymentService = paymentService;
+        this.paymentMethodService = paymentMethodService;
     }
 
     @GetMapping
@@ -80,7 +84,6 @@ public class PaymentController {
         }
 
         paymentService.insert(paymentRequest, account);
-
 
         return new ModelAndView("redirect:/dashboard");
     }

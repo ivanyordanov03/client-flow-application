@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -66,8 +65,8 @@ public class TaskService {
                 .createdById(userId)
                 .assignedToName(USER_FIRST_NAME_LAST_NAME_INITIAL.formatted(assignee.getFirstName(), assignee.getLastName().charAt(0)))
                 .createdByName(USER_FIRST_NAME_LAST_NAME_INITIAL.formatted(user.getFirstName(), user.getLastName().charAt(0)))
-                .createdOn(now)
-                .updatedOn(now)
+                .dateCreated(now)
+                .dateUpdated(now)
                 .build();
     }
 
@@ -108,7 +107,7 @@ public class TaskService {
         Task task = getById(id);
         task.setCompleted(true);
         task.setDateCompleted(LocalDate.now());
-        task.setUpdatedOn(LocalDateTime.now());
+        task.setDateUpdated(LocalDateTime.now());
 
         taskRepository.save(task);
 
@@ -131,11 +130,12 @@ public class TaskService {
         task.setDueDate(Mapper.getDateFromStringIsoFormat(taskRequest.getDueDate()));
         task.setAssignedToId(assignee.getId());
         task.setAssignedToName(USER_FIRST_NAME_LAST_NAME_INITIAL.formatted(assignee.getFirstName(), assignee.getLastName().charAt(0)));
+        task.setCompleted(false);
 
         if (taskRequest.getPriority() != null) {
             task.setPriority(Mapper.getTaskPriorityFromString(taskRequest.getPriority()));
         }
-        task.setUpdatedOn(LocalDateTime.now());
+        task.setDateUpdated(LocalDateTime.now());
         taskRepository.save(task);
         log.info(TASK_WITH_ID_EDITED_BY_USER_WITH_ID.formatted(taskId, userId));
     }
@@ -144,5 +144,10 @@ public class TaskService {
 
         taskRepository.delete(getById(id));
         log.info(TASK_WITH_ID_DELETED_BY_USER_WITH_ID.formatted(id, userId));
+    }
+
+    public List<Task> getMyTasks(UUID userId) {
+
+        return taskRepository.findAllByAssignedToId(userId);
     }
 }

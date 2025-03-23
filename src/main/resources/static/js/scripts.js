@@ -1,8 +1,6 @@
-let currentSlide = 0;
-
 document.addEventListener('DOMContentLoaded', function () {
-
-    // Slideshow functionality
+    // Slideshow functionality (not used on payment page)
+    let currentSlide = 0;
     const slides = document.querySelectorAll('.slide');
     const dots = document.querySelectorAll('.dot');
 
@@ -24,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setInterval(nextSlide, 5000);
     }
 
-    // Password toggle functionality
+    // Password toggle functionality (not used on payment page)
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
     if (togglePassword && passwordInput) {
@@ -46,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Description modal functionality
+    // Description modal functionality (not used on payment page)
     const descriptionButtons = document.querySelectorAll('.description-btn');
     const descriptionModal = document.getElementById('descriptionModal');
     const modalDescription = document.getElementById('modalDescription');
@@ -71,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Initialize Flatpickr for the dueDate field
+    // Initialize Flatpickr for the dueDate field (not used on payment page)
     const dueDateInput = document.getElementById('dueDate');
     if (dueDateInput) {
         flatpickr("#dueDate", {
@@ -84,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Dropdown menu functionality
+    // Dropdown menu functionality (used on payment page)
     const dropdownIcons = document.querySelectorAll('.dropdown-icon');
     dropdownIcons.forEach(icon => {
         icon.addEventListener('click', function (event) {
@@ -115,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Action functionality (delete and archive) with custom modal
+    // Action functionality (delete and archive) with custom modal (used on payment page)
     const actionLinks = document.querySelectorAll('.delete-link, .archive-link');
     const modal = document.getElementById('action-confirm-modal');
     const title = document.getElementById('action-title');
@@ -124,31 +122,52 @@ document.addEventListener('DOMContentLoaded', function () {
     const methodInput = document.getElementById('action-method');
     const cancelBtn = document.getElementById('cancel-action');
 
-    actionLinks.forEach(link => {
-        link.addEventListener('click', function (event) {
-            event.preventDefault();
-            const name = this.getAttribute('data-name');
-            const id = this.getAttribute('data-id');
-            const entityType = this.getAttribute('data-entity');
-            const filterValue = this.getAttribute('data-filter');
-            const isArchive = this.classList.contains('archive-link');
+    if (actionLinks.length > 0 && modal && title && message && form && methodInput && cancelBtn) {
+        actionLinks.forEach(link => {
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+                const name = this.getAttribute('data-name');
+                const id = this.getAttribute('data-id');
+                const entityType = this.getAttribute('data-entity');
+                const filterValue = this.getAttribute('data-filter');
+                const isArchive = this.classList.contains('archive-link');
 
-            title.textContent = isArchive ? 'Confirm Archiving' : 'Confirm Deletion';
-            message.textContent = `Are you sure you would like to ${isArchive ? 'archive' : 'permanently delete'} the ${entityType} "${name}"?`;
-            form.action = `/${entityType}s/${id}${isArchive ? '/archive' : ''}?filter=${filterValue}`;
-            methodInput.value = isArchive ? 'PUT' : 'DELETE';
+                title.textContent = isArchive ? 'Confirm Archiving' : 'Confirm Deletion';
+                message.textContent = `Are you sure you would like to ${isArchive ? 'archive' : 'permanently delete'} the ${entityType} "${name}"?`;
+                form.action = `/${entityType}s/${id}${isArchive ? '/archive' : ''}?filter=${filterValue}`;
+                methodInput.value = isArchive ? 'PUT' : 'DELETE';
 
-            modal.style.display = 'flex';
+                modal.style.display = 'flex';
+            });
         });
-    });
 
-    cancelBtn.addEventListener('click', function () {
-        modal.style.display = 'none';
-    });
-
-    window.addEventListener('click', function (event) {
-        if (event.target === modal) {
+        cancelBtn.addEventListener('click', function () {
             modal.style.display = 'none';
-        }
+        });
+
+        window.addEventListener('click', function (event) {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    }
+
+    // Set default payment method functionality
+    const defaultPaymentRadios = document.querySelectorAll('input[name="defaultPaymentMethod"]');
+    defaultPaymentRadios.forEach(radio => {
+        radio.addEventListener('change', function () {
+            const paymentMethodId = this.value;
+            fetch(`/payment-settings/set-default/${paymentMethodId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_csrf"]').value
+                }
+            }).then(response => {
+                if (response.ok) {
+                    window.location.reload(); // Reload the page to reflect the changes
+                }
+            });
+        });
     });
 });

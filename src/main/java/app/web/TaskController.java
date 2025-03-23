@@ -53,6 +53,7 @@ public class TaskController {
         modelAndView.addObject("filter", filter);
         modelAndView.addObject("userFirstNameAndLastNameInitial", userFirstNameAndLastNameInitial);
         modelAndView.addObject("allAccountTasks", taskService.getAllByAccountId(user.getAccountId()));
+        modelAndView.addObject("myTasks", taskService.getMyTasks(user.getId()));
 
         return modelAndView;
     }

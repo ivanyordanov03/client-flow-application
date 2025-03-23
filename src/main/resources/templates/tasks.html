@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,20 +49,20 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:unless="${user.userRole.name() == 'USER'}" th:each="task : ${accountTasks}" th:class="${task.dueDate.isBefore(#temporals.createToday()) and not task.completed} ? 'overdue-task'">
+                <tr th:unless="${user.userRole.name() == 'USER' and (#strings.equals(filter, 'my-tasks') and not #lists.isEmpty(myTasks))}" th:each="task : ${accountTasks}" th:class="${task.dueDate.isBefore(#temporals.createToday()) and not task.completed} ? 'overdue-task'">
                     <td>
-                        <span th:text="${task.name}"></span>
-                        <button class="description-btn" th:attr="data-description=${task.description}">
-                            <svg width="1rem" height="1rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 6v12m6-6H6" stroke="#4BBF89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
+                        <div class="task-name-container">
+                            <span class="task-name" th:text="${task.name}" th:attr="title=${task.name}"></span>
+                            <button class="description-btn" th:attr="data-description=${task.description}, data-name=${task.name}">
+                                <i class="fas fa-file-alt"></i>
+                            </button>
+                        </div>
                     </td>
                     <td th:text="${task.priority == null} ? '---' : ${#strings.capitalize(#strings.toLowerCase(task.priority.name()))}"></td>
                     <td th:text="${task.createdByName == userFirstNameAndLastNameInitial} ? 'Me' : ${task.createdByName}"></td>
                     <td th:text="${task.assignedToName == userFirstNameAndLastNameInitial} ? 'Me' : ${task.assignedToName}"></td>
                     <td th:text="${filter == 'completed'} ? ${#temporals.format(task.dateCompleted, 'M/d/yyyy')} : ${#temporals.format(task.dueDate, 'M/d/yyyy')}" th:class="${task.dueDate.isBefore(#temporals.createToday()) and not task.completed} ? 'overdue-date'"></td>
-                    <td>
+                    <td class="row-actions">
                         <div class="action-container">
                             <form th:action="@{'/tasks/' + ${task.id} + '/completed'(filter = ${filter})}" th:method="PUT" th:unless="${task.completed || task.assignedToId != user.id}">
                                 <button class="btn btn-secondary btn-small">Mark complete</button>
@@ -71,19 +71,19 @@
                             <span class="dropdown-icon">▼</span>
                         </div>
                         <div class="action-dropdown">
-                            <a th:href="@{'/tasks/' + ${task.id}(filter=${filter})}" class="edit-link">Edit</a>
+                            <a th:href="@{'/tasks/' + ${task.id}(filter=${filter})}" class="edit-link">Update</a>
                             <a href="#" class="delete-link" th:attr="data-id=${task.id}, data-name=${task.name}, data-entity='task', data-filter=${filter}">Delete</a>
                         </div>
                     </td>
                 </tr>
                 <tr th:if="${user.userRole.name() == 'USER'}" th:each="task : ${userRoleTasks}" th:class="${(task.dueDate.isBefore(#temporals.createToday()) and not task.completed)} ? 'overdue-task'">
                     <td>
-                        <span th:text="${task.name}"></span>
-                        <button class="description-btn" th:attr="data-description=${task.description}">
-                            <svg width="1rem" height="1rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 6v12m6-6H6" stroke="#4BBF89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </button>
+                        <div class="task-name-container">
+                            <span class="task-name" th:text="${task.name}" th:attr="title=${task.name}"></span>
+                            <button class="description-btn" th:attr="data-description=${task.description}, data-name=${task.name}">
+                                <i class="fas fa-file-alt"></i>
+                            </button>
+                        </div>
                     </td>
                     <td th:text="${task.priority == null} ? '---' : ${#strings.capitalize(#strings.toLowerCase(task.priority.name()))}"></td>
                     <td th:text="${task.createdByName == userFirstNameAndLastNameInitial} ? 'Me' : ${task.createdByName}"></td>
@@ -98,12 +98,12 @@
                             <span class="dropdown-icon">▼</span>
                         </div>
                         <div class="action-dropdown">
-                            <a th:href="@{'/tasks/' + ${task.id}(filter=${filter})}" class="edit-link">Edit</a>
+                            <a th:href="@{'/tasks/' + ${task.id}(filter=${filter})}" class="edit-link">Update</a>
                             <a href="#" class="delete-link" th:attr="data-id=${task.id}, data-name=${task.name}, data-entity='task', data-filter=${filter}">Delete</a>
                         </div>
                     </td>
                 </tr>
-                <tr th:if="${#lists.isEmpty(allAccountTasks)}" class="empty-state">
+                <tr th:if="${#strings.equals(user.userRole, 'USER') and #lists.isEmpty(allAccountTasks) || (#strings.equals(filter, 'my-tasks') and #lists.isEmpty(myTasks))}" class="empty-state">
                     <td colspan="6">
                         <div class="empty-message">
                             <svg width="3rem" height="3rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -124,7 +124,7 @@
 <div id="descriptionModal" class="modal">
     <div class="modal-content">
         <span class="close-btn">×</span>
-        <h2>Task Description</h2>
+        <h2 id="modalTaskName"></h2>
         <p id="modalDescription"></p>
     </div>
 </div>
@@ -136,9 +136,9 @@
             <form id="action-form" th:action="@{/tasks/0}" th:method="POST">
                 <input type="hidden" name="_method" id="action-method" value="POST" />
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                <button type="submit" class="btn">Yes</button>
+                <button type="submit" class="btn">Confirm</button>
             </form>
-            <button id="cancel-action" class="btn btn-secondary">No</button>
+            <button id="cancel-action" class="btn btn-secondary">Cancel</button>
         </div>
     </div>
 </div>

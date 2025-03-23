@@ -25,7 +25,7 @@ public class Payment {
     private String last4Digits;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime paymentDate;
 
     @Column(nullable = false)
     private UUID accountId;

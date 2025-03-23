@@ -1,9 +1,11 @@
 package app.web.mapper;
 
-import app.plan.model.PlanType;
+import app.account.model.Account;
+import app.plan.model.PlanName;
 import app.task.model.Task;
 import app.task.model.TaskPriority;
 import app.user.model.User;
+import app.web.dto.AccountRequest;
 import app.web.dto.TaskRequest;
 import app.web.dto.UserRequest;
 import lombok.experimental.UtilityClass;
@@ -15,12 +17,12 @@ import java.time.format.DateTimeParseException;
 @UtilityClass
 public class Mapper {
 
-    public static PlanType getPlanTypeFromString(String planName) {
+    public static PlanName getPlanTypeFromString(String planName) {
 
         return switch (planName) {
-            case "PLUS" -> PlanType.PLUS;
-            case "ESSENTIALS" -> PlanType.ESSENTIALS;
-            case "SIMPLE_START" -> PlanType.SIMPLE_START;
+            case "PLUS" -> PlanName.PLUS;
+            case "ESSENTIALS" -> PlanName.ESSENTIALS;
+            case "SIMPLE_START" -> PlanName.SIMPLE_START;
             default -> throw new IllegalArgumentException("Unexpected plan value: " + planName);
         };
     }
@@ -67,5 +69,16 @@ public class Mapper {
         userRequest.setUserRoleString(user.getUserRole().toString());
 
         return userRequest;
+    }
+
+    public static AccountRequest mapAccountToAccountRequest(Account account) {
+
+        AccountRequest accountRequest = new AccountRequest();
+        accountRequest.setLogoURL(account.getCompanyLogo());
+        accountRequest.setBusinessName(account.getBusinessName());
+        accountRequest.setAddress(account.getAddress());
+        accountRequest.setPhoneNumber(account.getPhoneNumber());
+
+        return accountRequest;
     }
 }

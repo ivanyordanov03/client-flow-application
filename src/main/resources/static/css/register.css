@@ -1,4 +1,3 @@
-
 .register-form p,
 .plan-details p {
     margin-bottom: 0;
@@ -13,8 +12,10 @@
     display: flex;
     flex-wrap: wrap;
     gap: 1em;
+    margin: 2em 0;
 }
 
+#to-plans,
 #sign-in {
     font-size: 0.9em;
     color: #667;
@@ -23,6 +24,8 @@
     border-top: 1px solid #eee;
 }
 
+
+#to-plans a,
 #sign-in a {
     color: #4BBF89;
     text-decoration: none;
@@ -31,4 +34,10 @@
 
 #sign-in a:hover {
     color: #0E2925;
+}
+
+.chosen-plan {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }

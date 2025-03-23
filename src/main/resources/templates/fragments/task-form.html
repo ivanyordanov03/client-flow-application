@@ -1,5 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Task form</title>
+</head>
 <div th:fragment="taskForm">
   <div class="form-group">
     <label for="name">Task Name<span class="required">*</span></label>
@@ -11,7 +15,7 @@
     <textarea id="description" th:field="*{description}" rows="4"></textarea>
     <div th:errors="*{description}" class="alert-warning"></div>
   </div>
-  <div class="form-group narrow-select">
+  <div class="form-group">
     <label for="assignedTo">Assigned To<span class="required">*</span></label>
     <select id="assignedTo" th:field="*{assignedTo}" required>
       <option value="">Select one</option>
@@ -21,15 +25,15 @@
     </select>
     <div th:errors="*{assignedTo}" class="alert-warning"></div>
   </div>
-  <div class="form-group narrow-select">
+  <div class="form-group">
     <label for="dueDate">Due Date<span class="required">*</span></label>
-    <div class="date-input-container input-with-icon">
+    <div class="input-with-icon">
       <input type="text" id="dueDate" th:field="*{dueDate}" th:value="${defaultDueDate}" class="datepicker" required>
-      <span class="calendar-icon input-icon calendar"><i class="fas fa-calendar-alt"></i></span>
+      <span class="input-icon calendar"><i class="fas fa-calendar-alt"></i></span>
     </div>
     <div th:errors="*{dueDate}" class="alert-warning"></div>
   </div>
-  <div class="form-group narrow-select">
+  <div class="form-group">
     <label for="priority">Priority</label>
     <select id="priority" th:field="*{priority}">
       <option value="">Select one</option>

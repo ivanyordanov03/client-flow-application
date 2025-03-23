@@ -7,16 +7,21 @@
     width: 100%;
 }
 
-.users-controls {
+.entity-controls {
     display: flex;
     justify-content: flex-end;
     margin-bottom: 1rem;
 }
 
-.add-member {
+.entity-filters {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
 }
 
-.users-table table {
+a.btn.btn-secondary.btn-small,
+button.btn.btn-small.btn-status{
+    margin: 0;
 }
 
 .btn-status {
@@ -51,8 +56,16 @@
     color: #e74c3c;
 }
 
+.email {
+    display: inline-block;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 @media (max-width: 768px) {
-    .users-controls {
+    .entity-controls {
         justify-content: center;
     }
 }
