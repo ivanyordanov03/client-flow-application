@@ -43,43 +43,33 @@ public class PaymentController {
     }
 
     @GetMapping
-    public ModelAndView getPaymentsPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    public ModelAndView getPaymentsPage(@AuthenticationPrincipal AuthenticationMetadata data) {
 
-        User user = userService.getById(authenticationMetadata.getUserId());
+        User user = userService.getById(data.getUserId());
         Account account = accountService.getByOwnerId(user.getId());
 
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("payment");
-        modelAndView.addObject("user", user);
-        modelAndView.addObject("currentPlan", account.getPlan());
-        modelAndView.addObject("paymentRequest", new PaymentRequest());
-
-        return modelAndView;
+        return null;
     }
 
     @PostMapping
-    public ModelAndView processNewPayment(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata,
+    public ModelAndView processNewPayment(@AuthenticationPrincipal AuthenticationMetadata data,
                                           @Valid PaymentRequest paymentRequest,
                                           BindingResult bindingResult) {
 
-        User user = userService.getById(authenticationMetadata.getUserId());
+        User user = userService.getById(data.getUserId());
         Account account = accountService.getByOwnerId(user.getId());
 
+        ModelAndView modelAndView = new ModelAndView("subscription-payment");
+        modelAndView.addObject("user", user);
+        modelAndView.addObject("account", account);
+        modelAndView.addObject("paymentRequest", paymentRequest);
+
         if (bindingResult.hasErrors()) {
-            ModelAndView modelAndView = new ModelAndView("payment");
-            modelAndView.addObject("user", user);
-            modelAndView.addObject("currentPlan", account.getPlan());
-            modelAndView.addObject("paymentRequest", paymentRequest);
             return modelAndView;
         }
 
         if (paymentRequest.getTransactionType().equals(UNSUCCESSFUL_TRANSACTION)) {
-            ModelAndView modelAndView = new ModelAndView("payment");
-            modelAndView.addObject("user", user);
-            modelAndView.addObject("currentPlan", account.getPlan());
-            modelAndView.addObject("paymentRequest", paymentRequest);
             modelAndView.addObject("errorMessage", UNSUCCESSFUL_TRANSACTION_ERROR_MESSAGE);
-
             return modelAndView;
         }
 
@@ -88,4 +78,19 @@ public class PaymentController {
         return new ModelAndView("redirect:/dashboard");
     }
 
+    @GetMapping("/new")
+    public ModelAndView getSubscriptionPage(@AuthenticationPrincipal AuthenticationMetadata data) {
+
+        User user = userService.getById(data.getUserId());
+        Account account = accountService.getByOwnerId(user.getId());
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("subscription-payment");
+        modelAndView.addObject("user", user);
+        modelAndView.addObject("account", account);
+        modelAndView.addObject("paymentRequest", new PaymentRequest());
+        modelAndView.addObject("accountPaymentMethods", paymentMethodService.getAllByAccountId(account.getId()));
+
+        return modelAndView;
+    }
 }

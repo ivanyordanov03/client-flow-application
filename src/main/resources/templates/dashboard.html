@@ -22,9 +22,8 @@
 <main class="dashboard-container">
     <div th:replace="~{fragments/nav-side-bar :: navSideBar(activePage='dashboard')}"></div>
     <div class="dashboard-content">
-        <h1>Welcome to Your Dashboard</h1>
-        <p>Hello, <span th:text="' ' + ${user.firstName} + '!'"></span> Here's an overview of your ClientFlow account.</p>
-
+        <h1>Welcome, <span th:text="${user.firstName}"></span>!</h1>
+        <p>Here is an overview of your ClientFlow account.</p>
         <div class="dashboard-widgets">
             <div class="widget">
                 <h2>Clients</h2>
@@ -33,13 +32,13 @@
             </div>
             <div class="widget">
                 <h2>Invoices</h2>
-                <p>Pending: <span th:text="${pendingInvoices != null ? pendingInvoices : '0'}"></span></p>
+                <p>Pending: <span th:text="${pendingInvoices}"></span></p>
                 <a href="/invoices" class="btn">View Invoices</a>
             </div>
             <div class="widget">
                 <h2>Tasks</h2>
-                <p>Due Today: <span th:text="${tasksDueToday != null ? tasksDueToday : '0'}"></span></p>
-                <a href="/tasks" class="btn">View Tasks</a>
+                <p>Due Today: <span th:text="${tasksDueToday}"></span></p>
+                <a th:href="@{/tasks(filter = 'due-today')}" class="btn">View Tasks</a>
             </div>
         </div>
     </div>

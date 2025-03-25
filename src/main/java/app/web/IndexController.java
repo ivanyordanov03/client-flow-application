@@ -5,6 +5,7 @@ import app.account.service.AccountService;
 import app.plan.model.Plan;
 import app.plan.service.PlanService;
 import app.security.AuthenticationMetadata;
+import app.task.service.TaskService;
 import app.user.model.User;
 import app.user.service.UserService;
 import app.web.dto.UserRequest;
@@ -30,15 +31,18 @@ public class IndexController {
 
     private final PlanService planService;
     private final UserService userService;
+    private final TaskService taskService;
     private final AccountService accountService;
 
     @Autowired
     public IndexController(PlanService planService,
                            UserService userService,
+                           TaskService taskService,
                            AccountService accountService) {
 
         this.planService = planService;
         this.userService = userService;
+        this.taskService = taskService;
         this.accountService = accountService;
     }
 
@@ -46,15 +50,6 @@ public class IndexController {
     public String getIndexPage() {
 
         return "index";
-    }
-
-    @GetMapping("/error") //
-    public ModelAndView getErrorPage() {
-
-        ModelAndView modelAndView = new ModelAndView("login");
-        modelAndView.addObject("errorMessage", THYMELEAF_ERROR_MESSAGE); //
-
-        return modelAndView;
     }
 
     @GetMapping("/login")
@@ -69,15 +64,15 @@ public class IndexController {
     }
 
     @GetMapping("/dashboard")
-    public ModelAndView getDashboardPage(@AuthenticationPrincipal AuthenticationMetadata authenticationMetadata) {
+    public ModelAndView getDashboardPage(@AuthenticationPrincipal AuthenticationMetadata data) {
 
-        User user = userService.getById(authenticationMetadata.getUserId());
+        User user = userService.getById(data.getUserId());
         Account account = accountService.getById(user.getAccountId());
 
         if (!account.isActive()) {
 
             if (user.getUserRole().toString().equals("PRIMARY_ADMIN")) {
-                return new ModelAndView("redirect:/payments");
+                return new ModelAndView("redirect:/payments/new");
             } else {
                 return new ModelAndView("login");
             }
@@ -86,6 +81,7 @@ public class IndexController {
 
         ModelAndView modelAndView = new ModelAndView("dashboard");
         modelAndView.addObject("user", user);
+        modelAndView.addObject("tasksDueToday", taskService.getAllDueToday(account.getId(), user.getId(), "due-today").size());
 
         return modelAndView;
     }
@@ -114,8 +110,6 @@ public class IndexController {
     public String processRegisterRequest(@Valid UserRequest userRequest,
                                          BindingResult bindingResult,
                                          Model model) {
-
-        String role = userRequest.getUserRoleString();
 
         Plan currentPlan = planService.getByName(Mapper.getPlanTypeFromString(userRequest.getPlanName()));
         if (bindingResult.hasErrors()) {

@@ -22,7 +22,7 @@ public class WebMvcConfiguration {
                 .formLogin(login -> login
                         .loginPage("/login")
                         .usernameParameter("email")
-                        .defaultSuccessUrl("/dashboard")
+                        .defaultSuccessUrl("/dashboard", true)
                         .failureUrl("/login?error")
                         .permitAll()
                 )

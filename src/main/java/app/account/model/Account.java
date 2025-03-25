@@ -28,13 +28,13 @@ public class Account {
     private String phoneNumber;
 
     @Column(nullable = false)
-    private boolean isActive = false;
+    private boolean active = false;
 
     @ManyToOne
     private Plan plan;
 
     @Column(nullable = false)
-    private boolean isAutoRenewalEnabled = false;
+    private boolean autoRenewalEnabled = false;
 
     @Column(nullable = false)
     private LocalDateTime dateCreated;

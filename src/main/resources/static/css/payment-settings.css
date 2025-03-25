@@ -85,3 +85,21 @@ input:checked + .slider:before {
     clip: rect(0, 0, 0, 0);
     border: 0;
 }
+
+.container.payment-settings-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.content.payment-settings-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.back-to-account-container {
+    margin-top: auto;
+    align-self: flex-end;
+    margin-bottom: 2rem;
+}

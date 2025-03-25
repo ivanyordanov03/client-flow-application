@@ -19,6 +19,7 @@ import java.util.UUID;
 @Service
 public class TaskService {
 
+    private static final String USER = "USER";
     private static final String TASK_WITH_ID_NOT_FOUND = "Task with [%s] not found.";
     private static final String INVALID_TASK_FILTER_TYPE = "Invalid value [%s] for task filter.";
     private static final String USER_FIRST_NAME_LAST_NAME_INITIAL = "%s %s.";
@@ -100,6 +101,15 @@ public class TaskService {
             case "completed" -> taskRepository.findAllByAccountIdAndCompletedIsTrueOrderByDateCompletedDesc(accountId);
             default -> throw new IllegalStateException(INVALID_TASK_FILTER_TYPE.formatted(filter));
         };
+    }
+
+    public List<Task> getAllDueToday(UUID accountId, UUID userId, String userRole) {
+
+        if (USER.equals(userRole)) {
+            return taskRepository.findAllByAssignedToIdAndDueDateAndCompletedIsFalseOrderByPriorityDesc(userId, LocalDate.now());
+        } else {
+            return taskRepository.findAllByAccountIdAndDueDateAndCompletedIsFalseOrderByPriorityDesc(accountId, LocalDate.now());
+        }
     }
 
     public void markAsComplete(UUID id, UUID userId) {

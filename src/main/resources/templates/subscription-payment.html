@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - ClientFlow</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/subscription-payment.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <a th:href="@{'/'}">
+            <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+        </a>
+    </div>
+</header>
+<main class="payment-container">
+    <div class="payment-options">
+        <h1>Payment Information</h1>
+        <form th:action="@{/payments}" th:method="POST" th:object="${paymentRequest}" id="paymentForm">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <div class="saved-methods-section" th:unless="${#lists.isEmpty(accountPaymentMethods)}">
+                <div class="section-header">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="useSavedMethod" name="useSavedMethod" checked>
+                        <div class="checkbox-box"></div>
+                        <span>Saved Payment Methods</span>
+                    </label>
+                </div>
+                <div class="section-content" id="savedMethodsContent">
+                    <div class="form-group">
+                        <label for="savedPaymentMethod">Select Payment Method</label>
+                        <select id="savedPaymentMethod" name="savedPaymentMethod">
+                            <option th:each="method : ${accountPaymentMethods}"
+                                    th:value="${method.id}"
+                                    th:text="'**** **** **** ' + ${#strings.substring(method.creditCardNumber, 12)} + ' - Exp. ' + ${method.expirationDate}"
+                                    th:selected="${method.defaultMethod}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="payment-form-section">
+                <div class="section-header" th:if="${!#lists.isEmpty(accountPaymentMethods)}">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="useNewCard" name="useNewCard"
+                               th:attr="checked=${#lists.isEmpty(accountPaymentMethods)}">
+                        <div class="checkbox-box"></div>
+                        <span th:unless="${#lists.isEmpty(accountPaymentMethods)}">New Card Payment</span>
+                        <span th:if="${#lists.isEmpty(accountPaymentMethods)}">Card Details</span>
+                    </label>
+                </div>
+                <div class="section-content" id="newCardContent"
+                     th:classappend="${#lists.isEmpty(accountPaymentMethods)} ? '' : 'disabled'">
+                    <p>Please enter your credit/debit card details to complete your purchase.</p>
+                    <p class="alert-warning" th:if="${errorMessage}" th:text="${errorMessage}"></p>
+                    <div class="card-row">
+                        <div class="form-group">
+                            <label for="cardNumber">Card Number <span class="required">*</span></label>
+                            <input type="text" id="cardNumber" name="cardNumber" placeholder="1234 5678 9012 3456"
+                                   th:field="*{cardNumber}" required>
+                            <p class="alert-warning" th:if="${#fields.hasErrors('cardNumber')}" th:errors="*{cardNumber}"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="cardHolder">Cardholder Name <span class="required">*</span></label>
+                            <input type="text" id="cardHolder" name="cardHolder" placeholder="John Doe"
+                                   th:field="*{cardholderName}" required>
+                            <p class="alert-warning" th:if="${#fields.hasErrors('cardholderName')}" th:errors="*{cardholderName}"></p>
+                        </div>
+                    </div>
+                    <div class="form-group-row payment-row">
+                        <div class="form-group expiry-date">
+                            <label for="expirationDate">Expiry Date <span class="required">*</span></label>
+                            <input type="text" id="expirationDate" name="expirationDate" placeholder="MM/YY"
+                                   th:field="*{expirationDate}" required>
+                            <p class="alert-warning" th:if="${#fields.hasErrors('expirationDate')}" th:errors="*{expirationDate}"></p>
+                        </div>
+                        <div class="form-group cvv">
+                            <label for="cvv">CVV <span class="required">*</span></label>
+                            <input type="text" id="cvv" name="cvv" placeholder="123" th:field="*{cvv}" required>
+                            <p class="alert-warning" th:if="${#fields.hasErrors('cvv')}" th:errors="*{cvv}"></p>
+                        </div>
+                        <div class="form-group transaction-type">
+                            <label for="transactionType">Transaction Type <span class="required">*</span></label>
+                            <select id="transactionType" name="transactionType" th:field="*{transactionType}" required>
+                                <option value="successful">Successful</option>
+                                <option value="unsuccessful">Unsuccessful</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="section-header">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="savePaymentMethod" name="savePaymentMethod" th:field="*{savePaymentMethod}" hidden>
+                            <div class="checkbox-box"></div>
+                            <span>Save payment method</span>
+                        </label>
+                    </div>
+                    <div class="section-header">
+                        <label class="custom-checkbox">
+                            <input type="checkbox" id="autoRenewal" name="autoRenewal" th:field="*{autoRenewal}" hidden>
+                            <div class="checkbox-box"></div>
+                            <span>I agree to subscription auto-renewal</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <div class="section-header">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="termsCheckbox" required hidden>
+                        <div class="checkbox-box"></div>
+                        <span>I agree to the <a href="/terms" target="_blank">Terms and Conditions</a></span>
+                    </label>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn" id="submitPayment" disabled>Submit Payment</button>
+                    <a th:if="${account.isActive()}" th:href="@{'/account'}" class="btn btn-cancel">Cancel</a>
+                    <a th:unless="${account.isActive()}" th:href="@{'/logout'}" class="btn btn-cancel">Logout</a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="purchase-details">
+        <h2>Your Plan</h2>
+        <div class="plan-details">
+            <p>
+                <span th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(account.plan.planName, '_', ' ')))}"></span>
+                <span th:text="'$' + ${account.plan.pricePerMonth.toString()} + '/mo'"></span>
+            </p>
+            <p><strong>Total Owed Today:</strong> <span th:text="'$' + ${account.plan.pricePerMonth.toString()}"></span></p>
+            <br>
+            <br>
+            <p id="checkmarks">
+                <span><span class="green-checkmark">✔</span> Product support </span>
+                <span><span class="green-checkmark">✔</span> No annual contract </span>
+                <span><span class="green-checkmark">✔</span> Cancel anytime </span>
+            </p>
+        </div>
+    </div>
+</main>
+<footer>
+    <p>© 2025 ClientFlow. All rights reserved.</p>
+</footer>
+
+<script src="/js/scripts.js"></script>
+</body>
+</html>

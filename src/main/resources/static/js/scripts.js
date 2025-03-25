@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Slideshow functionality (not used on payment page)
+    // Slideshow functionality (unchanged)
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slide');
     const dots = document.querySelectorAll('.dot');
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setInterval(nextSlide, 5000);
     }
 
-    // Password toggle functionality (not used on payment page)
+    // Password toggle functionality (unchanged)
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
     if (togglePassword && passwordInput) {
@@ -34,17 +34,61 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Terms checkbox functionality
+    // Terms checkbox and payment section toggling
     const termsCheckbox = document.getElementById('termsCheckbox');
     const submitButton = document.getElementById('submitPayment');
+    const useSavedMethod = document.getElementById('useSavedMethod');
+    const useNewCard = document.getElementById('useNewCard');
+    const savedMethodsContent = document.getElementById('savedMethodsContent');
+    const newCardContent = document.getElementById('newCardContent');
+
     if (termsCheckbox && submitButton) {
-        submitButton.disabled = !termsCheckbox.checked;
-        termsCheckbox.addEventListener('change', function () {
-            submitButton.disabled = !this.checked;
-        });
+        function updateSubmitButton() {
+            const isSectionSelected = (useSavedMethod && useSavedMethod.checked) || (useNewCard && useNewCard.checked) || !useSavedMethod; // True if no saved methods
+            submitButton.disabled = !termsCheckbox.checked || !isSectionSelected;
+        }
+
+        termsCheckbox.addEventListener('change', updateSubmitButton);
+
+        if (useSavedMethod && useNewCard && savedMethodsContent && newCardContent) {
+            function toggleSections() {
+                if (useSavedMethod.checked) {
+                    useNewCard.checked = false;
+                    savedMethodsContent.classList.remove('disabled');
+                    newCardContent.classList.add('disabled');
+                } else if (useNewCard.checked) {
+                    useSavedMethod.checked = false;
+                    savedMethodsContent.classList.add('disabled');
+                    newCardContent.classList.remove('disabled');
+                } else {
+                    savedMethodsContent.classList.remove('disabled');
+                    newCardContent.classList.remove('disabled');
+                }
+                updateSubmitButton();
+            }
+
+            useSavedMethod.addEventListener('change', function() {
+                if (this.checked) {
+                    useNewCard.checked = false;
+                }
+                toggleSections();
+            });
+            useNewCard.addEventListener('change', function() {
+                if (this.checked) {
+                    useSavedMethod.checked = false;
+                }
+                toggleSections();
+            });
+
+            toggleSections();
+        } else if (!useSavedMethod && newCardContent) {
+            // No saved methods, ensure new card section is active
+            newCardContent.classList.remove('disabled');
+            updateSubmitButton();
+        }
     }
 
-    // Description modal functionality (not used on payment page)
+    // Description modal functionality (unchanged)
     const descriptionButtons = document.querySelectorAll('.description-btn');
     const descriptionModal = document.getElementById('descriptionModal');
     const modalDescription = document.getElementById('modalDescription');
@@ -69,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Initialize Flatpickr for the dueDate field (not used on payment page)
+    // Initialize Flatpickr for the dueDate field (unchanged)
     const dueDateInput = document.getElementById('dueDate');
     if (dueDateInput) {
         flatpickr("#dueDate", {
@@ -82,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Dropdown menu functionality (used on payment page)
+    // Dropdown menu functionality (unchanged)
     const dropdownIcons = document.querySelectorAll('.dropdown-icon');
     dropdownIcons.forEach(icon => {
         icon.addEventListener('click', function (event) {
@@ -103,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Close dropdowns when clicking outside
+    // Close dropdowns when clicking outside (unchanged)
     document.addEventListener('click', function (event) {
         const dropdowns = document.querySelectorAll('.action-dropdown');
         dropdowns.forEach(dropdown => {
@@ -113,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Action functionality (delete and archive) with custom modal (used on payment page)
+    // Action functionality (delete and archive) with custom modal (unchanged)
     const actionLinks = document.querySelectorAll('.delete-link, .archive-link');
     const modal = document.getElementById('action-confirm-modal');
     const title = document.getElementById('action-title');
@@ -152,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Set default payment method functionality
+    // Set default payment method functionality (unchanged)
     const defaultPaymentRadios = document.querySelectorAll('input[name="defaultPaymentMethod"]');
     defaultPaymentRadios.forEach(radio => {
         radio.addEventListener('change', function () {

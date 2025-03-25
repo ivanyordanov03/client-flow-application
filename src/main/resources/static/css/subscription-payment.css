@@ -1,0 +1,120 @@
+.payment-container p {
+    margin-bottom: 0;
+}
+
+.plan-details strong {
+    color: #333;
+}
+
+#checkmarks {
+    font-size: 0.9em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+}
+
+.payment-options .form-group input,
+.payment-options .form-group select {
+    max-width: 650px;
+}
+
+.payment-options .payment-row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    max-width: 650px;
+}
+
+.payment-options .payment-row .expiry-date {
+    flex: 2;
+}
+
+.payment-options .payment-row .cvv {
+    flex: 1;
+}
+
+.payment-options .payment-row .transaction-type {
+    flex: 3;
+}
+
+.payment-options .btn:disabled {
+    background-color: #ccc;
+    color: #667;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.saved-methods-section,
+.payment-form-section {
+    margin-bottom: 2rem;
+    padding: 0;
+    background: #fff;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0;
+}
+
+.section-content.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.saved-methods-section .form-group select {
+    width: 100%;
+    max-width: 650px;
+}
+
+.payment-options {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+}
+
+.purchase-details {
+    flex: 1;
+}
+
+.custom-checkbox {
+    gap: 0.5rem;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.payment-options select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23667' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 12px 12px;
+    padding-right: 2rem;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.payment-options .form-group.cardholder {
+    margin-left: auto;
+    width: 50%;
+    max-width: 325px;
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-start;
+}
+
+.button-group .btn-cancel {
+    background-color: #ccc;
+    color: #333;
+}

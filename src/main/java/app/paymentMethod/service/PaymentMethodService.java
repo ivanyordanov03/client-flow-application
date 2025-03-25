@@ -6,6 +6,7 @@ import app.web.dto.PaymentSettingsRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,16 +18,14 @@ public class PaymentMethodService {
     private static final String PAYMENT_METHOD_WITH_CARD_NUMBER_EXISTS = "Payment method with card number [%s] already exists";
 
     private final PaymentMethodRepository paymentMethodRepository;
-    private final PaymentMethodDefaultService paymentMethodDefaultService;
 
     @Autowired
-    public PaymentMethodService(PaymentMethodRepository paymentMethodRepository,
-                                PaymentMethodDefaultService paymentMethodDefaultService) {
+    public PaymentMethodService(PaymentMethodRepository paymentMethodRepository) {
 
         this.paymentMethodRepository = paymentMethodRepository;
-        this.paymentMethodDefaultService = paymentMethodDefaultService;
     }
 
+    @Transactional
     public void createNew(PaymentSettingsRequest paymentSettingsRequest, UUID accountId) {
 
         if (paymentMethodRepository.getByCreditCardNumberAndExpirationDate(paymentSettingsRequest.getCardNumber(),
@@ -41,7 +40,7 @@ public class PaymentMethodService {
         }
 
         if (paymentSettingsRequest.isDefaultMethod()) {
-            paymentMethodDefaultService.setAsDefaultMethod(paymentMethod);
+            setAsDefaultMethod(paymentMethod);
         }
 
         paymentMethodRepository.save(paymentMethod);
@@ -58,6 +57,25 @@ public class PaymentMethodService {
                 .CVV(paymentSettingsRequest.getCvv())
                 .accountId(accountId)
                 .build();
+    }
+
+    @Transactional
+    public void setAsDefaultMethod(PaymentMethod paymentMethod) {
+
+        List<PaymentMethod> defaultMethodAsList = paymentMethodRepository.findByAccountIdAndDefaultMethodIsTrue(paymentMethod.getAccountId());
+
+        if (defaultMethodAsList.isEmpty()) {
+            log.error("Default payment method does not exist for account id [%s]".formatted(paymentMethod.getAccountId()));
+        } else if (defaultMethodAsList.size() > 1) {
+            log.error("More than one default payment methods found for account id [%s]".formatted(paymentMethod.getAccountId()));
+            defaultMethodAsList.forEach(defaultMethod -> {defaultMethod.setDefaultMethod(false);
+                paymentMethodRepository.save(defaultMethod);});
+        }
+        PaymentMethod currentDefaultMethod = defaultMethodAsList.get(0);
+        currentDefaultMethod.setDefaultMethod(false);
+        paymentMethodRepository.save(currentDefaultMethod);
+        paymentMethod.setDefaultMethod(true);
+        paymentMethodRepository.save(paymentMethod);
     }
 
     public PaymentMethod getById(UUID id) {

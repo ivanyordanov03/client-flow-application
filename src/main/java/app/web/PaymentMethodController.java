@@ -3,7 +3,6 @@ package app.web;
 import app.account.model.Account;
 import app.account.service.AccountService;
 import app.paymentMethod.model.PaymentMethod;
-import app.paymentMethod.service.PaymentMethodDefaultService;
 import app.paymentMethod.service.PaymentMethodService;
 import app.security.AuthenticationMetadata;
 import app.user.service.UserService;
@@ -26,18 +25,15 @@ public class PaymentMethodController {
     private final UserService userService;
     private final AccountService accountService;
     private final PaymentMethodService paymentMethodService;
-    private final PaymentMethodDefaultService paymentMethodDefaultService;
 
     @Autowired
     public PaymentMethodController(UserService userService,
                                    AccountService accountService,
-                                   PaymentMethodService paymentMethodService,
-                                   PaymentMethodDefaultService paymentMethodDefaultService) {
+                                   PaymentMethodService paymentMethodService) {
 
         this.userService = userService;
         this.accountService = accountService;
         this.paymentMethodService = paymentMethodService;
-        this.paymentMethodDefaultService = paymentMethodDefaultService;
     }
 
     @GetMapping()
@@ -116,7 +112,7 @@ public class PaymentMethodController {
     @PutMapping("/{id}/default")
     public ModelAndView setDefaultPaymentMethod(@PathVariable("id") UUID id) {
 
-        paymentMethodDefaultService.setAsDefaultMethod(paymentMethodService.getById(id));
+        paymentMethodService.setAsDefaultMethod(paymentMethodService.getById(id));
 
         return new ModelAndView("redirect:/payment-settings");
     }
