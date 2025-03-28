@@ -64,14 +64,14 @@
                     <td th:text="${filter == 'completed'} ? ${#temporals.format(task.dateCompleted, 'M/d/yyyy')} : ${#temporals.format(task.dueDate, 'M/d/yyyy')}" th:class="${task.dueDate.isBefore(#temporals.createToday()) and not task.completed} ? 'overdue-date'"></td>
                     <td class="row-actions">
                         <div class="action-container">
-                            <form th:action="@{'/tasks/' + ${task.id} + '/completed'(filter = ${filter})}" th:method="PUT" th:unless="${task.completed || task.assignedToId != user.id}">
+                            <form th:action="@{/tasks/{id}/completed(id=${task.id}, filter = ${filter})}" th:method="PUT" th:unless="${task.completed || task.assignedToId != user.id}">
                                 <button class="btn btn-secondary btn-small">Mark complete</button>
                             </form>
                             <span th:if="${task.completed}" class="green-checkmark">✔</span>
                             <span class="dropdown-icon">▼</span>
                         </div>
                         <div class="action-dropdown">
-                            <a th:href="@{'/tasks/' + ${task.id}(filter=${filter})}" class="edit-link">Update</a>
+                            <a th:href="@{/tasks/{id}(id=${task.id}, filter=${filter})}" class="edit-link">Update</a>
                             <a href="#" class="delete-link" th:attr="data-id=${task.id}, data-name=${task.name}, data-entity='task', data-filter=${filter}">Delete</a>
                         </div>
                     </td>
@@ -91,14 +91,14 @@
                     <td th:text="${filter == 'completed'} ? ${#temporals.format(task.dateCompleted, 'M/d/yyyy')} : ${#temporals.format(task.dueDate, 'M/d/yyyy')}" th:class="${task.dueDate.isBefore(#temporals.createToday()) and not task.completed} ? 'overdue-date'"></td>
                     <td>
                         <div class="action-container">
-                            <form th:action="@{'/tasks/' + ${task.id} + '/completed'(filter=${filter})}" th:method="PUT" th:unless="${task.completed}">
+                            <form th:action="@{/tasks/{id}/completed(id=${task.id}, filter=${filter})}" th:method="PUT" th:unless="${task.completed}">
                                 <button class="btn btn-secondary btn-small">Mark complete</button>
                             </form>
                             <span th:if="${task.completed}" class="green-checkmark">✔</span>
                             <span class="dropdown-icon">▼</span>
                         </div>
                         <div class="action-dropdown">
-                            <a th:href="@{'/tasks/' + ${task.id}(filter=${filter})}" class="edit-link">Update</a>
+                            <a th:href="@{/tasks/{id}(id=${task.id}, filter=${filter})}" class="edit-link">Update</a>
                             <a href="#" class="delete-link" th:attr="data-id=${task.id}, data-name=${task.name}, data-entity='task', data-filter=${filter}">Delete</a>
                         </div>
                     </td>
@@ -133,7 +133,7 @@
         <h2 id="action-title">Confirm Action</h2>
         <p id="action-message"></p>
         <div class="modal-buttons">
-            <form id="action-form" th:action="@{/tasks/0}" th:method="POST">
+            <form id="action-form" th:action="@{/tasks/0(filter=${filter})}" th:method="POST">
                 <input type="hidden" name="_method" id="action-method" value="POST" />
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <button type="submit" class="btn">Confirm</button>

@@ -1,6 +1,7 @@
 package app.user.service;
 
 import app.account.model.Account;
+import app.account.properties.PlanProperties;
 import app.account.service.AccountService;
 import app.security.AuthenticationMetadata;
 import app.user.model.User;
@@ -33,22 +34,28 @@ public class UserService implements UserDetailsService {
     private static final String REGISTERED_NEW_USER_WITH_ID = "New user with id [%s] has been registered.";
     private static final String CREATED_NEW_ACCOUNT_FOR_USER_ID = "A new account with id [%s] has been created for user with id [%s].";
     private static final String USER_WITH_ID_WAS_MODIFIED_BY_USER_WITH_ID = "User with id [%s] has been modified by user with id [%s].";
-//    private static final String ACCOUNT_MUST_HAVE_AT_LEAST_ONE_PRIMARY_ADMIN = "There must be at least one primary admin in your account.";
-    private static final String ONLY_PRIMARY_ADMIN_CAN_EDIT_PRIMARY_ADMIN = "Only users with user role Primary Admin can modify other users with Primary admin role.";
+    private static final String ACCESS_DENIED = "Access denied.";
+    private static final String ACCOUNT_REACHED_MAX_USERS = "You have reached the maximum number of users for your current plan. Upgrade your account to proceed";
+    private static final String USER_WITH_ID_WAS_SET_STATUS_BY_USER_WITH_ID = "User with id [%s] was set to %s by user with id [%s].";
+    private static final String USER_WITH_ID_WAS_SET_ARCHIVE_STATUS_BY_USER_WITH_ID = "User with id [%s] was %s by user with id [%s].";
+    private static final String USER_WITH_ID_DELETED_BY_USER_WITH_ID = "User with id [%s] was DELETED by user with id [%s].";
 
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AccountService accountService;
+    private final PlanProperties planProperties;
 
     @Autowired
     public UserService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
-                       AccountService accountService) {
+                       AccountService accountService,
+                       PlanProperties planProperties) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.accountService = accountService;
+        this.planProperties = planProperties;
     }
 
     @Override
@@ -75,6 +82,8 @@ public class UserService implements UserDetailsService {
     }
 
     public User register(UserRequest registerUserRequest, UUID accountId) {
+
+        validateUserLimit(accountId, registerUserRequest.getPlanName());
 
         Optional<User> optionUser = userRepository.findByEmail(registerUserRequest.getEmail());
         if (optionUser.isPresent()) {
@@ -117,17 +126,20 @@ public class UserService implements UserDetailsService {
         UserRole editorUserRole = editor.getUserRole();
 
         if (userRole.equals(UserRole.PRIMARY_ADMIN) && !editorUserRole.equals(UserRole.PRIMARY_ADMIN)) {
-            throw new IllegalStateException(ONLY_PRIMARY_ADMIN_CAN_EDIT_PRIMARY_ADMIN);
+            throw new IllegalStateException(ACCESS_DENIED);
         }
 
         user.setFirstName(editUserRequest.getFirstName());
         user.setLastName(editUserRequest.getLastName());
         user.setEmail(editUserRequest.getEmail());
-        user.setUserRole(UserRole.valueOf(editUserRequest.getUserRoleString()));
 
         String newPassword = editUserRequest.getPassword();
         if (newPassword != null && !newPassword.isBlank()) {
             user.setPassword(passwordEncoder.encode(editUserRequest.getPassword()));
+        }
+
+        if (!user.getUserRole().equals(UserRole.PRIMARY_ADMIN)) {
+            user.setUserRole(UserRole.valueOf(editUserRequest.getUserRoleString()));
         }
 
         userRepository.save(user);
@@ -157,5 +169,62 @@ public class UserService implements UserDetailsService {
         } else {
             return userRepository.findAllByAccountIdAndArchivedIsTrueOrderByUserRoleAscFirstNameAscLastNameAsc(accountId);
         }
+    }
+
+    public void validateUserLimit(UUID accountId, String planName) {
+        int currentUsers = getAllByAccountIdNotArchivedOrdered(accountId).size();
+        int maxUsers = getPlanMaxUsersFromPlanNameString(planName);
+
+        if (currentUsers >= maxUsers) {
+            throw new IllegalStateException(ACCOUNT_REACHED_MAX_USERS);
+        }
+    }
+
+    public int getPlanMaxUsersFromPlanNameString(String planName) {
+
+        return switch (planName) {
+            case "PLUS" -> planProperties.getMaxUsersPlus();
+            case "ESSENTIALS" -> planProperties.getMaxUsersEssentials();
+            case "SIMPLE_START" -> planProperties.getMaxUsersSimpleStart();
+            default -> throw new IllegalArgumentException("Unexpected plan value: " + planName);
+        };
+    }
+
+    public void changeStatus(UUID id, UUID loggedUserId) {
+
+        User user = getById(id);
+        if (user.getUserRole().equals(UserRole.PRIMARY_ADMIN) || user.isArchived()) {
+            return;
+        }
+        user.setActive(!user.isActive());
+        userRepository.save(user);
+        String status = (user.isActive()) ? "ACTIVE" : "INACTIVE";
+        log.info(USER_WITH_ID_WAS_SET_STATUS_BY_USER_WITH_ID.formatted(id, status, loggedUserId));
+    }
+
+    public void archve(UUID id, UUID loggedUserId) {
+
+        User user = getById(id);
+        if (user.getUserRole().equals(UserRole.PRIMARY_ADMIN)) {
+            return;
+        }
+        if (user.isActive()) {
+            user.setActive(false);
+        }
+
+        user.setArchived(!user.isArchived());
+        userRepository.save(user);
+        String status = (user.isActive()) ? "ARCHIVED" : "RESTORED";
+        log.info(USER_WITH_ID_WAS_SET_ARCHIVE_STATUS_BY_USER_WITH_ID.formatted(id, status, loggedUserId));
+    }
+
+    public void delete(UUID id, UUID loggedUserId) {
+
+        User user = getById(id);
+        if (user.getUserRole().equals(UserRole.PRIMARY_ADMIN)) {
+            throw new IllegalStateException(ACCESS_DENIED);
+        }
+        userRepository.delete(getById(id));
+        log.info(USER_WITH_ID_DELETED_BY_USER_WITH_ID.formatted(id, loggedUserId));
     }
 }

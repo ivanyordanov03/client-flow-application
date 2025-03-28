@@ -55,7 +55,7 @@
                     </td>
                     <td th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(currentUser.userRole.name(), '_', ' ')))}"></td>
                     <td th:unless="${user.userRole.name() == 'USER'}">
-                        <form th:action="@{'/change-status/' + ${currentUser.id}(filter=${filter})}" th:method="PUT">
+                        <form th:action="@{/users/{id}/status(id=${currentUser.id}, filter=${filter})}" th:method="PUT">
                             <button type="submit"
                                     th:classappend="${currentUser.active == true} ? 'btn-status-active' : 'btn-status-inactive'"
                                     th:text="${currentUser.active == true} ? 'Active' : 'Inactive'"
@@ -64,8 +64,8 @@
                     </td>
                     <td class="action-container">
                         <div th:unless="${user.userRole.name() == 'USER'}">
-                            <a th:href="@{'/users/' + ${currentUser.id}(filter=${filter})}" class="btn btn-secondary btn-small">Edit</a>
-                            <span class="dropdown-icon">▼</span>
+                            <a th:href="@{/users/{id}(id=${currentUser.id}, filter=${filter})}" class="btn btn-secondary btn-small">Edit</a>
+                            <span th:unless="${currentUser.userRole.name() == 'PRIMARY_ADMIN'}" class="dropdown-icon">▼</span>
                         </div>
                         <div class="action-dropdown">
                             <a href="#" class="archive-link"

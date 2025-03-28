@@ -82,7 +82,7 @@
         </div>
         <div class="auto-renewal">
             <p>Auto Renewal: <span th:text="${account.autoRenewalEnabled ? 'Enabled' : 'Disabled'}" th:class="${account.autoRenewalEnabled} ? '' : 'disabled'"></span></p>
-            <form th:action="@{'/account/' + ${account.id} + '/auto-renewal'}" th:method="PUT">
+            <form th:action="@{'/account/' + ${account.id} + '/auto-renewal'}" th:method="PUT" id="auto-renewal-form">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <label class="toggle-switch">
                     <input type="checkbox" th:checked="${account.autoRenewalEnabled}" onchange="this.form.submit()">

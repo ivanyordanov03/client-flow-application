@@ -1,5 +1,6 @@
 package app.web;
 
+import app.account.service.AccountService;
 import app.security.AuthenticationMetadata;
 import app.user.model.User;
 import app.user.model.UserRole;
@@ -22,18 +23,22 @@ import java.util.UUID;
 @RequestMapping("/users")
 public class UserController {
 
-    private static final String ONLY_PRIMARY_ADMIN_CAN_EDIT_PRIMARY_ADMIN = "Only users with user role Primary Admin can modify other users with Primary admin role.";
+    private static final String ONLY_PRIMARY_ADMIN_CAN_EDIT_PRIMARY_ADMIN = "Access Denied!";
 
     private final UserService userService;
+    private final AccountService accountService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService,
+                          AccountService accountService) {
 
         this.userService = userService;
+        this.accountService = accountService;
     }
 
     @GetMapping
     public ModelAndView getTeamPage(@RequestParam(value = "filter", required = false) String filter,
+                                    @ModelAttribute("errorMessage") String errorMessage,
                                     @AuthenticationPrincipal AuthenticationMetadata data) {
 
         if (filter == null) {
@@ -47,12 +52,19 @@ public class UserController {
         modelAndView.addObject("user", user);
         modelAndView.addObject("users", users);
         modelAndView.addObject("filter", filter);
+        modelAndView.addObject("errorMessage", errorMessage);
 
         return modelAndView;
     }
 
     @GetMapping("/new-user")
-    public ModelAndView getNewUserPage(@RequestParam("filter") String filter) {
+    public ModelAndView getNewUserPage(@RequestParam("filter") String filter,
+                                       @AuthenticationPrincipal AuthenticationMetadata data) {
+
+        User user = userService.getById(data.getUserId());
+        String planName = accountService.getById(user.getAccountId()).getPlan().getPlanName().toString();
+
+        userService.validateUserLimit(user.getAccountId(), planName);
 
         ModelAndView modelAndView = new ModelAndView("new-user");
         modelAndView.addObject("userRequest", new UserRequest());
@@ -95,7 +107,7 @@ public class UserController {
         modelAndView.addObject("filter", filter);
 
         if (user.getUserRole().equals(UserRole.PRIMARY_ADMIN) && !loggedUser.getUserRole().equals(UserRole.PRIMARY_ADMIN)) {
-            modelAndView.setViewName("users");
+            modelAndView.setViewName("redirect:/users");
             modelAndView.addObject("errorMessage", ONLY_PRIMARY_ADMIN_CAN_EDIT_PRIMARY_ADMIN);
             return modelAndView;
         }
@@ -131,5 +143,45 @@ public class UserController {
 
         userService.edit(id, editUserRequest, loggedUser.getId());
         return new ModelAndView("redirect:/users");
+    }
+
+    @PutMapping("/{id}/status")
+    public ModelAndView changeUserStatus(@PathVariable("id") UUID id,
+                                         @RequestParam("filter") String filter,
+                                         @AuthenticationPrincipal AuthenticationMetadata data) {
+
+        User loggedUser = userService.getById(data.getUserId());
+        userService.changeStatus(id, loggedUser.getId());
+
+        ModelAndView modelAndView = new ModelAndView("redirect:/users");
+        modelAndView.addObject("filter", filter);
+
+        return modelAndView;
+    }
+
+    @PutMapping("/{id}/archive")
+    public ModelAndView archiveUser(@PathVariable("id") UUID id,
+                                         @RequestParam("filter") String filter,
+                                         @AuthenticationPrincipal AuthenticationMetadata data) {
+
+        User loggedUser = userService.getById(data.getUserId());
+        userService.archve(id, loggedUser.getId());
+
+        ModelAndView modelAndView = new ModelAndView("redirect:/users");
+        modelAndView.addObject("filter", filter);
+
+        return modelAndView;
+    }
+
+    @DeleteMapping("/{id}")
+    public ModelAndView deleteUser(@PathVariable("id") UUID id,
+                                   @RequestParam("filter") String filter,
+                                   @AuthenticationPrincipal AuthenticationMetadata data) {
+
+        userService.delete(id, data.getUserId());
+        ModelAndView modelAndView = new ModelAndView("redirect:/users");
+        modelAndView.addObject("filter", filter);
+
+        return modelAndView;
     }
 }
