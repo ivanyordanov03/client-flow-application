@@ -56,9 +56,13 @@ button.btn.btn-small.btn-status{
     color: #e74c3c;
 }
 
-.email {
-    display: inline-block;
+.email-container {
+    display: flex;
+    align-items: center;
     max-width: 200px;
+}
+
+.email {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

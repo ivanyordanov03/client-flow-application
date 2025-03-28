@@ -142,9 +142,8 @@ public class TaskService {
         task.setAssignedToName(USER_FIRST_NAME_LAST_NAME_INITIAL.formatted(assignee.getFirstName(), assignee.getLastName().charAt(0)));
         task.setCompleted(false);
 
-        if (taskRequest.getPriority() != null) {
-            task.setPriority(Mapper.getTaskPriorityFromString(taskRequest.getPriority()));
-        }
+        task.setPriority(taskRequest.getPriority().isBlank() ? null : Mapper.getTaskPriorityFromString(taskRequest.getPriority()));
+
         task.setDateUpdated(LocalDateTime.now());
         taskRepository.save(task);
         log.info(TASK_WITH_ID_EDITED_BY_USER_WITH_ID.formatted(taskId, userId));

@@ -51,25 +51,6 @@
     margin-bottom: 1rem;
 }
 
-.upgrade-link {
-    font-size: 0.9em;
-    color: #667;
-    border-top: 1px solid #eee;
-    text-align: center;
-    padding-top: 1.5em;
-    margin-top: 3em;
-}
-
-.upgrade-link a {
-    color: #4BBF89;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
-
-.upgrade-link a:hover {
-    color: #0E2925;
-}
-
 .account-info .entity-filters {
     margin-bottom: 1.5rem;
 }

@@ -13,6 +13,10 @@
     gap: 1em;
 }
 
+.form-group {
+    margin-top: 1rem;
+}
+
 .payment-options .form-group input,
 .payment-options .form-group select {
     max-width: 650px;

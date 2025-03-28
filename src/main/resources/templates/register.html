@@ -12,7 +12,7 @@
 <body>
 <header>
     <div class="logo-container">
-        <a th:href="@{'/'}">
+        <a th:href="@{ '/'}">
             <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
         </a>
     </div>
@@ -62,7 +62,7 @@
             <h2>Your Plan</h2>
             <p>
                 <span th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(currentPlan.planName.name(), '_', ' ')))}"></span>
-                <span th:text="'$' + ${currentPlan.pricePerMonth.toString()} + '/month'"></span>
+                <span th:text="'$' + ${currentPlan.pricePerMonth.toString()} + '/mo'"></span>
             </p>
             <p id="checkmarks">
                 <span><span class="green-checkmark">✔</span>Product support</span>

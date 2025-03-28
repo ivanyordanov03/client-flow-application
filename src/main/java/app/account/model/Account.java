@@ -42,7 +42,6 @@ public class Account {
     @Column(nullable = false)
     private LocalDateTime dateUpdated;
 
-    @Column(nullable = false)
     private LocalDateTime dateExpiring;
 
     private UUID ownerId;

@@ -7,14 +7,19 @@ import app.payment.repository.PaymentRepository;
 import app.paymentMethod.service.PaymentMethodService;
 import app.web.dto.PaymentRequest;
 import app.web.mapper.Mapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
+@Slf4j
 @Service
 public class PaymentService {
+
+    private static final String NEW_PAYMENT_WITH_ID_HAS_BEEN_MADE_FOR_ACCOUNT_WITH_ID = "New payment with id [%s] made for account with id [%s]";
 
     private final PaymentRepository paymentRepository;
     private final AccountService accountService;
@@ -31,21 +36,27 @@ public class PaymentService {
     }
 
     @Transactional
-    public void insert(PaymentRequest paymentRequest, Account account) {
+    public void insert(PaymentRequest paymentRequest, UUID accountId) {
+
+        Account account = accountService.getById(accountId);
 
         if (paymentRequest.isSavePaymentMethod()) {
-            paymentMethodService.createNew(Mapper.mapPaymentRequestToPaymentMethodRequest(paymentRequest), account.getId());
+            paymentMethodService.createNew(Mapper.mapPaymentRequestToPaymentMethodRequest(paymentRequest), accountId);
         }
 
         if (paymentRequest.isAutoRenewal()) {
-            accountService.allowAutoRenewal(paymentRequest, account);
+            accountService.enableAutoRenewalForNewSubscription(paymentRequest, accountId);
         }
 
         if (!account.isActive()) {
-            accountService.setToActive(account);
+            accountService.setToActive(accountId);
         }
 
-        paymentRepository.save(initiate(paymentRequest, account));
+        accountService.setExpirationDate(accountId);
+        Payment payment = initiate(paymentRequest, account);
+        paymentRepository.save(payment);
+
+        log.info(NEW_PAYMENT_WITH_ID_HAS_BEEN_MADE_FOR_ACCOUNT_WITH_ID.formatted(payment.getId(), accountId));
     }
 
     private Payment initiate(PaymentRequest paymentRequest, Account account) {

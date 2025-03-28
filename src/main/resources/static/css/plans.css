@@ -4,6 +4,7 @@
     gap: 1.25em;
     padding: 2.5em 1.25em;
     flex-wrap: wrap;
+    position: relative;
 }
 
 .plan {
@@ -20,6 +21,11 @@
 
 .plan:hover {
     transform: translateY(-0.625em);
+}
+
+.plan.disabled {
+    opacity: 0.5;
+    pointer-events: none;
 }
 
 .plan h2 {
@@ -70,6 +76,21 @@
     color: #4BBF89;
     text-decoration: none;
     transition: color 0.3s ease;
+}
+
+.close-btn {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    font-size: 1.5em;
+    color: #667;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #4BBF89;
 }
 
 @media (max-width: 15em) {

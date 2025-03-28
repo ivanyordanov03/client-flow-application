@@ -44,10 +44,10 @@
             <p>Price Per Month: <span th:text="'$' + ${currentPlan.pricePerMonth.toString()}"></span></p>
             <p>Auto Renewal: <span th:text="${account.autoRenewalEnabled ? 'Enabled' : 'Disabled'}"></span></p>
             <p th:unless="${account.autoRenewalEnabled}">Expiring: <span th:text="${#temporals.format(account.dateExpiring, 'M/d/yyyy')}"></span></p>
-            <a th:href="@{/payments/new}" class="btn btn-secondary btn-small">Make a Payment</a>
+            <a th:unless="${account.autoRenewalEnabled}" th:href="@{/payments/new}" class="btn btn-secondary btn-small">Make a Payment</a>
         </div>
         <p class="upgrade-link">
-            Not the right plan for you? <a th:href="@{/upgrade}">Upgrade</a>
+            Not the right plan for you? <a th:href="@{/plans/upgrade}">Upgrade</a>
         </p>
     </div>
 </main>

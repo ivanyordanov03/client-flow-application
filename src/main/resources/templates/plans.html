@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClientFlow - Pricing</title>
+    <title th:text="${user == null} ? 'ClientFlow - Pricing' : 'ClientFlow - Upgrade Plan'">ClientFlow - Pricing</title>
     <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/plans.css">
@@ -12,14 +12,16 @@
 <header>
     <div class="logo-container">
         <a th:href="@{'/'}">
-           <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+            <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
         </a>
     </div>
 </header>
 
 <main>
     <section class="pricing-plans">
-        <div class="plan">
+        <a th:if="${user == null}" th:href="@{'/'}" class="close-btn">&times;</a>
+        <a th:if="${user != null}" th:href="@{'/dashboard'}" class="close-btn">&times;</a>
+        <div class="plan" th:classappend="${user != null and totalAccountUsers > 1} ? 'disabled'">
             <h2>Simple Start</h2>
             <p>Perfect for individual users.</p>
             <ul>
@@ -27,11 +29,11 @@
                 <li>Basic features</li>
                 <li>Email support</li>
             </ul>
-            <p class="price">$9.99<span>/month</span></p>
-            <a th:href="@{/register(plan='SIMPLE_START')}" class="btn">Get Started</a>
+            <p class="price">$9.99<span>/mo</span></p>
+            <a th:if="${user == null}" th:href="@{/register(plan='SIMPLE_START')}" class="btn">Get Started</a>
+            <a th:if="${user != null and totalAccountUsers <= 1}" th:href="@{/payments/new(plan='SIMPLE_START')}" class="btn">Continue</a>
         </div>
-
-        <div class="plan">
+        <div class="plan" th:classappend="${user != null and totalAccountUsers > 5} ? 'disabled'">
             <h2>Essentials</h2>
             <p>Ideal for small teams.</p>
             <ul>
@@ -39,11 +41,11 @@
                 <li>Advanced features</li>
                 <li>Priority email support</li>
             </ul>
-            <p class="price">$19.99<span>/month</span></p>
-            <a th:href="@{/register(plan='ESSENTIALS')}" class="btn">Get Started</a>
+            <p class="price">$19.99<span>/mo</span></p>
+            <a th:if="${user == null}" th:href="@{/register(plan='ESSENTIALS')}" class="btn">Get Started</a>
+            <a th:if="${user != null and totalAccountUsers <= 5}" th:href="@{/payments/new(plan='ESSENTIALS')}" class="btn">Continue</a>
         </div>
-
-        <div class="plan">
+        <div class="plan" th:classappend="${user != null and totalAccountUsers > 15} ? 'disabled'">
             <h2>Plus</h2>
             <p>For growing teams.</p>
             <ul>
@@ -51,12 +53,13 @@
                 <li>All features included</li>
                 <li>24/7 priority support</li>
             </ul>
-            <p class="price">$39.99<span>/month</span></p>
-            <a th:href="@{/register(plan='PLUS')}" class="btn">Get Started</a>
+            <p class="price">$29.99<span>/mo</span></p>
+            <a th:if="${user == null}" th:href="@{/register(plan='PLUS')}" class="btn">Get Started</a>
+            <a th:if="${user != null and totalAccountUsers <= 15}" th:href="@{/payments/new(plan='PLUS')}" class="btn">Continue</a>
         </div>
     </section>
 
-    <p id="sign-in">Already have an account? <a th:href="@{/login}">Sign In</a></p>
+    <p id="sign-in" th:if="${user == null}">Already have an account? <a th:href="@{/login}">Sign In</a></p>
 </main>
 
 <footer>

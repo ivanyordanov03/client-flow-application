@@ -5,6 +5,7 @@ import app.account.service.AccountService;
 import app.paymentMethod.model.PaymentMethod;
 import app.paymentMethod.service.PaymentMethodService;
 import app.security.AuthenticationMetadata;
+import app.user.model.User;
 import app.user.service.UserService;
 import app.web.dto.PaymentSettingsRequest;
 import app.web.mapper.Mapper;
@@ -39,11 +40,12 @@ public class PaymentMethodController {
     @GetMapping()
     public ModelAndView getPaymentSettingsPage(@AuthenticationPrincipal AuthenticationMetadata data) {
 
-        Account account = accountService.getByOwnerId(data.getUserId());
+        User user = userService.getById(data.getUserId());
+        Account account = accountService.getById(user.getAccountId());
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("payment-settings");
-        modelAndView.addObject("user", userService.getById(data.getUserId()));
+        modelAndView.addObject("user", user);
         modelAndView.addObject("accountPaymentMethods", paymentMethodService.getAllByAccountId(account.getId()));
         modelAndView.addObject("account", account);
         return modelAndView;
@@ -72,8 +74,8 @@ public class PaymentMethodController {
             modelAndView.addObject("paymentSettingsRequest", paymentSettingsRequest);
         }
 
-        Account account = accountService.getByOwnerId(data.getUserId());
-        paymentMethodService.createNew(paymentSettingsRequest, account.getId());
+        User user = userService.getById(data.getUserId());
+        paymentMethodService.createNew(paymentSettingsRequest, user.getAccountId());
 
         return new ModelAndView("redirect:/payment-settings");
     }
@@ -112,8 +114,20 @@ public class PaymentMethodController {
     @PutMapping("/{id}/default")
     public ModelAndView setDefaultPaymentMethod(@PathVariable("id") UUID id) {
 
-        paymentMethodService.setAsDefaultMethod(paymentMethodService.getById(id));
+        paymentMethodService.setAsDefaultMethod(id);
 
         return new ModelAndView("redirect:/payment-settings");
+    }
+
+    @DeleteMapping("/{id}")
+    public String deletePaymentMethod(@PathVariable UUID id,
+                                      @AuthenticationPrincipal AuthenticationMetadata data) {
+
+        User user = userService.getById(data.getUserId());
+        Account account = accountService.getById(user.getAccountId());
+        accountService.deletePaymentMethod(id, user.getId(), account.getId());
+
+
+        return "redirect:/payment-settings";
     }
 }

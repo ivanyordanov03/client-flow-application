@@ -12,6 +12,11 @@
     margin-bottom: 1rem;
 }
 
+.action-container {
+    position: relative;
+    display: inline-block
+}
+
 .auto-renewal {
     display: flex;
     align-items: center;

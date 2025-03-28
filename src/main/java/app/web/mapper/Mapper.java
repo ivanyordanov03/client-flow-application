@@ -53,21 +53,21 @@ public class Mapper {
         taskRequest.setName(task.getName());
         taskRequest.setDescription(task.getDescription());
         taskRequest.setDueDate(task.getDueDate().toString());
-        taskRequest.setPriority(task.getPriority() != null ? task.getPriority().toString() : "");
+        TaskPriority priority = task.getPriority();
+        taskRequest.setPriority(priority != null ? task.getPriority().toString() : "");
         taskRequest.setAssignedTo(task.getAssignedToId().toString());
-
         return taskRequest;
     }
 
-    public static UserRequest mapUserToUserRequest(User user) {
+    public static EditUserRequest mapUserToEditUserRequest(User user) {
 
-        UserRequest userRequest = new UserRequest();
-        userRequest.setFirstName(user.getFirstName());
-        userRequest.setLastName(user.getLastName());
-        userRequest.setEmail(user.getEmail());
-        userRequest.setUserRoleString(user.getUserRole().toString());
+        EditUserRequest editUserRequest = new EditUserRequest();
+        editUserRequest.setFirstName(user.getFirstName());
+        editUserRequest.setLastName(user.getLastName());
+        editUserRequest.setEmail(user.getEmail());
+        editUserRequest.setUserRoleString(user.getUserRole().toString());
 
-        return userRequest;
+        return editUserRequest;
     }
 
     public static AccountRequest mapAccountToAccountRequest(Account account) {
@@ -102,5 +102,16 @@ public class Mapper {
         paymentSettingsRequest.setDefaultMethod(paymentMethod.isDefaultMethod());
 
         return paymentSettingsRequest;
+    }
+
+    public static PaymentRequest mapPaymentMethodToPaymentRequest(PaymentMethod paymentMethod) {
+
+        PaymentRequest paymentRequest = new PaymentRequest();
+        paymentRequest.setCardholderName(paymentMethod.getCardHolderName());
+        paymentRequest.setCardNumber(paymentMethod.getCreditCardNumber());
+        paymentRequest.setExpirationDate(paymentMethod.getExpirationDate());
+        paymentRequest.setCvv(paymentMethod.getCVV());
+
+        return paymentRequest;
     }
 }

@@ -24,10 +24,15 @@ import java.util.UUID;
 @Service
 public class AccountService {
 
-    private static final String AUTO_RENEWAL_ENABLED_FOR_ACCOUNT_WITH_ID_S = "Auto-renewal enabled for account with id [%s]";
+    private static final String ACCOUNT_WITH_ID_CREATED = "New account with id [%s] has been created.";
     private static final String ACCOUNT_WITH_ID_ACTIVATED = "Account with id [%s] has been activated.";
     private static final String ACCOUNT_WITH_ID_DOES_NOT_EXIST = "Account with id [%s] does not exist.";
+    private static final String ACCOUNT_WITH_ID_IS_SET_TO_EXPIRE_ON = "Account with id [%s] is set to expire on [%s].";
+    private static final String AUTO_RENEWAL_ENABLED_FOR_ACCOUNT_WITH_ID = "Auto-renewal is enabled for account with id [%s]";
+    private static final String AUTO_RENEWAL_DISABLED_FOR_ACCOUNT_WITH_ID = "Auto-renewal is disabled for account with id [%s]";
+    private static final String ACCOUNT_WITH_ID_HAS_BEEN_EDITED_BY = "Account with id [%s] has been edited by user with id [%s].";
     private static final String NO_ACCOUNT_ASSOCIATED_WITH_USER_WITH_ID = "There is no account associated with user with id [%s].";
+    private static final String NEW_OWNER_ID_ASSIGNED_TO_ACCOUNT_WITH_ID = "New owner with id [%s] has been assigned to account with id [%s].";
 
     private final AccountRepository accountRepository;
     private final PlanService planService;
@@ -49,7 +54,7 @@ public class AccountService {
 
         Account account = initialize(plan);
         accountRepository.save(account);
-
+        log.info(ACCOUNT_WITH_ID_CREATED.formatted(account.getId()));
         return account;
     }
 
@@ -61,31 +66,108 @@ public class AccountService {
                 .plan(plan)
                 .dateCreated(now)
                 .dateUpdated(now)
-                .dateExpiring(now.plusMonths(1))
                 .build();
     }
 
     @Transactional
-    public void allowAutoRenewal(PaymentRequest paymentRequest, Account account) {
+    public void enableAutoRenewalForNewSubscription(PaymentRequest paymentRequest, UUID id) {
 
-        List<PaymentMethod> paymentMethods = paymentMethodService.getAllByAccountId(account.getId());
+        List<PaymentMethod> paymentMethods = paymentMethodService.getAllByAccountId(id);
         if (paymentMethods.isEmpty()) {
-            paymentMethodService.createNew(Mapper.mapPaymentRequestToPaymentMethodRequest(paymentRequest), account.getId());
+            paymentMethodService.createNew(Mapper.mapPaymentRequestToPaymentMethodRequest(paymentRequest), id);
         }
 
+        Account account = getById(id);
         account.setAutoRenewalEnabled(true);
         account.setDateUpdated(LocalDateTime.now());
         accountRepository.save(account);
-        log.info(AUTO_RENEWAL_ENABLED_FOR_ACCOUNT_WITH_ID_S.formatted(account.getId()));
 
+        log.info(AUTO_RENEWAL_ENABLED_FOR_ACCOUNT_WITH_ID.formatted(account.getId()));
     }
 
-    public void setToActive(Account account) {
+    public void setToActive(UUID id) {
 
+        Account account = getById(id);
         account.setActive(true);
         account.setDateUpdated(LocalDateTime.now());
         accountRepository.save(account);
-        log.info(ACCOUNT_WITH_ID_ACTIVATED.formatted(account.getId()));
+        log.info(ACCOUNT_WITH_ID_ACTIVATED.formatted(id));
+    }
+
+    public void setExpirationDate(UUID id) {
+
+        Account account = getById(id);
+
+        if (account.isActive()) {
+            account.setDateExpiring(account.getDateExpiring().plusMonths(1));
+        } else {
+            account.setDateExpiring(LocalDateTime.now().plusMonths(1));
+        }
+
+        account.setDateUpdated(LocalDateTime.now());
+        accountRepository.save(account);
+
+        log.info(ACCOUNT_WITH_ID_IS_SET_TO_EXPIRE_ON.formatted(id, account.getDateExpiring()));
+    }
+
+    public void edit(AccountRequest accountRequest, UUID userId) {
+
+        Account account = getByOwnerId(userId);
+        account.setCompanyLogo(accountRequest.getLogoURL());
+        account.setBusinessName(accountRequest.getBusinessName());
+        account.setAddress(accountRequest.getAddress());
+        account.setPhoneNumber(accountRequest.getPhoneNumber());
+        account.setDateUpdated(LocalDateTime.now());
+
+        accountRepository.save(account);
+        log.info(ACCOUNT_WITH_ID_HAS_BEEN_EDITED_BY.formatted(account.getId(), userId));
+    }
+
+    @Transactional
+    public void switchAutoRenewal(UUID id) {
+
+        Account account = getById(id);
+
+        if (!account.isAutoRenewalEnabled()) {
+            List<PaymentMethod> savedPaymentMethods = paymentMethodService.getAllByAccountId(id);
+
+            if (savedPaymentMethods.isEmpty()) {
+                throw new IllegalStateException("There is no saved payment method associated with account with id [%s].");
+            }
+
+            if (savedPaymentMethods.stream().filter(PaymentMethod::isDefaultMethod).toList().isEmpty()) {
+                paymentMethodService.setAsDefaultMethod(savedPaymentMethods.get(0).getId());
+            }
+        }
+        account.setAutoRenewalEnabled(!account.isAutoRenewalEnabled());
+        account.setDateUpdated(LocalDateTime.now());
+        accountRepository.save(account);
+
+        if (account.isAutoRenewalEnabled()) {
+            log.info(AUTO_RENEWAL_ENABLED_FOR_ACCOUNT_WITH_ID.formatted(id));
+        } else {
+            log.info(AUTO_RENEWAL_DISABLED_FOR_ACCOUNT_WITH_ID.formatted(id));
+        }
+    }
+
+    public void insertOwnerId(UUID id, UUID ownerId) {
+
+        Account account = getById(id);
+        account.setOwnerId(ownerId);
+        accountRepository.save(account);
+
+        log.info(NEW_OWNER_ID_ASSIGNED_TO_ACCOUNT_WITH_ID.formatted(ownerId, id));
+    }
+
+    @Transactional
+    public void deletePaymentMethod(UUID paymentMethodId, UUID userId, UUID id) {
+
+        paymentMethodService.delete(paymentMethodId, userId, id);
+        List<PaymentMethod> remainingMethods = paymentMethodService.getAllByAccountId(id);
+
+        if (remainingMethods.isEmpty() && getById(id).isAutoRenewalEnabled()) {
+            switchAutoRenewal(id);
+        }
     }
 
     public Account getByOwnerId(UUID ownerId) {
@@ -106,25 +188,5 @@ public class AccountService {
         }
 
         return optional.get();
-    }
-
-    public void edit(AccountRequest accountRequest, UUID userId) {
-
-        Account account = getByOwnerId(userId);
-        account.setCompanyLogo(accountRequest.getLogoURL());
-        account.setBusinessName(accountRequest.getBusinessName());
-        account.setAddress(accountRequest.getAddress());
-        account.setPhoneNumber(accountRequest.getPhoneNumber());
-        account.setDateUpdated(LocalDateTime.now());
-
-        accountRepository.save(account);
-    }
-
-    public void setAutoRenewal(UUID id) {
-
-        Account account = getById(id);
-
-        account.setAutoRenewalEnabled(!account.isAutoRenewalEnabled());
-        accountRepository.save(account);
     }
 }

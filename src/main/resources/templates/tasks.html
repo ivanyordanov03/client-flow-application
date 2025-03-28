@@ -103,7 +103,7 @@
                         </div>
                     </td>
                 </tr>
-                <tr th:if="${#strings.equals(user.userRole, 'USER') and #lists.isEmpty(allAccountTasks) || (#strings.equals(filter, 'my-tasks') and #lists.isEmpty(myTasks))}" class="empty-state">
+                <tr th:if="${(not #strings.equals(user.userRole, 'USER') and #lists.isEmpty(allAccountTasks) and #strings.equals(filter, 'all-open')) || (#strings.equals(filter, 'my-tasks') and #lists.isEmpty(myTasks))}" class="empty-state">
                     <td colspan="6">
                         <div class="empty-message">
                             <svg width="3rem" height="3rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

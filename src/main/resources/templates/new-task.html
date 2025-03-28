@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,7 +34,7 @@
             <div th:insert="~{fragments/task-form :: taskForm}"></div>
             <div class="form-controls">
                 <button type="submit" class="btn btn-secondary">Update Task</button>
-                <a th:href="@{/tasks}" class="btn">Cancel</a>
+                <a th:href="@{/tasks(filter = ${filter})}" class="btn">Cancel</a>
             </div>
         </form>
     </div>

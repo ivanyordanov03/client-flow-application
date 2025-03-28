@@ -21,7 +21,6 @@ public class PaymentRequest {
     @NotBlank(message = "CVV is required")
     private String cvv;
 
-    @NotBlank
     private String transactionType;
 
     private boolean savePaymentMethod;

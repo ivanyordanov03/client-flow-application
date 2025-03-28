@@ -75,7 +75,7 @@ public class AccountController {
     @PutMapping("/{id}/auto-renewal")
     public String setAutoRenewal (@PathVariable UUID id){
 
-        accountService.setAutoRenewal(id);
+        accountService.switchAutoRenewal(id);
 
         return "redirect:/payment-settings";
     }

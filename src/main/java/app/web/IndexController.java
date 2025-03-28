@@ -27,7 +27,6 @@ import org.springframework.web.servlet.ModelAndView;
 public class IndexController {
 
     private static final String LOGIN_ERROR_MESSAGE = "Incorrect username or password.";
-    private static final String THYMELEAF_ERROR_MESSAGE = "Thymeleaf status: 999 error: \"None\"";
 
     private final PlanService planService;
     private final UserService userService;

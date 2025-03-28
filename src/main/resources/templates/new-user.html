@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,20 +23,20 @@
     <div class="content">
         <div>
         <h1 th:text="${userId != null} ? 'Edit User' : 'Create New User'"></h1>
-        <form th:if="${userId == null}" th:action="@{/users}" th:method="POST" th:object="${userRequest}">
+        <form th:if="${userId == null}" th:action="@{/users(filter = ${filter})}" th:method="POST" th:object="${userRequest}">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <div th:insert="~{fragments/user-form :: userForm}"></div>
             <div class="form-controls">
                 <button type="submit" class="btn btn-secondary">Create User</button>
-                <a th:href="@{/users}" class="btn">Cancel</a>
+                <a th:href="@{/users(filter = ${filter})}" class="btn">Cancel</a>
             </div>
         </form>
-        <form th:unless="${userId == null}" th:action="@{'/users/' + ${userId}}" th:method="PUT" th:object="${userRequest}">
+        <form th:unless="${userId == null}" th:action="@{('/users/' + ${userId})(filter = ${filter})}" th:method="PUT" th:object="${editUserRequest}">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <div th:insert="~{fragments/user-form :: userForm}"></div>
             <div class="form-controls">
                 <button type="submit" class="btn btn-secondary">Update User</button>
-                <a th:href="@{/users}" class="btn">Cancel</a>
+                <a th:href="@{/users(filter = ${filter})}" class="btn">Cancel</a>
             </div>
         </form>
         </div>

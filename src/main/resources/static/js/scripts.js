@@ -92,11 +92,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const descriptionButtons = document.querySelectorAll('.description-btn');
     const descriptionModal = document.getElementById('descriptionModal');
     const modalDescription = document.getElementById('modalDescription');
+    const modalTaskName = document.getElementById('modalTaskName');
     const closeBtn = document.querySelector('.close-btn');
 
-    if (descriptionButtons.length > 0 && descriptionModal && modalDescription && closeBtn) {
+    if (descriptionButtons.length > 0 && descriptionModal && modalDescription && modalTaskName && closeBtn) {
         descriptionButtons.forEach(button => {
             button.addEventListener('click', function () {
+                modalTaskName.textContent = this.getAttribute('data-name') || '';
                 modalDescription.textContent = this.getAttribute('data-description') || 'No description available.';
                 descriptionModal.style.display = 'flex';
             });
@@ -177,7 +179,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 const isArchive = this.classList.contains('archive-link');
 
                 title.textContent = isArchive ? 'Confirm Archiving' : 'Confirm Deletion';
-                message.textContent = `Are you sure you would like to ${isArchive ? 'archive' : 'permanently delete'} the ${entityType} "${name}"?`;
+                if (entityType === 'payment-setting' && !isArchive) {
+                    message.textContent = `Are you sure you would like to permanently delete card ending in ${name}?`;
+                } else {
+                    message.textContent = `Are you sure you would like to ${isArchive ? 'archive' : 'permanently delete'} the ${entityType} "${name}"?`;
+                }
                 form.action = `/${entityType}s/${id}${isArchive ? '/archive' : ''}?filter=${filterValue}`;
                 methodInput.value = isArchive ? 'PUT' : 'DELETE';
 

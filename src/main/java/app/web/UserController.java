@@ -2,7 +2,9 @@ package app.web;
 
 import app.security.AuthenticationMetadata;
 import app.user.model.User;
+import app.user.model.UserRole;
 import app.user.service.UserService;
+import app.web.dto.EditUserRequest;
 import app.web.dto.UserRequest;
 import app.web.mapper.Mapper;
 import jakarta.validation.Valid;
@@ -19,6 +21,8 @@ import java.util.UUID;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+
+    private static final String ONLY_PRIMARY_ADMIN_CAN_EDIT_PRIMARY_ADMIN = "Only users with user role Primary Admin can modify other users with Primary admin role.";
 
     private final UserService userService;
 
@@ -48,25 +52,30 @@ public class UserController {
     }
 
     @GetMapping("/new-user")
-    public ModelAndView getNewUserPage() {
+    public ModelAndView getNewUserPage(@RequestParam("filter") String filter) {
 
         ModelAndView modelAndView = new ModelAndView("new-user");
         modelAndView.addObject("userRequest", new UserRequest());
+        modelAndView.addObject("filter", filter);
 
         return modelAndView;
     }
 
     @PostMapping
     public ModelAndView processNewUserRequest(@Valid @ModelAttribute("userRequest") UserRequest userRequest,
-                                              @AuthenticationPrincipal AuthenticationMetadata data,
-                                              BindingResult bindingResult) {
+                                              BindingResult bindingResult,
+                                              @RequestParam(value = "filter", required = false) String filter,
+                                              @AuthenticationPrincipal AuthenticationMetadata data) {
 
         User user = userService.getById(data.getUserId());
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("user", user);
+        modelAndView.addObject("filter", filter);
 
         if (bindingResult.hasErrors()) {
             modelAndView.setViewName("new-user");
+            modelAndView.addObject("userRequest", userRequest);
+            return modelAndView;
         }
 
         UUID accountId = user.getAccountId();
@@ -76,13 +85,24 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ModelAndView getEditUserPage(@PathVariable UUID id) {
+    public ModelAndView getEditUserPage(@PathVariable UUID id,
+                                        @RequestParam(value = "filter", required = false) String filter,
+                                        @AuthenticationPrincipal AuthenticationMetadata data) {
 
         User user = userService.getById(id);
+        User loggedUser = userService.getById(data.getUserId());
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("filter", filter);
 
-        ModelAndView modelAndView = new ModelAndView("new-user");
+        if (user.getUserRole().equals(UserRole.PRIMARY_ADMIN) && !loggedUser.getUserRole().equals(UserRole.PRIMARY_ADMIN)) {
+            modelAndView.setViewName("users");
+            modelAndView.addObject("errorMessage", ONLY_PRIMARY_ADMIN_CAN_EDIT_PRIMARY_ADMIN);
+            return modelAndView;
+        }
+
+        modelAndView.setViewName("new-user");
         modelAndView.addObject("userId", id);
-        modelAndView.addObject("userRequest", Mapper.mapUserToUserRequest(user));
+        modelAndView.addObject("editUserRequest", Mapper.mapUserToEditUserRequest(user));
 
         return modelAndView;
     }
@@ -90,19 +110,26 @@ public class UserController {
     @PutMapping("/{id}")
     public ModelAndView processEditUserRequest(@PathVariable("id") UUID id,
                                                @RequestParam("filter") String filter,
-                                               @Valid UserRequest userRequest,
-                                               @AuthenticationPrincipal AuthenticationMetadata data,
-                                               BindingResult bindingResult) {
+                                               @Valid @ModelAttribute("editUserRequest") EditUserRequest editUserRequest,
+                                               BindingResult bindingResult,
+                                               @AuthenticationPrincipal AuthenticationMetadata data) {
 
         User loggedUser = userService.getById(data.getUserId());
         ModelAndView modelAndView = new ModelAndView();
-        if (bindingResult.hasErrors()) {
-            modelAndView.setViewName("new-user");
-            modelAndView.addObject("filter", filter);
-            modelAndView.addObject("userRequest", userRequest);
+        modelAndView.addObject("filter", filter);
+
+        if (editUserRequest.getPassword().isEmpty()) {
+            editUserRequest.setPassword(null);
         }
 
-        userService.edit(id, userRequest, loggedUser.getId());
-        return modelAndView;
+        if (bindingResult.hasErrors()) {
+            modelAndView.setViewName("new-user");
+            modelAndView.addObject("userId", id);
+            modelAndView.addObject("editUserRequest", editUserRequest);
+            return modelAndView;
+        }
+
+        userService.edit(id, editUserRequest, loggedUser.getId());
+        return new ModelAndView("redirect:/users");
     }
 }

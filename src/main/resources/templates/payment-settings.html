@@ -58,9 +58,10 @@
                         <div class="action-container">
                             <a th:href="@{'/payment-settings/' + ${paymentMethod.id}}" class="btn btn-secondary btn-small">Edit</a>
                             <span class="dropdown-icon">▼</span>
-                            <div class="action-dropdown">
-                                <a href="#" class="delete-link" th:attr="data-id=${paymentMethod.id}, data-entity='payment-method'">Delete</a>
-                            </div>
+                        </div>
+                        <div class="action-dropdown">
+                            <a href="#" class="delete-link"
+                               th:attr="data-id=${paymentMethod.id}, data-entity='payment-setting', data-name=${#strings.substring(paymentMethod.creditCardNumber, 12)}">Delete</a>
                         </div>
                     </td>
                 </tr>

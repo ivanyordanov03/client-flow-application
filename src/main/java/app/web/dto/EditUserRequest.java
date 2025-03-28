@@ -1,13 +1,10 @@
 package app.web.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
-public class UserRequest {
+public class EditUserRequest {
 
     @NotEmpty
     @Pattern(regexp = "^[A-Za-zÀ-ÿ]+(?:'[A-Za-zÀ-ÿ]+)?(?:[ -][A-Za-zÀ-ÿ]+)?$",
@@ -25,14 +22,9 @@ public class UserRequest {
     @Email(message = "Enter valid email address")
     private String email;
 
-    @NotEmpty
-    @Size(min = 3, max = 20, message = "Password must be between 3 and 20 characters long")
+    @Pattern(regexp = "^$|^.{3,20}$", message = "Password must be empty or between 3 and 20 characters") // min = 3 and no mandatory special characters for easier testing
     private String password;
 
     @NotEmpty
     private String userRoleString;
-
-    private String statusString;
-
-    private String planName;
 }

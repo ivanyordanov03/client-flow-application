@@ -36,7 +36,8 @@
     <label for="role">Role<span class="required">*</span></label>
     <select id="role" th:field="*{userRoleString}" required>
       <option value="">Select one</option>
-      <option th:each="role : ${T(app.user.model.UserRole).values()}" th:value="${role}" th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(role, '_', ' ')))}"></option>
+      <option th:value="USER">User</option>
+      <option th:value="ADMINISTRATOR">Administrator</option>
     </select>
     <div th:errors="*{userRoleString}" class="alert-warning"></div>
   </div>

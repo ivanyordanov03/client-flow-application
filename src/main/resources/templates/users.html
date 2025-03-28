@@ -28,8 +28,9 @@
                 <a th:href="@{/users(filter='current')}" th:class="${#strings.equals(filter, 'current')} ? 'btn filter-btn active' : 'btn filter-btn'">Current</a>
                 <a th:href="@{/users(filter='archived')}" th:class="${#strings.equals(filter, 'archived')} ? 'btn filter-btn active' : 'btn filter-btn'">Archived</a>
             </div>
-            <a th:href="@{/users/new-user}" class="btn btn-secondary add-action add-entity">+ Add new member</a>
+            <a th:href="@{/users/new-user(filter=${filter})}" class="btn btn-secondary add-action add-entity">+ Add new member</a>
         </div>
+        <p th:if="${errorMessage}" th:text="${errorMessage}" class="required"></p>
         <div class="users-table">
             <table class="table">
                 <thead>
@@ -48,11 +49,13 @@
                     <td th:text="${currentUser.firstName}"></td>
                     <td th:text="${currentUser.lastName}"></td>
                     <td>
-                        <span class="email" th:text="${currentUser.email}" th:attr="title=${currentUser.email}"></span>
+                        <div class="email-container">
+                            <span class="email" th:text="${currentUser.email}" th:attr="title=${currentUser.email}"></span>
+                        </div>
                     </td>
                     <td th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(currentUser.userRole.name(), '_', ' ')))}"></td>
                     <td th:unless="${user.userRole.name() == 'USER'}">
-                        <form th:action="@{'/change-status/' + ${currentUser.id}}" th:method="PUT">
+                        <form th:action="@{'/change-status/' + ${currentUser.id}(filter=${filter})}" th:method="PUT">
                             <button type="submit"
                                     th:classappend="${currentUser.active == true} ? 'btn-status-active' : 'btn-status-inactive'"
                                     th:text="${currentUser.active == true} ? 'Active' : 'Inactive'"
@@ -61,7 +64,7 @@
                     </td>
                     <td class="action-container">
                         <div th:unless="${user.userRole.name() == 'USER'}">
-                            <a th:href="@{'/users/' + ${currentUser.id}}" class="btn btn-secondary btn-small">Edit</a>
+                            <a th:href="@{'/users/' + ${currentUser.id}(filter=${filter})}" class="btn btn-secondary btn-small">Edit</a>
                             <span class="dropdown-icon">▼</span>
                         </div>
                         <div class="action-dropdown">
@@ -84,7 +87,7 @@
         <h2 id="action-title">Confirm Action</h2>
         <p id="action-message"></p>
         <div class="modal-buttons">
-            <form id="action-form" th:action="@{/users/0}" th:method="POST">
+            <form id="action-form" th:action="@{/users/0(filter=${filter})}" th:method="POST">
                 <input type="hidden" name="_method" id="action-method" value="POST" />
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <button type="submit" class="btn">Confirm</button>
