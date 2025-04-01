@@ -55,23 +55,24 @@ public class PaymentController {
     @GetMapping
     public ModelAndView getPaymentsPage(@AuthenticationPrincipal AuthenticationMetadata data) {
 
-        User user = userService.getById(data.getUserId());
-        Account account = accountService.getByOwnerId(user.getId());
+        ModelAndView modelAndView = new ModelAndView("payment-history");
+        modelAndView.addObject("accountPayments", paymentService.getAllAccountPayments(data.getAccountId()));
 
-        return null;
+        return modelAndView;
     }
 
     @GetMapping("/new")
-    public ModelAndView getSubscriptionPage(@RequestParam(value = "plan", required = false) String planName, @AuthenticationPrincipal AuthenticationMetadata data) {
+    public ModelAndView getSubscriptionPage(@RequestParam(value = "plan", required = false) String planName,
+                                            @AuthenticationPrincipal AuthenticationMetadata data) {
 
-        User user = userService.getById(data.getUserId());
-        Account account = accountService.getByOwnerId(user.getId());
+        Account account = accountService.getById(data.getAccountId());
 
         if (planName == null) {
             planName = account.getPlan().getPlanName().toString();
         }
 
-        Plan planToPurchase = planService.getByName(Mapper.getPlanTypeFromString(planName));
+        User user = userService.getById(data.getUserId());
+        Plan planToPurchase = planService.getByName(Mapper.mapPlanNameAsStringToPlanTypeEnum(planName));
 
         ModelAndView modelAndView = new ModelAndView("subscription-payment");
         modelAndView.addObject("user", user);
@@ -93,12 +94,13 @@ public class PaymentController {
 
         User user = userService.getById(data.getUserId());
         Account account = accountService.getByOwnerId(user.getId());
-        Plan planToPurchase = planService.getByName(Mapper.getPlanTypeFromString(planName));
+        Plan planToPurchase = planService.getByName(Mapper.mapPlanNameAsStringToPlanTypeEnum(planName));
 
         if (useSavedMethod) {
 
             PaymentMethod paymentMethod = paymentMethodService.getById(savedPaymentMethodId);
             paymentRequest = Mapper.mapPaymentMethodToPaymentRequest(paymentMethod);
+            paymentRequest.setPlanToPurchase(planName);
 
         } else {
 
@@ -120,6 +122,6 @@ public class PaymentController {
         }
         paymentService.insert(paymentRequest, account.getId());
 
-        return new ModelAndView("redirect:/dashboard");
+        return new ModelAndView("redirect:/account");
     }
 }

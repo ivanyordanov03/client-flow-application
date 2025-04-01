@@ -49,7 +49,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:unless="${user.userRole.name() == 'USER' and (#strings.equals(filter, 'my-tasks') and not #lists.isEmpty(myTasks))}" th:each="task : ${accountTasks}" th:class="${task.dueDate.isBefore(#temporals.createToday()) and not task.completed} ? 'overdue-task'">
+                <tr th:unless="${#strings.equals(user.userRole.toString(), 'USER') and (#strings.equals(filter, 'my-tasks') and not #lists.isEmpty(myTasks))}" th:each="task : ${accountTasks}" th:class="${task.dueDate.isBefore(#temporals.createToday()) and not task.completed} ? 'overdue-task'">
                     <td>
                         <div class="task-name-container">
                             <span class="task-name" th:text="${task.name}" th:attr="title=${task.name}"></span>

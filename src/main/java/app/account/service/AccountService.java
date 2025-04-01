@@ -50,7 +50,7 @@ public class AccountService {
 
     public Account createNew(UserRequest registerUserRequest) {
 
-        Plan plan = planService.getByName(Mapper.getPlanTypeFromString(registerUserRequest.getPlanName()));
+        Plan plan = planService.getByName(Mapper.mapPlanNameAsStringToPlanTypeEnum(registerUserRequest.getPlanName()));
 
         Account account = initialize(plan);
         accountRepository.save(account);

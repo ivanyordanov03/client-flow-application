@@ -92,7 +92,7 @@ public class IndexController {
             return new ModelAndView("redirect:/plans");
         }
 
-        Plan currentPlan = planService.getByName(Mapper.getPlanTypeFromString(planName));
+        Plan currentPlan = planService.getByName(Mapper.mapPlanNameAsStringToPlanTypeEnum(planName));
 
         UserRequest userRequest = new UserRequest();
         userRequest.setPlanName(planName);
@@ -110,7 +110,7 @@ public class IndexController {
                                          BindingResult bindingResult,
                                          Model model) {
 
-        Plan currentPlan = planService.getByName(Mapper.getPlanTypeFromString(userRequest.getPlanName()));
+        Plan currentPlan = planService.getByName(Mapper.mapPlanNameAsStringToPlanTypeEnum(userRequest.getPlanName()));
         if (bindingResult.hasErrors()) {
 
             model.addAttribute("ownerRequest", userRequest);

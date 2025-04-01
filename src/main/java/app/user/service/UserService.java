@@ -28,17 +28,17 @@ import java.util.UUID;
 public class UserService implements UserDetailsService {
 
     private static final String DEFAULT_FILTER = "current";
-    private static final String USER_WITH_ID_NOT_FOUND = "User with id [%s] not found";
+    private static final String USER_ID_NOT_FOUND = "User with id [%s] not found";
     private static final String EMAIL_ALREADY_IN_USE = "Email address [%s] is already in use.";
     private static final String USER_WITH_EMAIL_DOES_NOT_EXIST = "User with email [%s] does not exist.";
     private static final String REGISTERED_NEW_USER_WITH_ID = "New user with id [%s] has been registered.";
     private static final String CREATED_NEW_ACCOUNT_FOR_USER_ID = "A new account with id [%s] has been created for user with id [%s].";
-    private static final String USER_WITH_ID_WAS_MODIFIED_BY_USER_WITH_ID = "User with id [%s] has been modified by user with id [%s].";
+    private static final String USER_ID_MODIFIED_BY_USER_ID = "User with id [%s] has been modified by user with id [%s].";
     private static final String ACCESS_DENIED = "Access denied.";
     private static final String ACCOUNT_REACHED_MAX_USERS = "You have reached the maximum number of users for your current plan. Upgrade your account to proceed";
-    private static final String USER_WITH_ID_WAS_SET_STATUS_BY_USER_WITH_ID = "User with id [%s] was set to %s by user with id [%s].";
-    private static final String USER_WITH_ID_WAS_SET_ARCHIVE_STATUS_BY_USER_WITH_ID = "User with id [%s] was %s by user with id [%s].";
-    private static final String USER_WITH_ID_DELETED_BY_USER_WITH_ID = "User with id [%s] was DELETED by user with id [%s].";
+    private static final String USER_ID_SET_STATUS_BY_USER_ID = "User with id [%s] was set to %s by user with id [%s].";
+    private static final String USER_ID_WAS_SET_ARCHIVE_STATUS_BY_USER_ID = "User with id [%s] was %s by user with id [%s].";
+    private static final String USER_ID_DELETED_BY_USER_ID = "User with id [%s] was permanently DELETED by user with id [%s].";
 
 
     private final UserRepository userRepository;
@@ -64,7 +64,7 @@ public class UserService implements UserDetailsService {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(USER_WITH_EMAIL_DOES_NOT_EXIST.formatted(email)));
 
-        return new AuthenticationMetadata(user.getId(), user.getEmail(), user.getPassword(), user.getUserRole(), user.isActive());
+        return new AuthenticationMetadata(user.getId(), user.getEmail(), user.getPassword(), user.getUserRole(), user.getAccountId(), user.isActive());
     }
 
     @Transactional
@@ -141,15 +141,15 @@ public class UserService implements UserDetailsService {
         if (!user.getUserRole().equals(UserRole.PRIMARY_ADMIN)) {
             user.setUserRole(UserRole.valueOf(editUserRequest.getUserRoleString()));
         }
-
+        user.setDateUpdated(LocalDateTime.now());
         userRepository.save(user);
 
-        log.info(USER_WITH_ID_WAS_MODIFIED_BY_USER_WITH_ID.formatted(id, editorId));
+        log.info(USER_ID_MODIFIED_BY_USER_ID.formatted(id, editorId));
     }
 
     public User getById(UUID userId) {
 
-        return userRepository.findById(userId).orElseThrow(() -> new NullPointerException(USER_WITH_ID_NOT_FOUND.formatted(userId)));
+        return userRepository.findById(userId).orElseThrow(() -> new NullPointerException(USER_ID_NOT_FOUND.formatted(userId)));
     }
 
     public List<User> getAllByAccountId(UUID accountId) {
@@ -190,19 +190,20 @@ public class UserService implements UserDetailsService {
         };
     }
 
-    public void changeStatus(UUID id, UUID loggedUserId) {
+    public void switchStatus(UUID id, UUID loggedUserId) {
 
         User user = getById(id);
         if (user.getUserRole().equals(UserRole.PRIMARY_ADMIN) || user.isArchived()) {
             return;
         }
         user.setActive(!user.isActive());
+        user.setDateUpdated(LocalDateTime.now());
         userRepository.save(user);
         String status = (user.isActive()) ? "ACTIVE" : "INACTIVE";
-        log.info(USER_WITH_ID_WAS_SET_STATUS_BY_USER_WITH_ID.formatted(id, status, loggedUserId));
+        log.info(USER_ID_SET_STATUS_BY_USER_ID.formatted(id, status, loggedUserId));
     }
 
-    public void archve(UUID id, UUID loggedUserId) {
+    public void switchArchveStatus(UUID id, UUID loggedUserId) {
 
         User user = getById(id);
         if (user.getUserRole().equals(UserRole.PRIMARY_ADMIN)) {
@@ -213,9 +214,10 @@ public class UserService implements UserDetailsService {
         }
 
         user.setArchived(!user.isArchived());
+        user.setDateUpdated(LocalDateTime.now());
         userRepository.save(user);
         String status = (user.isActive()) ? "ARCHIVED" : "RESTORED";
-        log.info(USER_WITH_ID_WAS_SET_ARCHIVE_STATUS_BY_USER_WITH_ID.formatted(id, status, loggedUserId));
+        log.info(USER_ID_WAS_SET_ARCHIVE_STATUS_BY_USER_ID.formatted(id, status, loggedUserId));
     }
 
     public void delete(UUID id, UUID loggedUserId) {
@@ -225,6 +227,6 @@ public class UserService implements UserDetailsService {
             throw new IllegalStateException(ACCESS_DENIED);
         }
         userRepository.delete(getById(id));
-        log.info(USER_WITH_ID_DELETED_BY_USER_WITH_ID.formatted(id, loggedUserId));
+        log.info(USER_ID_DELETED_BY_USER_ID.formatted(id, loggedUserId));
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
@@ -52,28 +53,32 @@ public class PaymentService {
             accountService.setToActive(accountId);
         }
 
-        accountService.setExpirationDate(accountId);
         Payment payment = initiate(paymentRequest, account);
         paymentRepository.save(payment);
+        accountService.setExpirationDate(accountId);
 
         log.info(NEW_PAYMENT_WITH_ID_HAS_BEEN_MADE_FOR_ACCOUNT_WITH_ID.formatted(payment.getId(), accountId));
     }
 
     private Payment initiate(PaymentRequest paymentRequest, Account account) {
 
-        String last4 = getLast4(paymentRequest);
+        String cardNumber = paymentRequest.getCardNumber();
 
         return Payment.builder()
                 .amount(account.getPlan().getPricePerMonth().toString())
                 .accountId(account.getId())
-                .last4Digits(last4)
+                .last4Digits(cardNumber.substring(cardNumber.length() - 4))
+                .description(paymentRequest.getPlanToPurchase())
                 .paymentDate(LocalDateTime.now())
                 .build();
     }
 
-    private String getLast4(PaymentRequest paymentRequest) {
+    public List<Payment> getLastThree(UUID accountId) {
+        return getAllAccountPayments(accountId).subList(0, 3);
+    }
 
-        String cardNumber = paymentRequest.getCardNumber();
-        return cardNumber.substring(cardNumber.length() - 4);
+    public List<Payment> getAllAccountPayments(UUID accountId) {
+
+        return paymentRepository.findAllByAccountIdOrderByPaymentDateDesc(accountId);
     }
 }

@@ -61,10 +61,9 @@ public class UserController {
     public ModelAndView getNewUserPage(@RequestParam("filter") String filter,
                                        @AuthenticationPrincipal AuthenticationMetadata data) {
 
-        User user = userService.getById(data.getUserId());
-        String planName = accountService.getById(user.getAccountId()).getPlan().getPlanName().toString();
+        String planName = accountService.getById(data.getAccountId()).getPlan().getPlanName().toString();
 
-        userService.validateUserLimit(user.getAccountId(), planName);
+        userService.validateUserLimit(data.getAccountId(), planName);
 
         ModelAndView modelAndView = new ModelAndView("new-user");
         modelAndView.addObject("userRequest", new UserRequest());
@@ -102,11 +101,10 @@ public class UserController {
                                         @AuthenticationPrincipal AuthenticationMetadata data) {
 
         User user = userService.getById(id);
-        User loggedUser = userService.getById(data.getUserId());
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("filter", filter);
 
-        if (user.getUserRole().equals(UserRole.PRIMARY_ADMIN) && !loggedUser.getUserRole().equals(UserRole.PRIMARY_ADMIN)) {
+        if (user.getUserRole().equals(UserRole.PRIMARY_ADMIN) && !data.getUserRole().equals(UserRole.PRIMARY_ADMIN)) {
             modelAndView.setViewName("redirect:/users");
             modelAndView.addObject("errorMessage", ONLY_PRIMARY_ADMIN_CAN_EDIT_PRIMARY_ADMIN);
             return modelAndView;
@@ -126,7 +124,6 @@ public class UserController {
                                                BindingResult bindingResult,
                                                @AuthenticationPrincipal AuthenticationMetadata data) {
 
-        User loggedUser = userService.getById(data.getUserId());
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("filter", filter);
 
@@ -141,7 +138,7 @@ public class UserController {
             return modelAndView;
         }
 
-        userService.edit(id, editUserRequest, loggedUser.getId());
+        userService.edit(id, editUserRequest, data.getUserId());
         return new ModelAndView("redirect:/users");
     }
 
@@ -150,8 +147,7 @@ public class UserController {
                                          @RequestParam("filter") String filter,
                                          @AuthenticationPrincipal AuthenticationMetadata data) {
 
-        User loggedUser = userService.getById(data.getUserId());
-        userService.changeStatus(id, loggedUser.getId());
+        userService.switchStatus(id, data.getUserId());
 
         ModelAndView modelAndView = new ModelAndView("redirect:/users");
         modelAndView.addObject("filter", filter);
@@ -159,13 +155,12 @@ public class UserController {
         return modelAndView;
     }
 
-    @PutMapping("/{id}/archive")
-    public ModelAndView archiveUser(@PathVariable("id") UUID id,
+    @PutMapping("/{id}/archive-status")
+    public ModelAndView processSwitchArchiveStatusRequest(@PathVariable("id") UUID id,
                                          @RequestParam("filter") String filter,
                                          @AuthenticationPrincipal AuthenticationMetadata data) {
 
-        User loggedUser = userService.getById(data.getUserId());
-        userService.archve(id, loggedUser.getId());
+        userService.switchArchveStatus(id, data.getUserId());
 
         ModelAndView modelAndView = new ModelAndView("redirect:/users");
         modelAndView.addObject("filter", filter);
@@ -174,7 +169,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ModelAndView deleteUser(@PathVariable("id") UUID id,
+    public ModelAndView processDeleteUserRequest(@PathVariable("id") UUID id,
                                    @RequestParam("filter") String filter,
                                    @AuthenticationPrincipal AuthenticationMetadata data) {
 

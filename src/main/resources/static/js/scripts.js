@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Slideshow functionality
+    // Slideshow functionality (unchanged)
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slide');
     const dots = document.querySelectorAll('.dot');
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setInterval(nextSlide, 5000);
     }
 
-    // Password toggle functionality
+    // Password toggle functionality (unchanged)
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
     if (togglePassword && passwordInput) {
@@ -82,22 +82,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
             toggleSections();
         } else if (!useSavedMethod && newCardContent) {
+            // No saved methods, ensure new card section is active
             newCardContent.classList.remove('disabled');
             updateSubmitButton();
         }
     }
 
-    // Description modal functionality
+    // Description modal functionality (unchanged)
     const descriptionButtons = document.querySelectorAll('.description-btn');
     const descriptionModal = document.getElementById('descriptionModal');
     const modalDescription = document.getElementById('modalDescription');
-    const modalTaskName = document.getElementById('modalTaskName');
     const closeBtn = document.querySelector('.close-btn');
 
-    if (descriptionButtons.length > 0 && descriptionModal && modalDescription && modalTaskName && closeBtn) {
+    if (descriptionButtons.length > 0 && descriptionModal && modalDescription && closeBtn) {
         descriptionButtons.forEach(button => {
             button.addEventListener('click', function () {
-                modalTaskName.textContent = this.getAttribute('data-name') || '';
                 modalDescription.textContent = this.getAttribute('data-description') || 'No description available.';
                 descriptionModal.style.display = 'flex';
             });
@@ -114,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Initialize Flatpickr for the dueDate field
+    // Initialize Flatpickr for the dueDate field (unchanged)
     const dueDateInput = document.getElementById('dueDate');
     if (dueDateInput) {
         flatpickr("#dueDate", {
@@ -127,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Dropdown menu functionality
+    // Dropdown menu functionality (unchanged)
     const dropdownIcons = document.querySelectorAll('.dropdown-icon');
     dropdownIcons.forEach(icon => {
         icon.addEventListener('click', function (event) {
@@ -148,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Close dropdowns when clicking outside
+    // Close dropdowns when clicking outside (unchanged)
     document.addEventListener('click', function (event) {
         const dropdowns = document.querySelectorAll('.action-dropdown');
         dropdowns.forEach(dropdown => {
@@ -158,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Action functionality (delete and archive) with custom modal
+    // Action functionality (delete and archive) with custom modal (unchanged)
     const actionLinks = document.querySelectorAll('.delete-link, .archive-link');
     const modal = document.getElementById('action-confirm-modal');
     const title = document.getElementById('action-title');
@@ -178,12 +177,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 const isArchive = this.classList.contains('archive-link');
 
                 title.textContent = isArchive ? 'Confirm Archiving' : 'Confirm Deletion';
-                if (entityType === 'payment-setting' && !isArchive) {
-                    message.textContent = `Are you sure you would like to permanently delete card ending in ${name}?`;
-                } else {
-                    message.textContent = `Are you sure you would like to ${isArchive ? 'archive' : 'permanently delete'} the ${entityType} "${name}"?`;
-                }
-                form.action = `/${entityType}s/${id}${isArchive ? '/archive' : ''}?filter=${filterValue}`;
+                message.textContent = `Are you sure you would like to ${isArchive ? 'archive' : 'permanently delete'} the ${entityType} "${name}"?`;
+                form.action = `/${entityType}s/${id}${isArchive ? '/archive-status' : ''}?filter=${filterValue}`;
                 methodInput.value = isArchive ? 'PUT' : 'DELETE';
 
                 modal.style.display = 'flex';
@@ -201,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Set default payment method functionality
+    // Set default payment method functionality (unchanged)
     const defaultPaymentRadios = document.querySelectorAll('input[name="defaultPaymentMethod"]');
     defaultPaymentRadios.forEach(radio => {
         radio.addEventListener('change', function () {
@@ -214,15 +209,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }).then(response => {
                 if (response.ok) {
-                    window.location.reload(); // Reload the page to reflect the changes
+                    window.location.reload();
                 }
             });
         });
     });
-
-    // Auto-renewal toggle: No JS needed for submission, handled by form
-    const autoRenewalCheckbox = document.querySelector('.auto-renewal input[type="checkbox"]');
-    if (autoRenewalCheckbox) {
-        console.log('Initial auto-renewal state:', autoRenewalCheckbox.checked);
-    }
 });

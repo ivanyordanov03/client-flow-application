@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment History - ClientFlow</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/payment-history.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <a th:href="@{'/dashboard'}">
+            <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+        </a>
+    </div>
+</header>
+
+<main class="container form-page-container">
+    <div class="content">
+        <h1>Payment History</h1>
+        <div class="content-body">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Card Number</th>
+                    <th>Amount</th>
+                    <th>Plan</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="payment : ${accountPayments}">
+                    <td th:text="${#temporals.format(payment.paymentDate, 'M/d/yyyy')}"></td>
+                    <td th:text="'**** ' + ${payment.last4Digits}"></td>
+                    <td th:text="'$ ' + ${payment.amount}"></td>
+                    <td th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(payment.description, '_', ' ')))}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="form-controls">
+                <a th:href="@{/payment-settings}" class="btn">Back</a>
+                <a th:href="@{/account}" class="btn btn-secondary">Back to Account</a>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>© 2025 ClientFlow. All rights reserved.</p>
+</footer>
+
+<script src="/js/scripts.js"></script>
+</body>
+</html>

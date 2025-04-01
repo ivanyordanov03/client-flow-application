@@ -1,0 +1,68 @@
+.contacts-container {
+    width: 1300px;
+}
+
+.sort-arrows {
+    display: inline-flex;
+    gap: 0.2rem;
+    margin-left: 0.5rem;
+}
+
+.sort-arrow {
+    color: #667;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.sort-arrow.active {
+    color: #4BBF89;
+}
+
+.sort-arrow:hover {
+    color: #0E2925;
+}
+
+.ellipsis-container {
+    display: flex;
+    align-items: center;
+    max-width: 120px;
+}
+
+.ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.details-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #4BBF89;
+    transition: color 0.3s ease;
+    display: inline-block;
+    padding: 0;
+    line-height: 1;
+}
+
+.details-btn:hover {
+    color: #0E2925;
+}
+
+.details-icon {
+    width: 1rem;
+    height: 1rem;
+    fill: currentColor;
+    vertical-align: middle;
+}
+
+.dropdown-container {
+    display: inline-block;
+    position: relative;
+}
+
+.action-container-inner {
+    display: inline-block;
+    position: relative;
+}

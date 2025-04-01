@@ -24,6 +24,8 @@ public class Payment {
     @Column(nullable = false)
     private String last4Digits;
 
+    private String description;
+
     @Column(nullable = false)
     private LocalDateTime paymentDate;
 

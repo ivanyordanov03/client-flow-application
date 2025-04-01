@@ -20,9 +20,9 @@ import java.util.UUID;
 public class TaskService {
 
     private static final String USER = "USER";
+    private static final String FIRST_NAME_LAST_NAME_INITIAL = "%s %s.";
     private static final String TASK_WITH_ID_NOT_FOUND = "Task with [%s] not found.";
     private static final String INVALID_TASK_FILTER_TYPE = "Invalid value [%s] for task filter.";
-    private static final String USER_FIRST_NAME_LAST_NAME_INITIAL = "%s %s.";
     private static final String NEW_TASK_WITH_ID_CREATED_BY_USER_WITH_ID = "New task with id [%s] was successfully created by user with id [%s].";
     private static final String TASK_WITH_ID_DELETED_BY_USER_WITH_ID = "Task with id [%s] was successfully deleted by user with id [%s].";
     private static final String TASK_WITH_ID_EDITED_BY_USER_WITH_ID = "Task with id [%s] was successfully edited by user with id [%s].";
@@ -43,7 +43,7 @@ public class TaskService {
         Task task = initializeNew(taskRequest, userId);
 
         if (!taskRequest.getPriority().isBlank()) {
-            task.setPriority(Mapper.getTaskPriorityFromString(taskRequest.getPriority()));
+            task.setPriority(Mapper.mapTaskPriorityAsStringToTaskPriorityEnum(taskRequest.getPriority()));
         }
 
         taskRepository.save(task);
@@ -60,12 +60,12 @@ public class TaskService {
         return Task.builder()
                 .name(taskRequest.getName())
                 .description(taskRequest.getDescription())
-                .dueDate(Mapper.getDateFromStringIsoFormat(taskRequest.getDueDate()))
+                .dueDate(Mapper.mapDateAsStringIsoFormatToLocalDateFormat(taskRequest.getDueDate()))
                 .accountId(user.getAccountId())
                 .assignedToId(UUID.fromString(taskRequest.getAssignedTo()))
                 .createdById(userId)
-                .assignedToName(USER_FIRST_NAME_LAST_NAME_INITIAL.formatted(assignee.getFirstName(), assignee.getLastName().charAt(0)))
-                .createdByName(USER_FIRST_NAME_LAST_NAME_INITIAL.formatted(user.getFirstName(), user.getLastName().charAt(0)))
+                .assignedToName(FIRST_NAME_LAST_NAME_INITIAL.formatted(assignee.getFirstName(), assignee.getLastName().charAt(0)))
+                .createdByName(FIRST_NAME_LAST_NAME_INITIAL.formatted(user.getFirstName(), user.getLastName().charAt(0)))
                 .dateCreated(now)
                 .dateUpdated(now)
                 .build();
@@ -137,12 +137,12 @@ public class TaskService {
 
         task.setName(taskRequest.getName());
         task.setDescription(taskRequest.getDescription());
-        task.setDueDate(Mapper.getDateFromStringIsoFormat(taskRequest.getDueDate()));
+        task.setDueDate(Mapper.mapDateAsStringIsoFormatToLocalDateFormat(taskRequest.getDueDate()));
         task.setAssignedToId(assignee.getId());
-        task.setAssignedToName(USER_FIRST_NAME_LAST_NAME_INITIAL.formatted(assignee.getFirstName(), assignee.getLastName().charAt(0)));
+        task.setAssignedToName(FIRST_NAME_LAST_NAME_INITIAL.formatted(assignee.getFirstName(), assignee.getLastName().charAt(0)));
         task.setCompleted(false);
 
-        task.setPriority(taskRequest.getPriority().isBlank() ? null : Mapper.getTaskPriorityFromString(taskRequest.getPriority()));
+        task.setPriority(taskRequest.getPriority().isBlank() ? null : Mapper.mapTaskPriorityAsStringToTaskPriorityEnum(taskRequest.getPriority()));
 
         task.setDateUpdated(LocalDateTime.now());
         taskRepository.save(task);

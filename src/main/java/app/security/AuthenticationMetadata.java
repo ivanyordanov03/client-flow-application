@@ -3,6 +3,7 @@ package app.security;
 import app.user.model.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +20,8 @@ public class AuthenticationMetadata implements UserDetails {
     private String email;
     private String password;
     private UserRole userRole;
+    @Getter
+    private UUID accountId;
     private boolean isActive;
 
     @Override

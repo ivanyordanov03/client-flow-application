@@ -21,7 +21,7 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    margin-top: 5rem;
+    margin: 2rem 0;
 }
 
 .auto-renewal p {
@@ -107,4 +107,13 @@ input:checked + .slider:before {
     margin-top: auto;
     align-self: flex-end;
     margin-bottom: 2rem;
+}
+
+.table {
+    width: auto;
+}
+.upgrade-link {
+    border-top: none;
+    text-align: center;
+    margin: 0 auto;
 }

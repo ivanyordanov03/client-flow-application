@@ -24,59 +24,60 @@
     <div class="content payment-settings-content">
         <h1>Payment Settings</h1>
         <div class="entity-controls">
+            <h3>Payment Methods</h3>
             <a th:href="@{/payment-settings/new}" class="btn btn-secondary add-action add-entity">+ Add Payment Method</a>
         </div>
         <div class="payment-methods-table">
             <table class="table">
                 <thead>
-                <tr>
-                    <th>Card Holder Name</th>
-                    <th>Credit Card Number</th>
-                    <th>Expiration Date</th>
-                    <th>Security Code</th>
-                    <th>Default Method</th>
-                    <th>Actions</th>
-                </tr>
+                    <tr>
+                        <th>Card Holder Name</th>
+                        <th>Credit Card Number</th>
+                        <th>Expiration Date</th>
+                        <th>Security Code</th>
+                        <th>Default Method</th>
+                        <th>Actions</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr th:each="paymentMethod : ${accountPaymentMethods}" th:class="${paymentMethod.defaultMethod} ? 'default-payment-method' : ''">
-                    <td th:text="${paymentMethod.cardHolderName}"></td>
-                    <td th:text="'**** **** **** ' + ${#strings.substring(paymentMethod.creditCardNumber, 12)}"></td>
-                    <td th:text="${paymentMethod.expirationDate}"></td>
-                    <td th:text="${paymentMethod.CVV}"></td>
-                    <td>
-                        <form th:action="@{'/payment-settings/' + ${paymentMethod.id} + '/default'}" th:method="PUT">
-                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-                            <label class="toggle-switch">
-                                <input type="checkbox" th:checked="${paymentMethod.defaultMethod}" onchange="this.form.submit()">
-                                <span class="slider"></span>
-                                <span class="sr-only">Set as default</span>
-                            </label>
-                        </form>
-                    </td>
-                    <td class="row-actions">
-                        <div class="action-container">
-                            <a th:href="@{'/payment-settings/' + ${paymentMethod.id}}" class="btn btn-secondary btn-small">Edit</a>
-                            <span class="dropdown-icon">▼</span>
-                        </div>
-                        <div class="action-dropdown">
-                            <a href="#" class="delete-link"
-                               th:attr="data-id=${paymentMethod.id}, data-entity='payment-setting', data-name=${#strings.substring(paymentMethod.creditCardNumber, 12)}">Delete</a>
-                        </div>
-                    </td>
-                </tr>
-                <tr th:if="${#lists.isEmpty(accountPaymentMethods)}">
-                    <td colspan="5" class="empty-state">
-                        <div class="empty-message">
-                            <svg width="3rem" height="3rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 7v10" stroke="#4BBF89" stroke-width="2" stroke-linecap="round"/>
-                                <path d="M12 17l-4-4 4-4" stroke="#4BBF89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            <p>No payment methods saved.</p>
-                            <p>Add a payment method to get started.</p>
-                        </div>
-                    </td>
-                </tr>
+                    <tr th:unless="${#lists.isEmpty(accountPaymentMethods)}" th:each="paymentMethod : ${accountPaymentMethods}" th:class="${paymentMethod.defaultMethod} ? 'default-payment-method' : ''">
+                        <td th:text="${paymentMethod.cardHolderName}"></td>
+                        <td th:text="'**** **** **** ' + ${#strings.substring(paymentMethod.creditCardNumber, 12)}"></td>
+                        <td th:text="${paymentMethod.expirationDate}"></td>
+                        <td th:text="${paymentMethod.CVV}"></td>
+                        <td>
+                            <form th:action="@{'/payment-settings/' + ${paymentMethod.id} + '/default'}" th:method="PUT">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                                <label class="toggle-switch">
+                                    <input type="checkbox" th:checked="${paymentMethod.defaultMethod}" onchange="this.form.submit()">
+                                    <span class="slider"></span>
+                                    <span class="sr-only">Set as default</span>
+                                </label>
+                            </form>
+                        </td>
+                        <td class="row-actions">
+                            <div class="action-container">
+                                <a th:href="@{'/payment-settings/' + ${paymentMethod.id}}" class="btn btn-secondary btn-small">Edit</a>
+                                <span class="dropdown-icon">▼</span>
+                            </div>
+                            <div class="action-dropdown">
+                                <a href="#" class="delete-link"
+                                   th:attr="data-id=${paymentMethod.id}, data-entity='payment-setting', data-name=${#strings.substring(paymentMethod.creditCardNumber, 12)}">Delete</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(accountPaymentMethods)}">
+                        <td colspan="5" class="empty-state">
+                            <div class="empty-message">
+                                <svg width="3rem" height="3rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 7v10" stroke="#4BBF89" stroke-width="2" stroke-linecap="round"/>
+                                    <path d="M12 17l-4-4 4-4" stroke="#4BBF89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                <p>No payment methods saved.</p>
+                                <p>Add a payment method to get started.</p>
+                            </div>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -90,6 +91,29 @@
                     <span class="sr-only">Enable auto renewal</span>
                 </label>
             </form>
+        </div>
+        <div>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Credit Card Number</th>
+                    <th>Amount</th>
+                    <th>Plan Purchased</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="payment : ${lastThreePayments}">
+                    <td th:text="${#temporals.format(payment.paymentDate, 'M/d/yyyy')}"></td>
+                    <td th:text="'**** **** **** ' + ${payment.last4Digits}"></td>
+                    <td th:text="'$ ' + ${payment.amount}"></td>
+                    <td th:text="${#strings.capitalize(#strings.toLowerCase(#strings.replace(payment.description, '_', ' ')))}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="back-to-account-container">
+                <p class="upgrade-link"> <a th:href="@{/payments}">View payment history</a></p>
+            </div>
         </div>
         <div class="back-to-account-container">
             <a th:href="@{/account}" class="btn btn-secondary">Back to Account</a>

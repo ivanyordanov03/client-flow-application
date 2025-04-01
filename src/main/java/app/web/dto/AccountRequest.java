@@ -19,5 +19,4 @@ public class AccountRequest {
 
     @Pattern(regexp = "^(?:[2-9]\\d{9})?$", message = "Phone number must be a valid USA format (e.g. 2025550123)")
     private String phoneNumber;
-
 }

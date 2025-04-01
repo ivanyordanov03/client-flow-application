@@ -1,6 +1,7 @@
 package app.web.mapper;
 
 import app.account.model.Account;
+import app.contact.model.Contact;
 import app.paymentMethod.model.PaymentMethod;
 import app.plan.model.PlanName;
 import app.task.model.Task;
@@ -16,7 +17,7 @@ import java.time.format.DateTimeParseException;
 @UtilityClass
 public class Mapper {
 
-    public static PlanName getPlanTypeFromString(String planName) {
+    public static PlanName mapPlanNameAsStringToPlanTypeEnum(String planName) {
 
         return switch (planName) {
             case "PLUS" -> PlanName.PLUS;
@@ -26,7 +27,7 @@ public class Mapper {
         };
     }
 
-    public static TaskPriority getTaskPriorityFromString(String priorityName) {
+    public static TaskPriority mapTaskPriorityAsStringToTaskPriorityEnum(String priorityName) {
 
         return switch (priorityName) {
             case "LOW" -> TaskPriority.LOW;
@@ -37,7 +38,7 @@ public class Mapper {
         };
     }
 
-    public static LocalDate getDateFromStringIsoFormat(String dateString) {
+    public static LocalDate mapDateAsStringIsoFormatToLocalDateFormat(String dateString) {
 
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -81,27 +82,27 @@ public class Mapper {
         return accountRequest;
     }
 
-    public static PaymentSettingsRequest mapPaymentRequestToPaymentMethodRequest(PaymentRequest paymentRequest) {
+    public static PaymentMethodRequest mapPaymentRequestToPaymentMethodRequest(PaymentRequest paymentRequest) {
 
-        PaymentSettingsRequest paymentSettingsRequest = new PaymentSettingsRequest();
-        paymentSettingsRequest.setCardholderName(paymentRequest.getCardholderName());
-        paymentSettingsRequest.setCardNumber(paymentRequest.getCardNumber());
-        paymentSettingsRequest.setExpirationDate(paymentRequest.getExpirationDate());
-        paymentSettingsRequest.setCvv(paymentRequest.getCvv());
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest();
+        paymentMethodRequest.setCardholderName(paymentRequest.getCardholderName());
+        paymentMethodRequest.setCardNumber(paymentRequest.getCardNumber());
+        paymentMethodRequest.setExpirationDate(paymentRequest.getExpirationDate());
+        paymentMethodRequest.setCvv(paymentRequest.getCvv());
 
-        return paymentSettingsRequest;
+        return paymentMethodRequest;
     }
 
-    public static PaymentSettingsRequest mapPaymentMethodToPaymentSettingsRequest(PaymentMethod paymentMethod) {
+    public static PaymentMethodRequest mapPaymentMethodToPaymentSettingsRequest(PaymentMethod paymentMethod) {
 
-        PaymentSettingsRequest paymentSettingsRequest = new PaymentSettingsRequest();
-        paymentSettingsRequest.setCardholderName(paymentMethod.getCardHolderName());
-        paymentSettingsRequest.setCardNumber(paymentMethod.getCreditCardNumber());
-        paymentSettingsRequest.setExpirationDate(paymentMethod.getExpirationDate());
-        paymentSettingsRequest.setCvv(paymentMethod.getCVV());
-        paymentSettingsRequest.setDefaultMethod(paymentMethod.isDefaultMethod());
+        PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest();
+        paymentMethodRequest.setCardholderName(paymentMethod.getCardHolderName());
+        paymentMethodRequest.setCardNumber(paymentMethod.getCreditCardNumber());
+        paymentMethodRequest.setExpirationDate(paymentMethod.getExpirationDate());
+        paymentMethodRequest.setCvv(paymentMethod.getCVV());
+        paymentMethodRequest.setDefaultMethod(paymentMethod.isDefaultMethod());
 
-        return paymentSettingsRequest;
+        return paymentMethodRequest;
     }
 
     public static PaymentRequest mapPaymentMethodToPaymentRequest(PaymentMethod paymentMethod) {
@@ -113,5 +114,19 @@ public class Mapper {
         paymentRequest.setCvv(paymentMethod.getCVV());
 
         return paymentRequest;
+    }
+
+    public static ContactRequest mapContactToContactRequest(Contact contact) {
+
+        ContactRequest contactRequest = new ContactRequest();
+        contactRequest.setFirstName(contact.getFirstName());
+        contactRequest.setLastName(contact.getLastName());
+        contactRequest.setEmail(contact.getEmail());
+        contactRequest.setAddress(contact.getAddress());
+        contactRequest.setPhoneNumber(contact.getPhoneNumber());
+        contactRequest.setBusinessName(contact.getBusinessName());
+        contactRequest.setAssignedToId(contact.getAssignedToId().toString());
+
+        return contactRequest;
     }
 }

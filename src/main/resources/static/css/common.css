@@ -88,6 +88,10 @@ footer {
     color: #333;
 }
 
+.table td p {
+    font-size: 0.9rem;
+}
+
 .table td:first-child {
     padding-left: 1.5rem;
 }
@@ -250,8 +254,8 @@ p {
 
 .form-group label {
     display: block;
-    font-size: 1em;
-    color: #333;
+    font-size: 0.9em;
+    color: #667;
     margin-bottom: 0.5em;
 }
 
@@ -369,6 +373,8 @@ p {
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
 }
 
 .entity-filters {
@@ -491,10 +497,6 @@ p {
     padding: 2rem;
 }
 
-.content {
-    width: 100%;
-}
-
 .upgrade-link {
     font-size: 0.9em;
     color: #667;
@@ -512,13 +514,6 @@ p {
 
 .upgrade-link a:hover {
     color: #0E2925;
-}
-
-@media (max-width: 600px) {
-    .form-page-container {
-        max-width: 100%;
-        padding: 1rem;
-    }
 }
 
 @media (max-width: 768px) {

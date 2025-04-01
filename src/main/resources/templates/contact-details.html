@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Details - ClientFlow</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/nav-side-bar.css">
+    <link rel="stylesheet" href="/css/contact-details.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <a th:href="@{/dashboard}">
+            <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+        </a>
+    </div>
+</header>
+
+<main class="container form-page-container">
+    <div class="content">
+        <h1 th:text="${contact.firstName + ' ' + contact.lastName}"></h1>
+        <div class="client-details">
+            <div class="form-group-row">
+                <div class="form-group">
+                    <label>First Name</label>
+                    <input type="text" th:value="${contact.firstName}" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Last Name</label>
+                    <input type="text" th:value="${contact.lastName}" readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Company Name</label>
+                <input type="text" th:value="${contact.businessName}" readonly>
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" th:value="${contact.email}" readonly>
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" th:value="${contact.phoneNumber}" readonly>
+            </div>
+            <div class="form-group">
+                <label>Address</label>
+                <input type="text" th:value="${contact.address}" readonly>
+            </div>
+            <div class="form-group-row">
+                <div class="form-group date">
+                    <label>Created On</label>
+                    <input type="text" th:value="${#temporals.format(contact.dateCreated, 'M/d/yyyy')}" readonly>
+                </div>
+                <div class="form-group date">
+                    <label>Updated On</label>
+                    <input type="text" th:value="${#temporals.format(contact.dateUpdated, 'M/d/yyyy')}" readonly>
+                </div>
+                <div class="form-group name" th:unless="${#strings.equals(userRole, 'USER')}">
+                    <label>Assigned To</label>
+                    <input type="text" th:value="${contact.assignedToName}" readonly>
+                </div>
+            </div>
+        </div>
+
+        <!-- TODO Placeholder for future interactions section -->
+        <div class="interactions-section" th:remove="all">
+            <!-- Interactions content will go here -->
+        </div>
+
+        <div class="form-controls">
+            <a th:href="@{/contacts/{id}(id=${contact.id}, filter=${filter})}" class="btn">Edit Contact</a>
+            <a th:href="@{/contacts(filter=${filter})}" class="btn btn-secondary">Back</a>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <p>© 2025 ClientFlow. All rights reserved.</p>
+</footer>
+
+<script src="/js/scripts.js"></script>
+</body>
+</html>

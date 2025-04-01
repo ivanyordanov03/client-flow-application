@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>contacts - ClientFlow</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/nav-side-bar.css">
+    <link rel="stylesheet" href="/css/contacts.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <a th:href="@{/dashboard}">
+            <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+        </a>
+    </div>
+</header>
+
+<main class="container contacts-container">
+    <div th:replace="~{fragments/nav-side-bar :: navSideBar(activePage='contacts')}"></div>
+    <div class="content contacts-content">
+        <h1>Contacts</h1>
+        <div class="entity-controls">
+            <div class="entity-filters">
+                <a th:unless="${#strings.equals(userRole, 'USER')}"
+                   th:href="@{/contacts(filter='all-contacts')}"
+                   th:class="${#strings.equals(filter, 'all-contacts')} ? 'btn filter-btn active' : 'btn filter-btn'">All contacts</a>
+                <a th:href="@{/contacts(filter='my-contacts')}"
+                   th:class="${#strings.equals(filter, 'my-contacts')} ? 'btn filter-btn active' : 'btn filter-btn'">My contacts</a>
+                <a th:href="@{/contacts(filter='archived')}"
+                   th:class="${#strings.equals(filter, 'archived')} ? 'btn filter-btn active' : 'btn filter-btn'">Archived</a>
+            </div>
+            <a th:href="@{/contacts/new(filter=${filter})}" class="btn btn-secondary add-action add-entity">+ Add new contact</a>
+        </div>
+        <div class="contacts-table">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Company name</th>
+                    <th th:unless="${#strings.equals(userRole, 'USER') || #strings.equals(filter, 'my-contacts')}">Assign To</th>
+                    <th>
+                        Updated On
+                        <span class="sort-arrows">
+                            <a th:href="@{/contacts(filter=${filter}, sort='lastUpdatedDesc')}"
+                               th:class="${sort == 'lastUpdatedDesc'} ? 'sort-arrow active' : 'sort-arrow'"
+                               title="Sort by last updated (descending)">▼</a>
+                            <a th:href="@{/contacts(filter=${filter}, sort='lastUpdatedAsc')}"
+                               th:class="${sort == 'lastUpdatedAsc'} ? 'sort-arrow active' : 'sort-arrow'"
+                               title="Sort by last updated (ascending)">▲</a>
+                        </span>
+                    </th>
+                    <th>More</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="contact : ${contacts}">
+                    <td th:text="${contact.firstName + ' ' + contact.lastName}"></td>
+                    <td>
+                        <div class="ellipsis-container">
+                            <span class="ellipsis" th:text="${contact.email}" th:attr="title=${contact.email}"></span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="ellipsis-container">
+                            <span class="ellipsis" th:text="${contact.businessName}" th:attr="title=${contact.businessName}"></span>
+                        </div>
+                    </td>
+                    <td th:unless="${#strings.equals(userRole, 'USER') || #strings.equals(filter, 'my-contacts')}" th:text="${contact.assignedToName}"></td>
+                    <td th:text="${#temporals.format(contact.dateUpdated, 'M/d/yyyy')}"></td>
+                    <td class="action-container">
+                        <a th:href="@{/contacts/{id}/details(id=${contact.id}, filter=${filter})}" class="details-btn" title="View Contact Details">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="details-icon">
+                                <path fill="currentColor" d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
+                            </svg>
+                        </a>
+                        <div class="action-container-inner">
+                            <span class="dropdown-icon">▼</span>
+                        </div>
+                        <div class="action-dropdown">
+                            <a th:href="@{/contacts/{id}(id=${contact.id}, filter=${filter})}" class="edit-link">Edit</a>
+                            <a href="#" class="archive-link"
+                               th:attr="data-id=${contact.id}, data-name=${contact.firstName + ' ' + contact.lastName}, data-entity='contact', data-filter=${filter}"
+                               th:text="${contact.archived ? 'Restore' : 'Archive'}"></a>
+                            <a href="#" class="delete-link"
+                               th:unless="${#strings.equals(userRole, 'USER')}"
+                               th:attr="data-id=${contact.id}, data-name=${contact.firstName + ' ' + contact.lastName}, data-entity='contact', data-filter=${filter}">Delete</a>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(contacts) and #strings.equals(filter, 'my-contacts')}" class="empty-state">
+                    <td th:attr="colspan=${#strings.equals(userRole, 'USER') ? 5 : 6}">
+                        <div class="empty-message">
+                            <svg width="3rem" height="3rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 7v10" stroke="#4BBF89" stroke-width="2" stroke-linecap="round"/>
+                                <path d="M12 17l-4-4 4-4" stroke="#4BBF89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            <p>You don't have any contacts yet.</p>
+                            <p>Add a new contact to get started.</p>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<div id="action-confirm-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h2 id="action-title">Confirm Action</h2>
+        <p id="action-message"></p>
+        <div class="modal-buttons">
+            <form id="action-form" th:action="@{/contacts/0(filter=${filter})}" th:method="POST">
+                <input type="hidden" name="_method" id="action-method" value="POST" />
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="btn">Confirm</button>
+            </form>
+            <button id="cancel-action" class="btn btn-secondary">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>© 2025 ClientFlow. All rights reserved.</p>
+</footer>
+
+<script src="/js/scripts.js"></script>
+</body>
+</html>

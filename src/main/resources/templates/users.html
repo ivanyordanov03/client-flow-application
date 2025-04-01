@@ -66,6 +66,7 @@
                         <div th:unless="${user.userRole.name() == 'USER'}">
                             <a th:href="@{/users/{id}(id=${currentUser.id}, filter=${filter})}" class="btn btn-secondary btn-small">Edit</a>
                             <span th:unless="${currentUser.userRole.name() == 'PRIMARY_ADMIN'}" class="dropdown-icon">▼</span>
+                            <span th:if="${currentUser.userRole.name() == 'PRIMARY_ADMIN'}">&nbsp; ▼</span>
                         </div>
                         <div class="action-dropdown">
                             <a href="#" class="archive-link"

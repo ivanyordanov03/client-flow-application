@@ -2,12 +2,13 @@ package app.web;
 
 import app.account.model.Account;
 import app.account.service.AccountService;
+import app.payment.service.PaymentService;
 import app.paymentMethod.model.PaymentMethod;
 import app.paymentMethod.service.PaymentMethodService;
 import app.security.AuthenticationMetadata;
 import app.user.model.User;
 import app.user.service.UserService;
-import app.web.dto.PaymentSettingsRequest;
+import app.web.dto.PaymentMethodRequest;
 import app.web.mapper.Mapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +26,18 @@ public class PaymentMethodController {
 
     private final UserService userService;
     private final AccountService accountService;
+    private final PaymentService paymentService;
     private final PaymentMethodService paymentMethodService;
 
     @Autowired
     public PaymentMethodController(UserService userService,
                                    AccountService accountService,
+                                   PaymentService paymentService,
                                    PaymentMethodService paymentMethodService) {
 
         this.userService = userService;
         this.accountService = accountService;
+        this.paymentService = paymentService;
         this.paymentMethodService = paymentMethodService;
     }
 
@@ -41,13 +45,14 @@ public class PaymentMethodController {
     public ModelAndView getPaymentSettingsPage(@AuthenticationPrincipal AuthenticationMetadata data) {
 
         User user = userService.getById(data.getUserId());
-        Account account = accountService.getById(user.getAccountId());
+        Account account = accountService.getById(data.getAccountId());
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("payment-settings");
         modelAndView.addObject("user", user);
-        modelAndView.addObject("accountPaymentMethods", paymentMethodService.getAllByAccountId(account.getId()));
         modelAndView.addObject("account", account);
+        modelAndView.addObject("lastThreePayments", paymentService.getLastThree(data.getAccountId()));
+        modelAndView.addObject("accountPaymentMethods", paymentMethodService.getAllByAccountId(account.getId()));
         return modelAndView;
 
     }
@@ -57,25 +62,26 @@ public class PaymentMethodController {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("payment-method");
-        modelAndView.addObject("paymentSettingsRequest", new PaymentSettingsRequest());
+        modelAndView.addObject("paymentMethodRequest", new PaymentMethodRequest());
 
         return modelAndView;
     }
 
     @PostMapping
-    public ModelAndView processPaymentMethodRequest(@Valid PaymentSettingsRequest paymentSettingsRequest,
-                                           BindingResult bindingResult,
-                                           @AuthenticationPrincipal AuthenticationMetadata data) {
+    public ModelAndView processPaymentMethodRequest(@Valid PaymentMethodRequest paymentMethodRequest,
+                                                    BindingResult bindingResult,
+                                                    @AuthenticationPrincipal AuthenticationMetadata data) {
 
         ModelAndView modelAndView = new ModelAndView();
 
         if (bindingResult.hasErrors()) {
             modelAndView.setViewName("payment-method");
-            modelAndView.addObject("paymentSettingsRequest", paymentSettingsRequest);
+            modelAndView.addObject("paymentMethodRequest", paymentMethodRequest);
+            return modelAndView;
         }
 
         User user = userService.getById(data.getUserId());
-        paymentMethodService.createNew(paymentSettingsRequest, user.getAccountId());
+        paymentMethodService.createNew(paymentMethodRequest, user.getAccountId());
 
         return new ModelAndView("redirect:/payment-settings");
     }
@@ -87,7 +93,7 @@ public class PaymentMethodController {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("payment-method");
-        modelAndView.addObject("paymentSettingsRequest", Mapper.mapPaymentMethodToPaymentSettingsRequest(paymentMethod));
+        modelAndView.addObject("paymentMethodRequest", Mapper.mapPaymentMethodToPaymentSettingsRequest(paymentMethod));
         modelAndView.addObject("paymentMethodId", id);
 
         return modelAndView;
@@ -95,18 +101,18 @@ public class PaymentMethodController {
 
     @PutMapping("/{id}")
     public ModelAndView updatePaymentMethod(@PathVariable UUID id,
-                                            @Valid PaymentSettingsRequest paymentSettingsRequest,
+                                            @Valid PaymentMethodRequest paymentMethodRequest,
                                             BindingResult bindingResult) {
 
         ModelAndView modelAndView = new ModelAndView();
 
         if (bindingResult.hasErrors()) {
             modelAndView.setViewName("payment-method");
-            modelAndView.addObject("paymentMethodRequest", paymentSettingsRequest);
+            modelAndView.addObject("paymentMethodRequest", paymentMethodRequest);
             return modelAndView;
         }
 
-        paymentMethodService.edit(id, paymentSettingsRequest);
+        paymentMethodService.edit(id, paymentMethodRequest);
 
         return new ModelAndView("redirect:/payment-settings");
     }

@@ -4,6 +4,7 @@ import app.security.AuthenticationMetadata;
 import app.task.model.Task;
 import app.task.service.TaskService;
 import app.user.model.User;
+import app.user.model.UserRole;
 import app.user.service.UserService;
 import app.web.dto.TaskRequest;
 import app.web.mapper.Mapper;
@@ -39,11 +40,11 @@ public class TaskController {
         String userFirstNameAndLastNameInitial = ("%s %s.".formatted(user.getFirstName(), user.getLastName().charAt(0)));
 
         if (filter == null) {
-            filter = user.getUserRole().name().equals("USER") ? "my-tasks" : "all-open";
+            filter = data.getUserRole().equals(UserRole.USER) ? "my-tasks" : "all-open";
         }
 
         ModelAndView modelAndView = new ModelAndView("tasks");
-        if(user.getUserRole().name().equals("USER")) {
+        if(user.getUserRole().equals(UserRole.USER)) {
             modelAndView.addObject("userRoleTasks", taskService.getAllForUserRoleUserByAccountIdUserIdAndFilter(user.getId(), filter));
         } else {
             modelAndView.addObject("accountTasks", taskService.getAllByAccountIdUserIdAndFilter(user.getAccountId(), user.getId(), filter));
