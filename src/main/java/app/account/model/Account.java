@@ -44,5 +44,7 @@ public class Account {
 
     private LocalDateTime dateExpiring;
 
+    private UUID defaultPaymentMethodId;
+
     private UUID ownerId;
 }

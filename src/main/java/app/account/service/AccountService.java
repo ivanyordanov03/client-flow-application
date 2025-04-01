@@ -24,6 +24,7 @@ import java.util.UUID;
 @Service
 public class AccountService {
 
+    private static final String ACCOUNT_WITH_ID_DEACTIVATED = "Account with id [%s] was deactivated.";
     private static final String ACCOUNT_WITH_ID_CREATED = "New account with id [%s] has been created.";
     private static final String ACCOUNT_WITH_ID_ACTIVATED = "Account with id [%s] has been activated.";
     private static final String ACCOUNT_WITH_ID_DOES_NOT_EXIST = "Account with id [%s] does not exist.";
@@ -39,9 +40,9 @@ public class AccountService {
     private final PaymentMethodService paymentMethodService;
 
     @Autowired
-    public AccountService(AccountRepository accountRepository,          // account page visible only to Primary admin
-                          PlanService planService,                      // check if owner can add team members account limits
-                          PaymentMethodService paymentMethodService) {  // upgrade account page
+    public AccountService(AccountRepository accountRepository,
+                          PlanService planService,
+                          PaymentMethodService paymentMethodService) {
 
         this.accountRepository = accountRepository;
         this.planService = planService;
@@ -154,6 +155,7 @@ public class AccountService {
 
         Account account = getById(id);
         account.setOwnerId(ownerId);
+        account.setDateUpdated(LocalDateTime.now());
         accountRepository.save(account);
 
         log.info(NEW_OWNER_ID_ASSIGNED_TO_ACCOUNT_WITH_ID.formatted(ownerId, id));
@@ -188,5 +190,24 @@ public class AccountService {
         }
 
         return optional.get();
+    }
+
+    public List<Account> getAllAccountsForAutoRenewal() {
+
+        return accountRepository.findAllByDateExpiringIsLessThanEqualAndAutoRenewalEnabledIsTrue(LocalDateTime.now().plusMinutes(30));
+    }
+
+    public List<Account> getAllExpiredAccounts() {
+
+        return accountRepository.findAllByDateExpiringIsLessThanEqual(LocalDateTime.now());
+    }
+
+    public void deactivate(UUID id) {
+
+        Account account = getById(id);
+
+        account.setActive(false);
+        accountRepository.save(account);
+        log.info(ACCOUNT_WITH_ID_DEACTIVATED.formatted(id));
     }
 }
