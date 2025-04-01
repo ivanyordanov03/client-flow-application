@@ -166,8 +166,6 @@ public class ContactService {
 
     public void switchArchiveStatus(UUID id, UUID userId) {
 
-        validateUserRole(userId);
-
         Contact contact = getById(id);
         contact.setArchived(!contact.isArchived());
         contact.setDateUpdated(LocalDateTime.now());
@@ -178,15 +176,11 @@ public class ContactService {
 
     public void delete(UUID id, UUID userId) {
 
-        validateUserRole(userId);
-
-        contactRepository.delete(getById(id));
-        log.info(CONTACT_ID_DELETED_BY_USER_ID.formatted(id, userId));
-    }
-
-    private void validateUserRole(UUID userId) {
         if (userService.getById(userId).getUserRole().equals(UserRole.USER)) {
             return;
         }
+
+        contactRepository.delete(getById(id));
+        log.info(CONTACT_ID_DELETED_BY_USER_ID.formatted(id, userId));
     }
 }
