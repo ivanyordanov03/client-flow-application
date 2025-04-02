@@ -9,6 +9,7 @@ import app.web.dto.ContactRequest;
 import app.web.mapper.Mapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -153,6 +154,7 @@ public class ContactController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('PRIMARY_ADMIN', 'ADMINISTRATOR')")
     public ModelAndView processDeleteRequest(@PathVariable("id") UUID id,
                                              @RequestParam("filter") String filter,
                                              @AuthenticationPrincipal AuthenticationMetadata data) {

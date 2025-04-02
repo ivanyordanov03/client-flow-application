@@ -16,5 +16,5 @@ public interface AccountRepository extends JpaRepository<Account, UUID> {
 
     List<Account> findAllByDateExpiringIsLessThanEqualAndAutoRenewalEnabledIsTrue(LocalDateTime localDateTime);
 
-    List<Account> findAllByDateExpiringIsLessThanEqual(LocalDateTime dateExpiringIsLessThan);
+    List<Account> findAllByDateExpiringIsLessThanEqualAndActiveIsFalse(LocalDateTime dateExpiringIsLessThan);
 }

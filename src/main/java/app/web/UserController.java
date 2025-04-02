@@ -10,6 +10,7 @@ import app.web.dto.UserRequest;
 import app.web.mapper.Mapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -21,6 +22,7 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/users")
+@PreAuthorize("hasAnyRole('PRIMARY_ADMIN', 'ADMINISTRATOR')")
 public class UserController {
 
     private static final String ONLY_PRIMARY_ADMIN_CAN_EDIT_PRIMARY_ADMIN = "Access Denied!";
@@ -37,6 +39,7 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('PRIMARY_ADMIN', 'ADMINISTRATOR', 'USER')")
     public ModelAndView getTeamPage(@RequestParam(value = "filter", required = false) String filter,
                                     @ModelAttribute("errorMessage") String errorMessage,
                                     @AuthenticationPrincipal AuthenticationMetadata data) {
@@ -58,15 +61,16 @@ public class UserController {
     }
 
     @GetMapping("/new-user")
-    public ModelAndView getNewUserPage(@RequestParam("filter") String filter,
+    public ModelAndView getNewUserPage(@RequestParam(value = "filter", required = false) String filter,
                                        @AuthenticationPrincipal AuthenticationMetadata data) {
 
-        String planName = accountService.getById(data.getAccountId()).getPlan().getPlanName().toString();
+        String planNameString = accountService.getById(data.getAccountId()).getPlan().getPlanName().toString();
 
-        userService.validateUserLimit(data.getAccountId(), planName);
+        userService.validateUserLimit(data.getAccountId(), planNameString);
 
         ModelAndView modelAndView = new ModelAndView("new-user");
         modelAndView.addObject("userRequest", new UserRequest());
+        modelAndView.addObject("planNameString", planNameString);
         modelAndView.addObject("filter", filter);
 
         return modelAndView;

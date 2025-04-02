@@ -1,4 +1,4 @@
-package app.account.properties;
+package app.plan.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

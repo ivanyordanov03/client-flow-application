@@ -2,7 +2,7 @@ package app.plan.service;
 
 import app.plan.model.Plan;
 import app.plan.model.PlanName;
-import app.account.properties.PlanProperties;
+import app.plan.properties.PlanProperties;
 import app.plan.repository.PlanRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

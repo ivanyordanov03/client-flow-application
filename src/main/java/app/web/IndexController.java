@@ -26,7 +26,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/")
 public class IndexController {
 
-    private static final String LOGIN_ERROR_MESSAGE = "Incorrect username or password.";
+    private static final String LOGIN_ERROR_MESSAGE = "Incorrect email or password.";
 
     private final PlanService planService;
     private final UserService userService;
@@ -122,5 +122,14 @@ public class IndexController {
         userService.registerAccountOwner(userRequest);
 
         return "redirect:/login";
+    }
+
+    @GetMapping("/coming-soon")
+    public ModelAndView getComingSoonPage(@AuthenticationPrincipal AuthenticationMetadata data) {
+
+        ModelAndView modelAndView = new ModelAndView("coming-soon");
+        modelAndView.addObject("user", userService.getById(data.getUserId()));
+
+        return modelAndView;
     }
 }

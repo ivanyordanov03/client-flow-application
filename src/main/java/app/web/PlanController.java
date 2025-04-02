@@ -5,6 +5,7 @@ import app.account.service.AccountService;
 import app.security.AuthenticationMetadata;
 import app.user.model.User;
 import app.user.service.UserService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +33,7 @@ public class PlanController {
     }
 
     @GetMapping("/upgrade")
+    @PreAuthorize("hasRole('PRIMARY_ADMIN')")
     public ModelAndView getUpgradePage(@AuthenticationPrincipal AuthenticationMetadata data) {
 
         User user = userService.getById(data.getUserId());

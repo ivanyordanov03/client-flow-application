@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found - ClientFlow</title>
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <link rel="stylesheet" href="/css/nav-side-bar.css">
+    <link rel="stylesheet" href="/css/error-page.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<header>
+    <div class="logo-container">
+        <a th:href="@{/dashboard}">
+            <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+        </a>
+    </div>
+</header>
+<main class="container error-container">
+    <div th:replace="~{fragments/nav-side-bar :: navSideBar(activePage='')}"></div>
+    <div class="content error-content">
+        <div class="error-box not-found">
+            <div class="error-header">
+                <div class="icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 20h.01M12 16c0-3 4-3 4-6s-2-5-4-5-4 2-4 3" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h2>404 - Page Not Found</h2>
+                <p>Oops! It seems we couldn’t find the page you’re looking for. Check the URL or head back to the dashboard.</p>
+            </div>
+            <a th:href="@{/dashboard}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+</main>
+<footer>
+    <p>&copy; 2025 ClientFlow. All rights reserved.</p>
+</footer>
+<script src="/js/scripts.js"></script>
+</body>
+</html>

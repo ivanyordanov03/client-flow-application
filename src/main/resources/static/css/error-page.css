@@ -1,0 +1,152 @@
+.error-container {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    width: 1300px;
+    margin: 2em auto;
+    background: white;
+    border-radius: 0.3rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+    min-height: 100%;
+}
+
+.error-content {
+    flex: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+}
+
+.error-box {
+    position: relative;
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+    padding: 2rem;
+    background: #fff;
+    overflow: hidden;
+}
+
+.error-box::before,
+.error-box::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.7;
+    filter: blur(40px);
+    z-index: -1;
+}
+
+.error-box::before {
+    width: 300px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(75, 191, 137, 0.3), rgba(14, 41, 37, 0.2));
+    top: -80px;
+    left: -90px;
+}
+
+.error-box::after {
+    width: 350px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(14, 41, 37, 0.3), rgba(75, 191, 137, 0.2));
+    bottom: -60px;
+    right: -100px;
+}
+
+.error-header .icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.error-box.not-found .icon {
+    background-color: rgba(75, 191, 137, 0.8);
+    border: 1px solid rgba(75, 191, 137, 0.9);
+    box-shadow: 0 4px 8px rgba(75, 191, 137, 0.4);
+}
+
+.error-box.internal-server-error .icon {
+    background-color: rgba(231, 76, 60, 0.8);
+    border: 1px solid rgba(231, 76, 60, 0.9);
+    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.4);
+}
+
+.error-header h2 {
+    font-size: 1.5rem;
+    color: #333;
+    margin: 0 0 0.5rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+}
+
+.error-header p {
+    font-size: 0.9rem;
+    color: #667;
+    margin: 0 0 1.5rem;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+}
+
+.details-section {
+    margin-bottom: 1.5rem;
+}
+
+.details-section p {
+    font-size: 0.875rem;
+    color: #333;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+}
+
+.error-box .btn.btn-secondary {
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    border-radius: 0.3rem;
+    background: radial-gradient(circle at 90% top, #4BBF89 0%, #45B07F 20%, #328361 60%, #1A4739 100%);
+    color: white;
+    text-decoration: none;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    transition: background 0.3s ease;
+}
+
+.error-box .btn.btn-secondary:hover {
+    background: radial-gradient(circle at 90% top, #0E2925 0%, #1A4739 20%, #328361 60%, #4BBF89 100%);
+}
+
+.bad-request .icon {
+    background-color: rgba(255, 193, 7, 0.8); /* Yellow #FFC107 */
+    border: 1px solid rgba(255, 193, 7, 0.9);
+    box-shadow: 0 4px 8px rgba(255, 193, 7, 0.4);
+}
+
+.error-box.bad-request::before {
+    width: 300px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(255, 193, 7, 0.3), rgba(14, 41, 37, 0.2));
+    top: -80px;
+    left: -90px;
+}
+
+.error-box.bad-request::after {
+    width: 350px;
+    height: 120px;
+    background: radial-gradient(circle, rgba(14, 41, 37, 0.3), rgba(255, 193, 7, 0.2));
+    bottom: -60px;
+    right: -100px;
+}
+
+.error-box .btn.btn-secondary.close-modal {
+    background: radial-gradient(circle at 90% top, #FFC107 0%, #FFB300 20%, #FFA000 60%, #FF8F00 100%);
+    color: #0E2925;
+}
+
+.error-box .btn.btn-secondary.close-modal:hover {
+    background: radial-gradient(circle at 90% top, #0E2925 0%, #1A4739 20%, #328361 60%, #FFC107 100%);
+    color: white;
+}

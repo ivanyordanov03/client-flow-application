@@ -58,10 +58,10 @@
             <a th:if="${user != null and totalAccountUsers <= 15}" th:href="@{/payments/new(plan='PLUS')}" class="btn">Continue</a>
         </div>
     </section>
-
+    <p class="alert-warning" th:if="${emailInUseExceptionMessage}" th:text="${emailInUseExceptionMessage + ' Pick your plan to start over.'}"></p>
     <p id="sign-in" th:if="${user == null}">Already have an account? <a th:href="@{/login}">Sign In</a></p>
 </main>
-
+<div th:replace="~{fragments/bad-request-modal :: badRequestModal}"></div>
 <footer>
     <p>&copy; 2025 ClientFlow. All rights reserved.</p>
 </footer>

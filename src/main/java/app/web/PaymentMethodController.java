@@ -12,6 +12,7 @@ import app.web.dto.PaymentMethodRequest;
 import app.web.mapper.Mapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -22,6 +23,7 @@ import java.util.UUID;
 
 @Controller
 @RequestMapping("/payment-settings")
+@PreAuthorize("hasRole('PRIMARY_ADMIN')")
 public class PaymentMethodController {
 
     private final UserService userService;

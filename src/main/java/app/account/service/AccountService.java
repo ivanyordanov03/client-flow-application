@@ -25,7 +25,6 @@ import java.util.UUID;
 public class AccountService {
 
     private static final String ACCOUNT_WITH_ID_DEACTIVATED = "Account with id [%s] was deactivated.";
-    private static final String ACCOUNT_WITH_ID_CREATED = "New account with id [%s] has been created.";
     private static final String ACCOUNT_WITH_ID_ACTIVATED = "Account with id [%s] has been activated.";
     private static final String ACCOUNT_WITH_ID_DOES_NOT_EXIST = "Account with id [%s] does not exist.";
     private static final String ACCOUNT_WITH_ID_IS_SET_TO_EXPIRE_ON = "Account with id [%s] is set to expire on [%s].";
@@ -34,6 +33,7 @@ public class AccountService {
     private static final String ACCOUNT_WITH_ID_HAS_BEEN_EDITED_BY = "Account with id [%s] has been edited by user with id [%s].";
     private static final String NO_ACCOUNT_ASSOCIATED_WITH_USER_WITH_ID = "There is no account associated with user with id [%s].";
     private static final String NEW_OWNER_ID_ASSIGNED_TO_ACCOUNT_WITH_ID = "New owner with id [%s] has been assigned to account with id [%s].";
+    private static final String NO_SAVED_PAYMENT_METHOD_FOR_AUTO_PAY = "There is no saved payment method associated with your account. Add one and try again.";
 
     private final AccountRepository accountRepository;
     private final PlanService planService;
@@ -55,7 +55,6 @@ public class AccountService {
 
         Account account = initialize(plan);
         accountRepository.save(account);
-        log.info(ACCOUNT_WITH_ID_CREATED.formatted(account.getId()));
         return account;
     }
 
@@ -95,7 +94,7 @@ public class AccountService {
         log.info(ACCOUNT_WITH_ID_ACTIVATED.formatted(id));
     }
 
-    public void setExpirationDate(UUID id) {
+    public void setAccountAfterSubscriptionPayment(UUID id, String planName) {
 
         Account account = getById(id);
 
@@ -105,6 +104,10 @@ public class AccountService {
             account.setDateExpiring(LocalDateTime.now().plusMonths(1));
         }
 
+        if (!account.getPlan().getPlanName().toString().equals(planName)) {
+            Plan plan = planService.getByName(Mapper.mapPlanNameAsStringToPlanTypeEnum(planName));
+            account.setPlan(plan);
+        }
         account.setDateUpdated(LocalDateTime.now());
         accountRepository.save(account);
 
@@ -133,7 +136,7 @@ public class AccountService {
             List<PaymentMethod> savedPaymentMethods = paymentMethodService.getAllByAccountId(id);
 
             if (savedPaymentMethods.isEmpty()) {
-                throw new IllegalStateException("There is no saved payment method associated with account with id [%s].");
+                throw new IllegalStateException(NO_SAVED_PAYMENT_METHOD_FOR_AUTO_PAY);
             }
 
             if (savedPaymentMethods.stream().filter(PaymentMethod::isDefaultMethod).toList().isEmpty()) {
@@ -199,7 +202,7 @@ public class AccountService {
 
     public List<Account> getAllExpiredAccounts() {
 
-        return accountRepository.findAllByDateExpiringIsLessThanEqual(LocalDateTime.now());
+        return accountRepository.findAllByDateExpiringIsLessThanEqualAndActiveIsFalse(LocalDateTime.now());
     }
 
     public void deactivate(UUID id) {

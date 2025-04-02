@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/common.css">
     <link rel="stylesheet" href="/css/nav-side-bar.css">
     <link rel="stylesheet" href="/css/payment-settings.css">
+    <link rel="stylesheet" href="/css/error-page.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
@@ -92,6 +93,7 @@
                 </label>
             </form>
         </div>
+        <h3>Payments</h3>
         <div>
             <table class="table">
                 <thead>
@@ -135,7 +137,7 @@
         </div>
     </div>
 </div>
-
+<div th:replace="~{fragments/bad-request-modal :: badRequestModal}"></div>
 <footer>
     <p>&copy; 2025 ClientFlow. All rights reserved.</p>
 </footer>

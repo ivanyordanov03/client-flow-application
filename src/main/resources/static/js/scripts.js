@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Slideshow functionality (unchanged)
+    // Slideshow functionality
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slide');
     const dots = document.querySelectorAll('.dot');
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setInterval(nextSlide, 5000);
     }
 
-    // Password toggle functionality (unchanged)
+    // Password toggle functionality
     const togglePassword = document.getElementById('togglePassword');
     const passwordInput = document.getElementById('password');
     if (togglePassword && passwordInput) {
@@ -47,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const isSectionSelected = (useSavedMethod && useSavedMethod.checked) || (useNewCard && useNewCard.checked) || !useSavedMethod; // True if no saved methods
             submitButton.disabled = !termsCheckbox.checked || !isSectionSelected;
         }
-
         termsCheckbox.addEventListener('change', updateSubmitButton);
 
         if (useSavedMethod && useNewCard && savedMethodsContent && newCardContent) {
@@ -66,7 +65,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 updateSubmitButton();
             }
-
             useSavedMethod.addEventListener('change', function() {
                 if (this.checked) {
                     useNewCard.checked = false;
@@ -79,16 +77,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 toggleSections();
             });
-
             toggleSections();
         } else if (!useSavedMethod && newCardContent) {
-            // No saved methods, ensure new card section is active
             newCardContent.classList.remove('disabled');
             updateSubmitButton();
         }
     }
 
-    // Description modal functionality (unchanged)
+    // Description modal functionality
     const descriptionButtons = document.querySelectorAll('.description-btn');
     const descriptionModal = document.getElementById('descriptionModal');
     const modalDescription = document.getElementById('modalDescription');
@@ -101,11 +97,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 descriptionModal.style.display = 'flex';
             });
         });
-
         closeBtn.addEventListener('click', function () {
             descriptionModal.style.display = 'none';
         });
-
         window.addEventListener('click', function (event) {
             if (event.target === descriptionModal) {
                 descriptionModal.style.display = 'none';
@@ -113,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Initialize Flatpickr for the dueDate field (unchanged)
+    // Initialize Flatpickr for the dueDate field
     const dueDateInput = document.getElementById('dueDate');
     if (dueDateInput) {
         flatpickr("#dueDate", {
@@ -126,7 +120,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Dropdown menu functionality (unchanged)
+    // Dropdown menu functionality
     const dropdownIcons = document.querySelectorAll('.dropdown-icon');
     dropdownIcons.forEach(icon => {
         icon.addEventListener('click', function (event) {
@@ -147,7 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Close dropdowns when clicking outside (unchanged)
+    // Close dropdowns when clicking outside
     document.addEventListener('click', function (event) {
         const dropdowns = document.querySelectorAll('.action-dropdown');
         dropdowns.forEach(dropdown => {
@@ -157,7 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Action functionality (delete and archive) with custom modal (unchanged)
+    // Action functionality (delete and archive) with custom modal
     const actionLinks = document.querySelectorAll('.delete-link, .archive-link');
     const modal = document.getElementById('action-confirm-modal');
     const title = document.getElementById('action-title');
@@ -184,11 +178,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 modal.style.display = 'flex';
             });
         });
-
         cancelBtn.addEventListener('click', function () {
             modal.style.display = 'none';
         });
-
         window.addEventListener('click', function (event) {
             if (event.target === modal) {
                 modal.style.display = 'none';
@@ -196,7 +188,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Set default payment method functionality (unchanged)
+    // Bad request modal handling - integrates with existing code
+    const badRequestModal = document.getElementById('bad-request-modal');
+    if (badRequestModal) {
+        badRequestModal.style.display = 'flex';
+
+        const closeModal = () => badRequestModal.style.display = 'none';
+
+        badRequestModal.querySelector('.close-btn')?.addEventListener('click', closeModal);
+        badRequestModal.querySelector('.close-modal-btn')?.addEventListener('click', closeModal);
+        badRequestModal.addEventListener('click', (e) => e.target === badRequestModal && closeModal());
+    }
+
+    // Set default payment method functionality
     const defaultPaymentRadios = document.querySelectorAll('input[name="defaultPaymentMethod"]');
     defaultPaymentRadios.forEach(radio => {
         radio.addEventListener('change', function () {

@@ -2,6 +2,15 @@
     width: 1300px;
 }
 
+.contacts-content {
+    width: 100%;
+    display: block;
+}
+
+.contacts-table table {
+    width: 100%;
+}
+
 .sort-arrows {
     display: inline-flex;
     gap: 0.2rem;

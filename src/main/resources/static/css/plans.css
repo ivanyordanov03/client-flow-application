@@ -93,6 +93,11 @@
     color: #4BBF89;
 }
 
+.alert-warning {
+    text-align: center;
+    background: white;
+}
+
 @media (max-width: 15em) {
     .pricing-plans {
         flex-direction: column;

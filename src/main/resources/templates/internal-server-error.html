@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>500 Internal Server Error - ClientFlow</title>
+  <link rel="stylesheet" href="/css/reset.css">
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/nav-side-bar.css">
+  <link rel="stylesheet" href="/css/error-page.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<header>
+  <div class="logo-container">
+    <a th:href="@{/dashboard}">
+      <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+    </a>
+  </div>
+</header>
+<main class="container error-container">
+  <div th:replace="~{fragments/nav-side-bar :: navSideBar(activePage='')}"></div>
+  <div class="content error-content">
+    <div class="error-box internal-server-error">
+      <div class="error-header">
+        <div class="icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2v12M12 18v2" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2>500 - Internal Server Error</h2>
+        <p>Something went wrong on our end. Our team is working to fix it. Please try again later or contact support if the issue persists.</p>
+      </div>
+      <div class="details-section">
+        <p th:text="${errorMessage != null ? errorMessage : 'No additional details available.'}"></p>
+      </div>
+      <a th:href="@{/dashboard}" class="btn btn-secondary">Back to Dashboard</a>
+    </div>
+  </div>
+</main>
+<footer>
+  <p>&copy; 2025 ClientFlow. All rights reserved.</p>
+</footer>
+<script src="/js/scripts.js"></script>
+</body>
+</html>

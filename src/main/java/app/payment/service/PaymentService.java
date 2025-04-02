@@ -55,7 +55,7 @@ public class PaymentService {
 
         Payment payment = initiate(paymentRequest, account);
         paymentRepository.save(payment);
-        accountService.setExpirationDate(accountId);
+        accountService.setAccountAfterSubscriptionPayment(accountId, paymentRequest.getPlanToPurchase());
 
         log.info(NEW_PAYMENT_WITH_ID_HAS_BEEN_MADE_FOR_ACCOUNT_WITH_ID.formatted(payment.getId(), accountId));
     }

@@ -516,6 +516,16 @@ p {
     color: #0E2925;
 }
 
+.modal-content.error-box {
+    max-width: 500px;
+    text-align: center;
+    padding: 2rem;
+}
+
+.modal-content.error-box .btn {
+    margin-top: 1rem;
+}
+
 @media (max-width: 768px) {
     .container {
         flex-direction: column;

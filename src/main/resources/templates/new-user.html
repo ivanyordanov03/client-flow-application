@@ -25,6 +25,7 @@
         <h1 th:text="${userId != null} ? 'Edit User' : 'Create New User'"></h1>
         <form th:if="${userId == null}" th:action="@{/users(filter = ${filter})}" th:method="POST" th:object="${userRequest}">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <input type="hidden" name="planName" th:value="${planNameString}" />
             <div th:insert="~{fragments/user-form :: userForm}"></div>
             <div class="form-controls">
                 <button type="submit" class="btn btn-secondary">Create User</button>
@@ -42,7 +43,7 @@
         </div>
     </div>
 </main>
-
+<div th:replace="~{fragments/bad-request-modal :: badRequestModal}"></div>
 <footer>
     <p>© 2025 ClientFlow. All rights reserved.</p>
 </footer>

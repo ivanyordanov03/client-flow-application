@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<body>
+<th:block th:fragment="badRequestModal">
+    <div id="bad-request-modal" class="modal"
+         th:if="${#ctx.containsVariable('badRequestExceptionMessage')}">
+        <div class="modal-content error-box bad-request">
+            <div class="error-header">
+                <div class="icon">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2v12M12 18v2" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h2>400 - Bad Request</h2>
+                <p id="bad-request-message" th:text="${badRequestExceptionMessage}"></p>
+            </div>
+            <button class="btn btn-secondary close-modal-btn">OK</button>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
+

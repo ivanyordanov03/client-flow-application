@@ -16,6 +16,7 @@ import java.util.List;
 public class SubscriptionScheduler {
 
     private static final String ACCOUNT_ID_HAS_EXPIRED = "Account with id [%s] has expired.";
+    private static final String NO_EXPIRED_ACCOUNTS_FOUND = "No expired accounts were found.";
     private static final String NO_ACCOUNTS_FOUND_FOR_AUTO_RENEWAL = "No accounts found for autoRenewal";
     private static final String AUTO_RENEWAL_COMPLETE_ACCOUNT_ID_DEFAULT_METHOD_ID = "AutoRenewal for account with id [%s] and default payment method id [%s] completed";
 
@@ -50,6 +51,11 @@ public class SubscriptionScheduler {
     public void deactivateExpiredAccounts() {
 
         List<Account> allExpiredAccounts = accountService.getAllExpiredAccounts();
+
+        if (allExpiredAccounts.isEmpty()) {
+            log.info(NO_EXPIRED_ACCOUNTS_FOUND);
+            return;
+        }
 
         allExpiredAccounts.forEach(account -> {
             log.info(ACCOUNT_ID_HAS_EXPIRED.formatted(account.getId()));

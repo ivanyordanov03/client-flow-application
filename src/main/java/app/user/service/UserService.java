@@ -1,7 +1,8 @@
 package app.user.service;
 
 import app.account.model.Account;
-import app.account.properties.PlanProperties;
+import app.exception.EmailAlreadyInUseException;
+import app.plan.properties.PlanProperties;
 import app.account.service.AccountService;
 import app.security.AuthenticationMetadata;
 import app.user.model.User;
@@ -28,13 +29,14 @@ import java.util.UUID;
 public class UserService implements UserDetailsService {
 
     private static final String DEFAULT_FILTER = "current";
+    private static final String ACCESS_DENIED = "Access denied.";
     private static final String USER_ID_NOT_FOUND = "User with id [%s] not found";
     private static final String EMAIL_ALREADY_IN_USE = "Email address [%s] is already in use.";
+    private static final String ACCOUNT_WITH_ID_CREATED = "New account with id [%s] has been created.";
     private static final String USER_WITH_EMAIL_DOES_NOT_EXIST = "User with email [%s] does not exist.";
     private static final String REGISTERED_NEW_USER_WITH_ID = "New user with id [%s] has been registered.";
     private static final String CREATED_NEW_ACCOUNT_FOR_USER_ID = "A new account with id [%s] has been created for user with id [%s].";
     private static final String USER_ID_MODIFIED_BY_USER_ID = "User with id [%s] has been modified by user with id [%s].";
-    private static final String ACCESS_DENIED = "Access denied.";
     private static final String ACCOUNT_REACHED_MAX_USERS = "You have reached the maximum number of users for your current plan. Upgrade your account to proceed";
     private static final String USER_ID_SET_STATUS_BY_USER_ID = "User with id [%s] was set to %s by user with id [%s].";
     private static final String USER_ID_WAS_SET_ARCHIVE_STATUS_BY_USER_ID = "User with id [%s] was %s by user with id [%s].";
@@ -78,21 +80,18 @@ public class UserService implements UserDetailsService {
 
         accountService.insertOwnerId(account.getId(), user.getId());
 
+        log.info(ACCOUNT_WITH_ID_CREATED.formatted(account.getId()));
         log.info(CREATED_NEW_ACCOUNT_FOR_USER_ID.formatted(account.getId(), account.getOwnerId()));
     }
 
-    public User register(UserRequest registerUserRequest, UUID accountId) {
+    public User register(UserRequest userRequest, UUID accountId) {
 
-        validateUserLimit(accountId, registerUserRequest.getPlanName());
+        validateUserLimit(accountId, userRequest.getPlanName());
+        validateEmail(userRequest.getEmail());
 
-        Optional<User> optionUser = userRepository.findByEmail(registerUserRequest.getEmail());
-        if (optionUser.isPresent()) {
-            throw new IllegalArgumentException(EMAIL_ALREADY_IN_USE.formatted(registerUserRequest.getEmail()));
-        }
-
-        User user = initiateNewUser(registerUserRequest, accountId);
-        if (registerUserRequest.getPassword() != null) {
-            user.setUserRole(UserRole.valueOf(registerUserRequest.getUserRoleString()));
+        User user = initiateNewUser(userRequest, accountId);
+        if (userRequest.getPassword() != null) {
+            user.setUserRole(UserRole.valueOf(userRequest.getUserRoleString()));
         }
         userRepository.save(user);
 
@@ -131,7 +130,11 @@ public class UserService implements UserDetailsService {
 
         user.setFirstName(editUserRequest.getFirstName());
         user.setLastName(editUserRequest.getLastName());
-        user.setEmail(editUserRequest.getEmail());
+
+        if (!user.getEmail().equals(editUserRequest.getEmail())) {
+            validateEmail(editUserRequest.getEmail());
+            user.setEmail(editUserRequest.getEmail());
+        }
 
         String newPassword = editUserRequest.getPassword();
         if (newPassword != null && !newPassword.isBlank()) {
@@ -228,5 +231,13 @@ public class UserService implements UserDetailsService {
         }
         userRepository.delete(getById(id));
         log.info(USER_ID_DELETED_BY_USER_ID.formatted(id, loggedUserId));
+    }
+
+    private void validateEmail(String email) {
+
+        Optional<User> optionUser = userRepository.findByEmail(email);
+        if (optionUser.isPresent()) {
+            throw new EmailAlreadyInUseException(EMAIL_ALREADY_IN_USE.formatted(email));
+        }
     }
 }
