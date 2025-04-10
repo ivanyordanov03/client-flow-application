@@ -73,11 +73,11 @@ public class AccountService {
     public void enableAutoRenewalForNewSubscription(PaymentRequest paymentRequest, UUID id) {
 
         List<PaymentMethod> paymentMethods = paymentMethodService.getAllByAccountId(id);
+        Account account = getById(id);
         if (paymentMethods.isEmpty()) {
-            paymentMethodService.createNew(Mapper.mapPaymentRequestToPaymentMethodRequest(paymentRequest), id);
+            account.setDefaultPaymentMethodId(paymentMethodService.createNew(Mapper.mapPaymentRequestToPaymentMethodRequest(paymentRequest), id));
         }
 
-        Account account = getById(id);
         account.setAutoRenewalEnabled(true);
         account.setDateUpdated(LocalDateTime.now());
         accountRepository.save(account);
@@ -140,7 +140,7 @@ public class AccountService {
             }
 
             if (savedPaymentMethods.stream().filter(PaymentMethod::isDefaultMethod).toList().isEmpty()) {
-                paymentMethodService.setAsDefaultMethod(savedPaymentMethods.get(0).getId());
+                paymentMethodService.setAsDefaultMethod(savedPaymentMethods.get(0));
             }
         }
         account.setAutoRenewalEnabled(!account.isAutoRenewalEnabled());
@@ -165,7 +165,7 @@ public class AccountService {
     }
 
     @Transactional
-    public void deletePaymentMethod(UUID paymentMethodId, UUID userId, UUID id) {
+    public void deleteAccountPaymentMethod(UUID paymentMethodId, UUID userId, UUID id) {
 
         paymentMethodService.delete(paymentMethodId, userId, id);
         List<PaymentMethod> remainingMethods = paymentMethodService.getAllByAccountId(id);
@@ -205,12 +205,14 @@ public class AccountService {
         return accountRepository.findAllByDateExpiringIsLessThanEqualAndActiveIsFalse(LocalDateTime.now());
     }
 
-    public void deactivate(UUID id) {
+    public Account deactivate(UUID id) {
 
         Account account = getById(id);
 
         account.setActive(false);
         accountRepository.save(account);
         log.info(ACCOUNT_WITH_ID_DEACTIVATED.formatted(id));
+
+        return account;
     }
 }

@@ -20,6 +20,7 @@ public class PaymentMethodService {
     private static final String NEW_PAYMENT_METHOD_WITH_ID_ADDED_BY_USER_ID = "New payment method with id [%s] added to account with id [%s]";
 
     private final PaymentMethodRepository paymentMethodRepository;
+
     @Autowired
     public PaymentMethodService(PaymentMethodRepository paymentMethodRepository) {
 
@@ -27,7 +28,7 @@ public class PaymentMethodService {
     }
 
     @Transactional
-    public void createNew(PaymentMethodRequest paymentMethodRequest, UUID accountId) {
+    public UUID createNew(PaymentMethodRequest paymentMethodRequest, UUID accountId) {
 
         if (paymentMethodRepository.getByCreditCardNumberAndExpirationDate(paymentMethodRequest.getCardNumber(),
                 paymentMethodRequest.getExpirationDate()).isPresent()) {
@@ -41,12 +42,12 @@ public class PaymentMethodService {
         }
 
         if (paymentMethodRequest.isDefaultMethod()) {
-            setAsDefaultMethod(paymentMethod.getId());
+            setAsDefaultMethod(paymentMethod);
         }
 
         paymentMethodRepository.save(paymentMethod);
         log.info(NEW_PAYMENT_METHOD_WITH_ID_ADDED_BY_USER_ID.formatted(paymentMethod.getId(), accountId));
-
+        return paymentMethod.getId();
     }
 
     private PaymentMethod initiate(PaymentMethodRequest paymentMethodRequest, UUID accountId) {
@@ -61,9 +62,8 @@ public class PaymentMethodService {
     }
 
     @Transactional
-    public void setAsDefaultMethod(UUID id) {
+    public void setAsDefaultMethod(PaymentMethod paymentMethod) {
 
-        PaymentMethod paymentMethod = getById(id);
         List<PaymentMethod> defaultMethodsAsList = paymentMethodRepository.findByAccountIdAndDefaultMethodIsTrue(paymentMethod.getAccountId());
 
         if (defaultMethodsAsList.size() > 1) {
@@ -77,10 +77,10 @@ public class PaymentMethodService {
 
         paymentMethod.setDefaultMethod(true);
         paymentMethodRepository.save(paymentMethod);
-        log.error("Saved payment methods with id [%s] was set as default for account with id [%s]".formatted(id, paymentMethod.getAccountId()));
+        log.info("Saved payment methods with id [%s] was set as default for account with id [%s]".formatted(paymentMethod.getId(), paymentMethod.getAccountId()));
     }
 
-    public void edit(UUID id, PaymentMethodRequest paymentMethodRequest) {
+    public PaymentMethod edit(UUID id, PaymentMethodRequest paymentMethodRequest) {
 
         PaymentMethod paymentMethod = getById(id);
         paymentMethod.setCardHolderName(paymentMethodRequest.getCardholderName());
@@ -89,7 +89,7 @@ public class PaymentMethodService {
         paymentMethod.setCVV(paymentMethodRequest.getCvv());
         paymentMethod.setDefaultMethod(paymentMethodRequest.isDefaultMethod());
 
-        paymentMethodRepository.save(paymentMethod);
+        return paymentMethodRepository.save(paymentMethod);
     }
 
     @Transactional
@@ -103,7 +103,7 @@ public class PaymentMethodService {
                     .filter(m -> !m.getId().equals(id))
                     .findFirst()
                     .get();
-            setAsDefaultMethod(newDefaultMethod.getId());
+            setAsDefaultMethod(newDefaultMethod);
         }
 
         paymentMethodRepository.delete(paymentMethod);
@@ -117,5 +117,10 @@ public class PaymentMethodService {
 
     public List<PaymentMethod> getAllByAccountId(UUID accountId) {
         return paymentMethodRepository.findAllByAccountId(accountId);
+    }
+
+    @Transactional
+    public void prepareToSetAsDefaultMethod(UUID id) {
+        setAsDefaultMethod(getById(id));
     }
 }

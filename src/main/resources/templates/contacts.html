@@ -118,7 +118,7 @@
         <div class="modal-buttons">
             <form id="action-form" th:action="@{/contacts/0(filter=${filter})}" th:method="POST">
                 <input type="hidden" name="_method" id="action-method" value="POST" />
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+<!--                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
                 <button type="submit" class="btn">Confirm</button>
             </form>
             <button id="cancel-action" class="btn btn-secondary">Cancel</button>

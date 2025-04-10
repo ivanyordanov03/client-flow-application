@@ -22,7 +22,7 @@
   <div class="content">
     <h1 th:text="${contactId != null} ? 'Edit Contact' : 'Create New Contact'"></h1>
     <form th:if="${contactId == null}" th:action="@{/contacts(filter=${filter})}" th:method="POST" th:object="${contactRequest}">
-      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+<!--      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
       <div th:insert="~{fragments/contact-form :: contactForm}"></div>
       <div class="form-controls">
         <button type="submit" class="btn btn-secondary">Save Contact</button>
@@ -30,7 +30,7 @@
       </div>
     </form>
     <form th:unless="${contactId == null}" th:action="@{/contacts/{id}(id=${contactId}, filter=${filter})}" th:method="PUT" th:object="${contactRequest}">
-      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+<!--      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
       <div th:insert="~{fragments/contact-form :: contactForm}"></div>
       <div class="form-controls">
         <button type="submit" class="btn btn-secondary">Save Contact</button>

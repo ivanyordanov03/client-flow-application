@@ -122,7 +122,7 @@ public class PaymentMethodController {
     @PutMapping("/{id}/default")
     public ModelAndView setDefaultPaymentMethod(@PathVariable("id") UUID id) {
 
-        paymentMethodService.setAsDefaultMethod(id);
+        paymentMethodService.prepareToSetAsDefaultMethod(id);
 
         return new ModelAndView("redirect:/payment-settings");
     }
@@ -133,7 +133,7 @@ public class PaymentMethodController {
 
         User user = userService.getById(data.getUserId());
         Account account = accountService.getById(user.getAccountId());
-        accountService.deletePaymentMethod(id, user.getId(), account.getId());
+        accountService.deleteAccountPaymentMethod(id, user.getId(), account.getId());
 
 
         return "redirect:/payment-settings";

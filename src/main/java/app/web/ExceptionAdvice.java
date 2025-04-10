@@ -40,15 +40,15 @@ public class ExceptionAdvice {
                                                 RedirectAttributes redirectAttributes) {
 
         String viewName = extractViewName(request.getHeader("referer"), "plans");
-        viewName = viewName.equals("register") ? "/plans" : "/users/" + viewName;
+        viewName = viewName.equals("plans") ? "/plans" : ("/users/" + viewName);
 
-        String currentView = "redirect:" + viewName;
+        String url = "redirect:" + viewName;
         String email = request.getParameter("email");
 
         redirectAttributes.addFlashAttribute("emailInUseExceptionMessage", EMAIL_ALREADY_IN_USE.formatted(email));
         redirectAttributes.addFlashAttribute("filter", FILTER_CURRENT);
 
-        return currentView;
+        return url;
     }
 
 //    @ResponseStatus(HttpStatus.BAD_REQUEST)

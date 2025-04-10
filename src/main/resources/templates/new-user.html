@@ -24,7 +24,7 @@
         <div>
         <h1 th:text="${userId != null} ? 'Edit User' : 'Create New User'"></h1>
         <form th:if="${userId == null}" th:action="@{/users(filter = ${filter})}" th:method="POST" th:object="${userRequest}">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+<!--            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
             <input type="hidden" name="planName" th:value="${planNameString}" />
             <div th:insert="~{fragments/user-form :: userForm}"></div>
             <div class="form-controls">
@@ -33,7 +33,7 @@
             </div>
         </form>
         <form th:unless="${userId == null}" th:action="@{('/users/' + ${userId})(filter = ${filter})}" th:method="PUT" th:object="${editUserRequest}">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+<!--            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
             <div th:insert="~{fragments/user-form :: userForm}"></div>
             <div class="form-controls">
                 <button type="submit" class="btn btn-secondary">Update User</button>

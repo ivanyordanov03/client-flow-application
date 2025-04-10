@@ -3,9 +3,15 @@ package app.web.dto;
 import app.validation.ValidExpirationDate;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PaymentRequest {
 
 //    @CreditCardNumber - for real credit card validation, commented to make tests easier

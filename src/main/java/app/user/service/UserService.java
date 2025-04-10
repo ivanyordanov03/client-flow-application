@@ -63,18 +63,17 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(USER_WITH_EMAIL_DOES_NOT_EXIST.formatted(email)));
+        User user = getByEmail(email);
 
         return new AuthenticationMetadata(user.getId(), user.getEmail(), user.getPassword(), user.getUserRole(), user.getAccountId(), user.isActive());
     }
 
     @Transactional
-    public void registerAccountOwner(UserRequest registerUserRequest) {
+    public void registerAccountOwner(UserRequest userRequest) {
 
-        Account account = accountService.createNew(registerUserRequest);
+        Account account = accountService.createNew(userRequest);
 
-        User user = register(registerUserRequest, account.getId());
+        User user = register(userRequest, account.getId());
         user.setUserRole(UserRole.PRIMARY_ADMIN);
         userRepository.save(user);
 
@@ -239,5 +238,9 @@ public class UserService implements UserDetailsService {
         if (optionUser.isPresent()) {
             throw new EmailAlreadyInUseException(EMAIL_ALREADY_IN_USE.formatted(email));
         }
+    }
+
+    public User getByEmail(String email) {
+        return userRepository.getUserByEmail(email).orElseThrow(() -> new NullPointerException(USER_WITH_EMAIL_DOES_NOT_EXIST.formatted(email)));
     }
 }

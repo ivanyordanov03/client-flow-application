@@ -49,15 +49,15 @@ public class PaymentService {
             accountService.enableAutoRenewalForNewSubscription(paymentRequest, accountId);
         }
 
+        Payment payment = initiate(paymentRequest, account);
+        paymentRepository.save(payment);
+        log.info(NEW_PAYMENT_WITH_ID_HAS_BEEN_MADE_FOR_ACCOUNT_WITH_ID.formatted(payment.getId(), accountId));
+
+        accountService.setAccountAfterSubscriptionPayment(accountId, paymentRequest.getPlanToPurchase());
+
         if (!account.isActive()) {
             accountService.setToActive(accountId);
         }
-
-        Payment payment = initiate(paymentRequest, account);
-        paymentRepository.save(payment);
-        accountService.setAccountAfterSubscriptionPayment(accountId, paymentRequest.getPlanToPurchase());
-
-        log.info(NEW_PAYMENT_WITH_ID_HAS_BEEN_MADE_FOR_ACCOUNT_WITH_ID.formatted(payment.getId(), accountId));
     }
 
     private Payment initiate(PaymentRequest paymentRequest, Account account) {
@@ -74,7 +74,11 @@ public class PaymentService {
     }
 
     public List<Payment> getLastThree(UUID accountId) {
-        return getAllAccountPayments(accountId).subList(0, 3);
+        List<Payment> payments = getAllAccountPayments(accountId);
+        if (payments.size() < 3) {
+            return payments;
+        }
+        return payments.subList(0, 3);
     }
 
     public List<Payment> getAllAccountPayments(UUID accountId) {

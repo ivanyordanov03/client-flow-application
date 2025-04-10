@@ -24,7 +24,7 @@
         <p>Please fill out the form below to get started.</p>
 
         <form th:action="@{/register}" th:method="POST" th:object="${ownerRequest}">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+<!--            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
             <input type="hidden" th:field="*{planName}" />
             <input type="hidden" th:field="*{userRoleString}" />
             <div class="form-group">

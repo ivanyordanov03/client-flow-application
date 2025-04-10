@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
-@RequestMapping("/")
+@RequestMapping
 public class IndexController {
 
     private static final String LOGIN_ERROR_MESSAGE = "Incorrect email or password.";
@@ -45,7 +45,7 @@ public class IndexController {
         this.accountService = accountService;
     }
 
-    @GetMapping
+    @GetMapping("/")
     public String getIndexPage() {
 
         return "index";
@@ -73,7 +73,7 @@ public class IndexController {
             if (user.getUserRole().toString().equals("PRIMARY_ADMIN")) {
                 return new ModelAndView("redirect:/payments/new");
             } else {
-                return new ModelAndView("login");
+                return new ModelAndView("redirect:/login");
             }
 
         }

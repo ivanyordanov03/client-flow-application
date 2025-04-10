@@ -38,25 +38,24 @@ public class TaskService {
         this.userService = userService;
     }
 
-    public void createNew(TaskRequest taskRequest, UUID userId) {
+    public Task createNew(TaskRequest taskRequest, UUID userId) {
 
         Task task = initializeNew(taskRequest, userId);
 
-        if (!taskRequest.getPriority().isBlank()) {
+        if (taskRequest.getPriority() != null && !taskRequest.getPriority().isBlank()) {
             task.setPriority(Mapper.mapTaskPriorityAsStringToTaskPriorityEnum(taskRequest.getPriority()));
         }
 
         taskRepository.save(task);
 
         log.info(NEW_TASK_WITH_ID_CREATED_BY_USER_WITH_ID.formatted(task.getId(), task.getCreatedById()));
+        return task;
     }
 
     private Task initializeNew(TaskRequest taskRequest, UUID userId) {
-
         LocalDateTime now = LocalDateTime.now();
         User user = userService.getById(userId);
         User assignee = userService.getById(UUID.fromString(taskRequest.getAssignedTo()));
-
         return Task.builder()
                 .name(taskRequest.getName())
                 .description(taskRequest.getDescription())
@@ -77,7 +76,6 @@ public class TaskService {
     }
 
     public List<Task> getAllForUserRoleUserByAccountIdUserIdAndFilter(UUID userId, String filter) {
-
         return switch (filter) {
             case "my-tasks" -> taskRepository.findAllByAssignedToIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(userId);
             case "tasks-created" -> taskRepository.findAllByCreatedByIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(userId);
@@ -90,7 +88,6 @@ public class TaskService {
     }
 
     public List<Task> getAllByAccountIdUserIdAndFilter(UUID accountId, UUID userId, String filter) {
-
         return switch (filter) {
             case "all-open" -> taskRepository.findAllByAccountIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(accountId);
             case "my-tasks" -> taskRepository.findAllByAssignedToIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(userId);
@@ -104,7 +101,6 @@ public class TaskService {
     }
 
     public List<Task> getAllDueToday(UUID accountId, UUID userId, String userRole) {
-
         if (USER.equals(userRole)) {
             return taskRepository.findAllByAssignedToIdAndDueDateAndCompletedIsFalseOrderByPriorityDesc(userId, LocalDate.now());
         } else {
@@ -120,17 +116,15 @@ public class TaskService {
         task.setDateUpdated(LocalDateTime.now());
 
         taskRepository.save(task);
-
         log.info(TASK_WITH_ID_MARKED_AS_COMPLETED.formatted(id, userId));
-    }
 
+    }
     public Task getById(UUID id) {
 
         return taskRepository.findById(id).orElseThrow(() ->new IllegalArgumentException(TASK_WITH_ID_NOT_FOUND.formatted(id)));
     }
 
-    public void edit(UUID taskId, TaskRequest taskRequest, UUID userId) {
-
+    public Task edit(UUID taskId, TaskRequest taskRequest, UUID userId) {
 
         Task task = getById(taskId);
         User assignee = userService.getById(UUID.fromString(taskRequest.getAssignedTo()));
@@ -141,12 +135,13 @@ public class TaskService {
         task.setAssignedToId(assignee.getId());
         task.setAssignedToName(FIRST_NAME_LAST_NAME_INITIAL.formatted(assignee.getFirstName(), assignee.getLastName().charAt(0)));
         task.setCompleted(false);
-
         task.setPriority(taskRequest.getPriority().isBlank() ? null : Mapper.mapTaskPriorityAsStringToTaskPriorityEnum(taskRequest.getPriority()));
-
         task.setDateUpdated(LocalDateTime.now());
+
         taskRepository.save(task);
         log.info(TASK_WITH_ID_EDITED_BY_USER_WITH_ID.formatted(taskId, userId));
+
+        return task;
     }
 
     public void delete(UUID id, UUID userId) {
