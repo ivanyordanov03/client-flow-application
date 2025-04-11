@@ -29,7 +29,9 @@ import java.util.UUID;
 public class UserService implements UserDetailsService {
 
     private static final String DEFAULT_FILTER = "current";
+    private static final String ARCHIVED_FILTER = "archived";
     private static final String ACCESS_DENIED = "Access denied.";
+    private static final String INVALID_FILTER_VALUE = "Invalid filter value: %s.";
     private static final String USER_ID_NOT_FOUND = "User with id [%s] not found";
     private static final String EMAIL_ALREADY_IN_USE = "Email address [%s] is already in use.";
     private static final String ACCOUNT_WITH_ID_CREATED = "New account with id [%s] has been created.";
@@ -168,8 +170,10 @@ public class UserService implements UserDetailsService {
 
         if (userRole.equals(UserRole.USER.toString()) || filter.equals(DEFAULT_FILTER)) {
             return userRepository.findAllByAccountIdAndArchivedIsFalseOrderByUserRoleAscFirstNameAscLastNameAsc(accountId);
-        } else {
+        } else if (filter.equals(ARCHIVED_FILTER)){
             return userRepository.findAllByAccountIdAndArchivedIsTrueOrderByUserRoleAscFirstNameAscLastNameAsc(accountId);
+        } else {
+            throw new IllegalArgumentException(INVALID_FILTER_VALUE.formatted(filter));
         }
     }
 

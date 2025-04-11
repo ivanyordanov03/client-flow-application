@@ -14,6 +14,7 @@ import java.util.List;
 public class PlanService {
 
     private final static String PLAN_NAME_NOT_FOUND = "Plan with name [%s] not found";
+
     private final PlanRepository planRepository;
     private final PlanProperties planProperties;
 

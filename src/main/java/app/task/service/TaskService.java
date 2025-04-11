@@ -76,6 +76,7 @@ public class TaskService {
     }
 
     public List<Task> getAllForUserRoleUserByAccountIdUserIdAndFilter(UUID userId, String filter) {
+
         return switch (filter) {
             case "my-tasks" -> taskRepository.findAllByAssignedToIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(userId);
             case "tasks-created" -> taskRepository.findAllByCreatedByIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(userId);
@@ -88,6 +89,7 @@ public class TaskService {
     }
 
     public List<Task> getAllByAccountIdUserIdAndFilter(UUID accountId, UUID userId, String filter) {
+
         return switch (filter) {
             case "all-open" -> taskRepository.findAllByAccountIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(accountId);
             case "my-tasks" -> taskRepository.findAllByAssignedToIdAndCompletedIsFalseOrderByDueDateAscPriorityDesc(userId);
@@ -101,6 +103,7 @@ public class TaskService {
     }
 
     public List<Task> getAllDueToday(UUID accountId, UUID userId, String userRole) {
+
         if (USER.equals(userRole)) {
             return taskRepository.findAllByAssignedToIdAndDueDateAndCompletedIsFalseOrderByPriorityDesc(userId, LocalDate.now());
         } else {

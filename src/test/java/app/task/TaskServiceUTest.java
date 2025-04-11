@@ -79,10 +79,13 @@ public class TaskServiceUTest {
     }
 
     @Test
-    void givenTask_whenEdited_happyPath() {
+    void givenTask_whenGivenCorrectDataAndEdited_happyPath() {
 
+        User admin = TestBuilder.aRandomAdmin();
+        User user = TestBuilder.aRandomUser();
         Task task = TestBuilder.aTask();
-        User user = TestBuilder.aRandomAdmin();
+        task.setCompleted(true);
+        task.setAssignedToId(admin.getId());
 
         TaskRequest taskRequest = TaskRequest.builder()
                 .name("Edited title")
@@ -95,7 +98,7 @@ public class TaskServiceUTest {
         when(taskRepository.findById(task.getId())).thenReturn(Optional.of(task));
         when(userService.getById(user.getId())).thenReturn(user);
 
-        taskService.edit(task.getId(), taskRequest, user.getId());
+        taskService.edit(task.getId(), taskRequest, admin.getId());
 
         assertEquals("Edited title", task.getName());
         assertEquals("Edited description", task.getDescription());
@@ -103,6 +106,24 @@ public class TaskServiceUTest {
         assertEquals(LocalDate.now().plusDays(15), task.getDueDate());
         assertEquals(user.getId(), task.getAssignedToId());
         assertFalse(task.isCompleted());
+    }
+
+    @Test
+    void givenTask_whenEditWithInvalidAssignee_throwsException() {
+
+        UUID taskId = UUID.randomUUID();
+        UUID userId = UUID.randomUUID();
+        UUID invalidUserId = UUID.randomUUID();
+
+        Task existingTask = Task.builder().build();
+        TaskRequest request = TaskRequest.builder()
+                .assignedTo(invalidUserId.toString())
+                .build();
+        when(taskRepository.findById(taskId)).thenReturn(Optional.of(existingTask));
+        when(userService.getById(invalidUserId))
+                .thenThrow(new IllegalArgumentException("User with id [%s] does not exist".formatted(invalidUserId)));
+
+        assertThrows(IllegalArgumentException.class, () -> taskService.edit(taskId, request, userId));
     }
 
     @Test

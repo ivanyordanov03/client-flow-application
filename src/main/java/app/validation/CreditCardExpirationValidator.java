@@ -6,6 +6,7 @@ import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
 public class CreditCardExpirationValidator implements ConstraintValidator<ValidExpirationDate, String> {
+
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM/yy");
 
     @Override

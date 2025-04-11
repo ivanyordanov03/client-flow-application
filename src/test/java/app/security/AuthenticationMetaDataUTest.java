@@ -8,7 +8,7 @@ import java.util.Collection;
 import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AuthenticationMetadataTest {
+class AuthenticationMetaDataUTest {
 
     private final UUID userId = UUID.randomUUID();
     private final UUID accountId = UUID.randomUUID();
@@ -31,7 +31,7 @@ class AuthenticationMetadataTest {
         assertThat(authorities)
                 .hasSize(1)
                 .extracting(GrantedAuthority::getAuthority)
-                .containsExactly("ROLE_ADMIN");
+                .containsExactly("ROLE_ADMINISTRATOR");
 
         assertThat(data.isAccountNonExpired()).isTrue();
         assertThat(data.isAccountNonLocked()).isTrue();
