@@ -21,7 +21,7 @@
 <main class="container form-page-container">
     <div class="content">
         <h1>Account Settings</h1>
-        <form th:action="@{/account}" th:method="POST" th:object="${account}">
+        <form th:action="@{/account}" th:method="POST" th:object="${accountRequest}">
 <!--            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
             <div class="form-group">
                 <label for="logoURL">Business logo URL</label>

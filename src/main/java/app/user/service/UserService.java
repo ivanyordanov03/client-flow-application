@@ -2,6 +2,7 @@ package app.user.service;
 
 import app.account.model.Account;
 import app.exception.EmailAlreadyInUseException;
+import app.notification.service.NotificationService;
 import app.plan.properties.PlanProperties;
 import app.account.service.AccountService;
 import app.security.AuthenticationMetadata;
@@ -43,23 +44,28 @@ public class UserService implements UserDetailsService {
     private static final String USER_ID_SET_STATUS_BY_USER_ID = "User with id [%s] was set to %s by user with id [%s].";
     private static final String USER_ID_WAS_SET_ARCHIVE_STATUS_BY_USER_ID = "User with id [%s] was %s by user with id [%s].";
     private static final String USER_ID_DELETED_BY_USER_ID = "User with id [%s] was permanently DELETED by user with id [%s].";
+    private static final String NEW_USER_EMAIL_SUBJECT = "Welcome to ClientFlow!";
+    private static final String NEW_USER_EMAIL_BODY = "%s,\nYou have been invited to join your team at https://clientflow.com.\nYour password is %s";
 
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final AccountService accountService;
     private final PlanProperties planProperties;
+    private final NotificationService notificationService;
 
     @Autowired
     public UserService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        AccountService accountService,
-                       PlanProperties planProperties) {
+                       PlanProperties planProperties,
+                       NotificationService notificationService) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.accountService = accountService;
         this.planProperties = planProperties;
+        this.notificationService = notificationService;
     }
 
     @Override
@@ -95,9 +101,12 @@ public class UserService implements UserDetailsService {
             user.setUserRole(UserRole.valueOf(userRequest.getUserRoleString()));
         }
         userRepository.save(user);
+        notificationService.sendNotification(user.getId(),
+                user.getEmail(),
+                NEW_USER_EMAIL_SUBJECT,
+                NEW_USER_EMAIL_BODY.formatted(userRequest.getFirstName(), userRequest.getPassword()));
 
         log.info(REGISTERED_NEW_USER_WITH_ID.formatted(user.getId()));
-
         return user;
     }
 

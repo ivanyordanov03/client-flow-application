@@ -27,19 +27,19 @@
         <p>Here is an overview of your ClientFlow account.</p>
         <div class="dashboard-widgets">
             <div class="widget">
-                <h2>Clients</h2>
-                <p>Total: <span th:text="${customerCount != null ? customerCount : '0'}"></span></p>
-                <a href="/customers" class="btn">View Clients</a>
+                <h2>Contacts</h2>
+                <p>Total: <span th:text="${contactsCount}"></span></p>
+                <a href="/contacts" class="btn">View All</a>
             </div>
             <div class="widget">
-                <h2>Invoices</h2>
-                <p>Pending: <span th:text="${pendingInvoices}"></span></p>
-                <a href="/invoices" class="btn">View Invoices</a>
+                <h2>Notifications</h2>
+                <p>New: <span th:text="${notificationsCounts}"></span></p>
+                <a href="/notifications" class="btn">View All</a>
             </div>
             <div class="widget">
                 <h2>Tasks</h2>
-                <p>Due Today: <span th:text="${tasksDueToday}"></span></p>
-                <a th:href="@{/tasks(filter = 'due-today')}" class="btn">View Tasks</a>
+                <p>Due Today: <span th:text="${tasksDueTodayCount}"></span></p>
+                <a th:href="@{/tasks(filter = 'due-today')}" class="btn">View All</a>
             </div>
         </div>
     </div>

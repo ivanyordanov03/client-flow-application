@@ -57,15 +57,12 @@ public class IndexControllerApiTest {
         mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(view().name("index"));
-
-
     }
 
     @Test
     void getRequestToLoginEndpoint_shouldReturnLoginView() throws Exception {
 
         MockHttpServletRequestBuilder request = get("/login");
-
         mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(view().name("login"));

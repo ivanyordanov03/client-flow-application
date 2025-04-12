@@ -1,5 +1,6 @@
 package app.web;
 
+import app.TestBuilder;
 import app.account.model.Account;
 import app.account.service.AccountService;
 import app.configuration.WebMvcConfiguration;
@@ -43,14 +44,7 @@ public class UserControllerApiTest {
     @Test
     void getAuthenticatedRequestToUsersEndpoint_shouldReturnUsersView() throws Exception {
 
-        UUID userId = UUID.randomUUID();
-        UUID accountId = UUID.randomUUID();
-        AuthenticationMetadata data = new AuthenticationMetadata(userId,
-                "user@mail.com",
-                "1212",
-                UserRole.USER,
-                accountId,
-                true);
+        AuthenticationMetadata data = TestBuilder.aMetadataUser();
 
         when(userService.getById(any())).thenReturn(aRandomUser());
         when(userService.getAllByAccountIdAndFilterOrdered(any(), any(), any())).thenReturn(new ArrayList<>());
@@ -66,14 +60,7 @@ public class UserControllerApiTest {
     @Test
     void getAuthorizedRequestToNewUserEndpointValidUserLimit_shouldReturnUsersView() throws Exception {
 
-        UUID userId = UUID.randomUUID();
-        UUID accountId = UUID.randomUUID();
-        AuthenticationMetadata data = new AuthenticationMetadata(userId,
-                "user@mail.com",
-                "1212",
-                UserRole.PRIMARY_ADMIN,
-                accountId,
-                true);
+        AuthenticationMetadata data = TestBuilder.aMetadataPrimaryAdmin();
         Plan mockPlan = new Plan();
         mockPlan.setPlanName(PlanName.PLUS);
 
@@ -94,18 +81,8 @@ public class UserControllerApiTest {
     @Test
     void postAuthorizedRequestToNewUserEndpointWithCorrectData_redirectToUsers() throws Exception {
 
-        UUID userId = UUID.randomUUID();
-        UUID accountId = UUID.randomUUID();
-        AuthenticationMetadata data = new AuthenticationMetadata(userId,
-                "user@mail.com",
-                "1212",
-                UserRole.PRIMARY_ADMIN,
-                accountId,
-                true);
-        User mockUser = new User();
-        mockUser.setId(userId);
-        mockUser.setAccountId(accountId);
-        mockUser.setUserRole(UserRole.PRIMARY_ADMIN);
+        AuthenticationMetadata data = TestBuilder.aMetadataPrimaryAdmin();
+        User mockUser = TestBuilder.aRandomPrimaryAdmin();
 
         MockHttpServletRequestBuilder request = post("/users")
                 .with(user(data))
@@ -129,18 +106,8 @@ public class UserControllerApiTest {
     @Test
     void postAuthorizedRequestToNewUserEndpointWithIncorrectData_shouldReturnUsersView() throws Exception {
 
-        UUID userId = UUID.randomUUID();
-        UUID accountId = UUID.randomUUID();
-        AuthenticationMetadata data = new AuthenticationMetadata(userId,
-                "user@mail.com",
-                "1212",
-                UserRole.PRIMARY_ADMIN,
-                accountId,
-                true);
-        User mockUser = new User();
-        mockUser.setId(userId);
-        mockUser.setAccountId(accountId);
-        mockUser.setUserRole(UserRole.PRIMARY_ADMIN);
+        AuthenticationMetadata data = TestBuilder.aMetadataPrimaryAdmin();
+        User mockUser = TestBuilder.aRandomPrimaryAdmin();
 
         MockHttpServletRequestBuilder request = post("/users")
                 .with(user(data))
@@ -164,18 +131,8 @@ public class UserControllerApiTest {
     @Test
     void postUnauthorizedRequestToNewUserEndpoint_throwsException() throws Exception {
 
-        UUID userId = UUID.randomUUID();
-        UUID accountId = UUID.randomUUID();
-        AuthenticationMetadata data = new AuthenticationMetadata(userId,
-                "user@mail.com",
-                "1212",
-                UserRole.USER,
-                accountId,
-                true);
-        User mockUser = new User();
-        mockUser.setId(userId);
-        mockUser.setAccountId(accountId);
-        mockUser.setUserRole(UserRole.USER);
+        AuthenticationMetadata data = TestBuilder.aMetadataUser();
+        User mockUser = TestBuilder.aRandomUser();
 
         MockHttpServletRequestBuilder request = post("/users")
                 .with(user(data))
@@ -197,18 +154,11 @@ public class UserControllerApiTest {
     @Test
     void getAuthorizedRequestToUserIdEndpoint_shouldReturnUserIdView() throws Exception {
 
-        UUID userId = UUID.randomUUID();
-        UUID accountId = UUID.randomUUID();
-        AuthenticationMetadata data = new AuthenticationMetadata(userId,
-                "user@mail.com",
-                "1212",
-                UserRole.PRIMARY_ADMIN,
-                accountId,
-                true);
+        AuthenticationMetadata data = TestBuilder.aMetadataPrimaryAdmin();
         User mockUser = new User();
-        mockUser.setId(userId);
-        mockUser.setAccountId(accountId);
-        mockUser.setUserRole(UserRole.PRIMARY_ADMIN);
+        mockUser.setId(data.getUserId());
+        mockUser.setAccountId(data.getAccountId());
+        mockUser.setUserRole(data.getUserRole());
 
         when(userService.getById(any())).thenReturn(mockUser);
 
@@ -224,17 +174,10 @@ public class UserControllerApiTest {
     @Test
     void getUnauthorizedRequestToUserIdEndpointUserRole_shouldReturnUserIdView() throws Exception {
 
-        UUID userId = UUID.randomUUID();
-        UUID accountId = UUID.randomUUID();
-        AuthenticationMetadata data = new AuthenticationMetadata(userId,
-                "user@mail.com",
-                "1212",
-                UserRole.USER,
-                accountId,
-                true);
+        AuthenticationMetadata data = TestBuilder.aMetadataUser();
         User mockUser = new User();
-        mockUser.setId(userId);
-        mockUser.setAccountId(accountId);
+        mockUser.setId(data.getUserId());
+        mockUser.setAccountId(data.getAccountId());
         mockUser.setUserRole(UserRole.USER);
 
         when(userService.getById(any())).thenReturn(mockUser);

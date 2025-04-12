@@ -22,8 +22,8 @@
     <div class="payment-options">
         <h1>Payment Information</h1>
         <form th:action="@{/payments(planName = ${planToPurchase.planName})}" th:method="POST" th:object="${paymentRequest}" id="paymentForm">
-<!--            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />-->
-            <input type="hidden" th:field="*{planToPurchase}" th:value="${planToPurchase.planName}" />
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <input type="hidden" name="planToPurchase" th:value="${planToPurchase.planName}" />
             <div th:unless="${#lists.isEmpty(accountPaymentMethods)}" class="saved-methods-section">
                 <div class="section-header">
                     <label class="custom-checkbox">

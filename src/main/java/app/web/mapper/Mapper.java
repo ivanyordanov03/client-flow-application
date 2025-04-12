@@ -93,7 +93,7 @@ public class Mapper {
         return paymentMethodRequest;
     }
 
-    public static PaymentMethodRequest mapPaymentMethodToPaymentSettingsRequest(PaymentMethod paymentMethod) {
+    public static PaymentMethodRequest mapPaymentMethodToPaymentMethodRequest(PaymentMethod paymentMethod) {
 
         PaymentMethodRequest paymentMethodRequest = new PaymentMethodRequest();
         paymentMethodRequest.setCardholderName(paymentMethod.getCardHolderName());

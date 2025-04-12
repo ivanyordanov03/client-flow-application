@@ -2,6 +2,7 @@ package app.web;
 
 import app.account.model.Account;
 import app.account.service.AccountService;
+import app.contact.service.ContactService;
 import app.plan.model.Plan;
 import app.plan.service.PlanService;
 import app.security.AuthenticationMetadata;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+
 @Controller
 @RequestMapping
 public class IndexController {
@@ -32,17 +35,20 @@ public class IndexController {
     private final UserService userService;
     private final TaskService taskService;
     private final AccountService accountService;
+    private final ContactService contactService;
 
     @Autowired
     public IndexController(PlanService planService,
                            UserService userService,
                            TaskService taskService,
-                           AccountService accountService) {
+                           AccountService accountService,
+                           ContactService contactService) {
 
         this.planService = planService;
         this.userService = userService;
         this.taskService = taskService;
         this.accountService = accountService;
+        this.contactService = contactService;
     }
 
     @GetMapping("/")
@@ -80,7 +86,9 @@ public class IndexController {
 
         ModelAndView modelAndView = new ModelAndView("dashboard");
         modelAndView.addObject("user", user);
-        modelAndView.addObject("tasksDueToday", taskService.getAllDueToday(account.getId(), user.getId(), "due-today").size());
+        modelAndView.addObject("contactsCount", contactService.getAllUserContacts(data.getUserId()).size());
+        modelAndView.addObject("tasksDueTodayCount", taskService.getAllDueToday(account.getId(), user.getId(), user.getUserRole().toString()).size());
+        modelAndView.addObject("notificationsCounts", new ArrayList<>().size());
 
         return modelAndView;
     }

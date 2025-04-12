@@ -53,7 +53,7 @@ public class AccountController {
 
         Account account = accountService.getByOwnerId(data.getUserId());
         ModelAndView modelAndView = new ModelAndView("account-settings");
-        modelAndView.addObject("account", Mapper.mapAccountToAccountRequest(account));
+        modelAndView.addObject("accountRequest", Mapper.mapAccountToAccountRequest(account));
 
         return modelAndView;
     }
@@ -66,6 +66,7 @@ public class AccountController {
         if (bindingResult.hasErrors()) {
             modelAndView.setViewName("account-settings");
             modelAndView.addObject("accountRequest", accountRequest);
+            return modelAndView;
         }
 
         accountService.edit(accountRequest, data.getUserId());

@@ -95,7 +95,7 @@ public class PaymentMethodController {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("payment-method");
-        modelAndView.addObject("paymentMethodRequest", Mapper.mapPaymentMethodToPaymentSettingsRequest(paymentMethod));
+        modelAndView.addObject("paymentMethodRequest", Mapper.mapPaymentMethodToPaymentMethodRequest(paymentMethod));
         modelAndView.addObject("paymentMethodId", id);
 
         return modelAndView;

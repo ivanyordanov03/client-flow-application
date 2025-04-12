@@ -183,4 +183,9 @@ public class ContactService {
         contactRepository.delete(getById(id));
         log.info(CONTACT_ID_DELETED_BY_USER_ID.formatted(id, userId));
     }
+
+    public List<Contact> getAllUserContacts(UUID userId) {
+
+        return contactRepository.findAllByAssignedToIdAndArchivedIsFalseOrderByFirstNameAscLastNameAsc(userId);
+    }
 }

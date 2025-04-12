@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notifications - ClientFlow</title>
+  <link rel="stylesheet" href="/css/reset.css">
+  <link rel="stylesheet" href="/css/common.css">
+  <link rel="stylesheet" href="/css/nav-side-bar.css">
+  <link rel="stylesheet" href="/css/notifications.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<header>
+  <div class="logo-container">
+    <a th:href="@{/dashboard}">
+      <img src="/images/logo-small.png" alt="ClientFlow Logo" class="logo">
+    </a>
+  </div>
+</header>
+
+<main class="container notifications-container">
+  <div th:replace="~{fragments/nav-side-bar :: navSideBar(activePage='notifications')}"></div>
+  <div class="content notifications-content">
+    <h1>Notifications</h1>
+
+    <div class="entity-controls">
+      <form th:action="@{/notifications}" th:method="PUT" th:unless="${#lists.isEmpty(notifications)}">
+        <button type="submit" class="btn btn-secondary add-action">
+          <i class="fas fa-archive"></i> Archive All
+        </button>
+      </form>
+    </div>
+
+    <div class="notifications-list">
+      <div th:each="notification : ${notifications}" class="notification-item">
+        <div class="notification-header">
+          <h3 th:text="${notification.title}">Notification Title</h3>
+          <span class="notification-date" th:text="${#temporals.format(notification.dateCreated, 'MMM d, yyyy h:mm a')}">
+                        Jun 15, 2023 10:30 AM
+                    </span>
+        </div>
+        <p class="notification-body" th:text="${notification.body}">
+          This is the notification body content that provides more details about the notification.
+        </p>
+      </div>
+
+      <div th:if="${#lists.isEmpty(notifications)}" class="empty-state">
+        <svg width="3rem" height="3rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 7v10" stroke="#4BBF89" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 17l-4-4 4-4" stroke="#4BBF89" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <p>No notifications yet</p>
+        <p>You'll see notifications here when you have them.</p>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div th:replace="~{fragments/bad-request-modal :: badRequestModal}"></div>
+<footer>
+  <p>&copy; 2025 ClientFlow. All rights reserved.</p>
+</footer>
+
+<script src="/js/scripts.js"></script>
+</body>
+</html>

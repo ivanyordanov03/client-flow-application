@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class CreditCardExpirationValidatorTest {
+class CreditCardExpirationValidatorUTest {
     private final CreditCardExpirationValidator validator = new CreditCardExpirationValidator();
     @Mock
     private ConstraintValidatorContext context;
