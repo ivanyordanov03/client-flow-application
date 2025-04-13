@@ -1,6 +1,7 @@
 package app.task;
 
 import app.TestBuilder;
+import app.event.InAppNotificationEventPublisher;
 import app.task.model.Task;
 import app.task.model.TaskPriority;
 import app.task.repository.TaskRepository;
@@ -33,6 +34,8 @@ public class TaskServiceUTest {
     private UserService userService;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private InAppNotificationEventPublisher inAppNotificationEventPublisher;
 
     @InjectMocks
     private TaskService taskService;
@@ -96,6 +99,7 @@ public class TaskServiceUTest {
                 .build();
 
         when(taskRepository.findById(task.getId())).thenReturn(Optional.of(task));
+        when(userService.getById(admin.getId())).thenReturn(admin);
         when(userService.getById(user.getId())).thenReturn(user);
 
         taskService.edit(task.getId(), taskRequest, admin.getId());
@@ -106,6 +110,8 @@ public class TaskServiceUTest {
         assertEquals(LocalDate.now().plusDays(15), task.getDueDate());
         assertEquals(user.getId(), task.getAssignedToId());
         assertFalse(task.isCompleted());
+        verify(taskRepository).save(task);
+        verify(inAppNotificationEventPublisher).send(any());
     }
 
     @Test
@@ -119,7 +125,9 @@ public class TaskServiceUTest {
         TaskRequest request = TaskRequest.builder()
                 .assignedTo(invalidUserId.toString())
                 .build();
+
         when(taskRepository.findById(taskId)).thenReturn(Optional.of(existingTask));
+        when(userService.getById(userId)).thenReturn(TestBuilder.aRandomUser());
         when(userService.getById(invalidUserId))
                 .thenThrow(new IllegalArgumentException("User with id [%s] does not exist".formatted(invalidUserId)));
 

@@ -3,6 +3,7 @@ package app.web;
 import app.account.model.Account;
 import app.account.service.AccountService;
 import app.contact.service.ContactService;
+import app.notification.service.NotificationService;
 import app.plan.model.Plan;
 import app.plan.service.PlanService;
 import app.security.AuthenticationMetadata;
@@ -36,19 +37,22 @@ public class IndexController {
     private final TaskService taskService;
     private final AccountService accountService;
     private final ContactService contactService;
+    private final NotificationService notificationService;
 
     @Autowired
     public IndexController(PlanService planService,
                            UserService userService,
                            TaskService taskService,
                            AccountService accountService,
-                           ContactService contactService) {
+                           ContactService contactService,
+                           NotificationService notificationService) {
 
         this.planService = planService;
         this.userService = userService;
         this.taskService = taskService;
         this.accountService = accountService;
         this.contactService = contactService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping("/")
@@ -83,12 +87,12 @@ public class IndexController {
             }
 
         }
-
+        long count = notificationService.newNotificationsCount(data.getUserId());
         ModelAndView modelAndView = new ModelAndView("dashboard");
         modelAndView.addObject("user", user);
         modelAndView.addObject("contactsCount", contactService.getAllUserContacts(data.getUserId()).size());
         modelAndView.addObject("tasksDueTodayCount", taskService.getAllDueToday(account.getId(), user.getId(), user.getUserRole().toString()).size());
-        modelAndView.addObject("notificationsCounts", new ArrayList<>().size());
+        modelAndView.addObject("notificationsCounts", count);
 
         return modelAndView;
     }

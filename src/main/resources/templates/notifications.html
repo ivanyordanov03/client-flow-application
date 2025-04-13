@@ -35,7 +35,7 @@
     <div class="notifications-list">
       <div th:each="notification : ${notifications}" class="notification-item">
         <div class="notification-header">
-          <h3 th:text="${notification.title}">Notification Title</h3>
+          <h3 th:text="${notification.topic}">Notification Title</h3>
           <span class="notification-date" th:text="${#temporals.format(notification.dateCreated, 'MMM d, yyyy h:mm a')}">
                         Jun 15, 2023 10:30 AM
                     </span>

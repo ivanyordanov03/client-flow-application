@@ -18,6 +18,9 @@ public interface NotificationClient {
     @GetMapping
     ResponseEntity<List<Notification>> getUserNotifications(@RequestParam(name = "userId") UUID userId);
 
-    @PutMapping
+    @DeleteMapping
     ResponseEntity<Void> archiveUserNotifications(@RequestParam(name = "userId") UUID userId);
+
+    @PutMapping
+    ResponseEntity<Void> markAllAsRead(@RequestParam(name = "userId") UUID userId);
 }

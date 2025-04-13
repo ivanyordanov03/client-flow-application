@@ -4,6 +4,7 @@ import app.TestBuilder;
 import app.contact.model.Contact;
 import app.contact.repository.ContactRepository;
 import app.contact.service.ContactService;
+import app.event.InAppNotificationEventPublisher;
 import app.user.model.User;
 import app.user.model.UserRole;
 import app.user.service.UserService;
@@ -22,6 +23,8 @@ import java.util.UUID;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,6 +43,8 @@ public class ContactServiceUTest {
     private ContactRepository contactRepository;
     @Mock
     private UserService userService;
+    @Mock
+    private InAppNotificationEventPublisher inAppNotificationEventPublisher;
 
     @InjectMocks
     private ContactService contactService;
@@ -60,6 +65,7 @@ public class ContactServiceUTest {
 
         when(contactRepository.findById(contact.getId())).thenReturn(Optional.of(contact));
         when(userService.getById(user.getId())).thenReturn(user);
+        doNothing().when(inAppNotificationEventPublisher).send(any());
 
         contactService.edit(contact.getId(), contactRequest, user.getId());
 

@@ -1,16 +1,18 @@
-package app.notification.client.dto;
+package app.event.payload;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
-@Builder
-public class NotificationRequest {
+@AllArgsConstructor
+@NoArgsConstructor
+public class InAppNotificationEvent {
 
     @NotNull
     private UUID userId;
@@ -23,6 +25,4 @@ public class NotificationRequest {
 
     @NotBlank
     private LocalDateTime dateCreated;
-
-    private String email;
 }

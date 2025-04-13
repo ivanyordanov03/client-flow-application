@@ -10,9 +10,11 @@ import java.time.LocalDateTime;
 @Builder
 public class Notification {
 
-    private String title;
+    private String topic;
 
     private String body;
 
     private LocalDateTime dateCreated;
+
+    private boolean unread;
 }

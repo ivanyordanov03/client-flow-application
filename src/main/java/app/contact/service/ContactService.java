@@ -2,6 +2,8 @@ package app.contact.service;
 
 import app.contact.model.Contact;
 import app.contact.repository.ContactRepository;
+import app.event.InAppNotificationEventPublisher;
+import app.event.payload.InAppNotificationEvent;
 import app.user.model.User;
 import app.user.model.UserRole;
 import app.user.service.UserService;
@@ -30,16 +32,21 @@ public class ContactService {
     private static final String CONTACT_ID_DELETED_BY_USER_ID = "Contact with id [%s] was permanently deleted by user with id [%s]";
     private static final String CONTACT_ID_SET_BY_USER_ID_TO_ARCHIVE_STATUS = "Contact with id [%s] was set by user with id [%s] to status %s";
     private static final String CONTACT_ID_CREATED_BY_USER_ID_ASSIGNED_TO_USER_ID = "Contact with id [%s] was created by user with id [%s] and assigned to user with id [%s]";
+    private static final String NEW_CONTACT_ASSIGNED_TOPIC = "New contact assigned.";
+    private static final String NEW_CONTACT_ASSIGNED_BODY = "A new contact %s %s has been assigned to you by %s %s.";
 
     private final ContactRepository contactRepository;
     private final UserService userService;
+    private final InAppNotificationEventPublisher inAppNotificationEventPublisher;
 
     @Autowired
     public ContactService(ContactRepository contactRepository,
-                          UserService userService) {
+                          UserService userService,
+                          InAppNotificationEventPublisher inAppNotificationEventPublisher) {
 
         this.contactRepository = contactRepository;
         this.userService = userService;
+        this.inAppNotificationEventPublisher = inAppNotificationEventPublisher;
     }
 
     public List<Contact> getAllByUserRoleFilterAndSortOrderedByName(UUID userId, UUID accountId, String userRole, String filter, String sort) {
@@ -113,7 +120,16 @@ public class ContactService {
     public void edit(UUID id, ContactRequest contactRequest, UUID userId) {
 
         Contact contact = getById(id);
+        User user = userService.getById(userId);
         User assignee = userService.getById(UUID.fromString(contactRequest.getAssignedToId()));
+
+        if (!contact.getAssignedToId().equals(userId) && !contact.getAssignedToId().equals(assignee.getId())) {
+            InAppNotificationEvent event = new InAppNotificationEvent(UUID.fromString(contactRequest.getAssignedToId()),
+                    NEW_CONTACT_ASSIGNED_TOPIC,
+                    NEW_CONTACT_ASSIGNED_BODY.formatted(contact.getFirstName(), contact.getLastName(), user.getFirstName(), user.getLastName()),
+                    LocalDateTime.now());
+            inAppNotificationEventPublisher.send(event);
+        }
 
         contact.setFirstName(contactRequest.getFirstName());
         contact.setLastName(contactRequest.getLastName());
@@ -146,6 +162,15 @@ public class ContactService {
 
         contact.setAccountId(user.getAccountId());
         contactRepository.save(contact);
+
+        if (!contact.getAssignedToId().equals(userId)) {
+            InAppNotificationEvent event = new InAppNotificationEvent(contact.getAssignedToId(),
+                    NEW_CONTACT_ASSIGNED_TOPIC,
+                    NEW_CONTACT_ASSIGNED_BODY.formatted(contact.getFirstName(), contact.getLastName(), user.getFirstName(), user.getLastName()),
+                    LocalDateTime.now());
+            inAppNotificationEventPublisher.send(event);
+        }
+
         log.info(CONTACT_ID_CREATED_BY_USER_ID_ASSIGNED_TO_USER_ID.formatted(contact.getId(), userId, contact.getAssignedToId()));
     }
 

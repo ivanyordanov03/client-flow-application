@@ -1,6 +1,8 @@
 package app.user.service;
 
 import app.account.model.Account;
+import app.event.InAppNotificationEventPublisher;
+import app.event.payload.InAppNotificationEvent;
 import app.exception.EmailAlreadyInUseException;
 import app.notification.service.NotificationService;
 import app.plan.properties.PlanProperties;
@@ -46,6 +48,10 @@ public class UserService implements UserDetailsService {
     private static final String USER_ID_DELETED_BY_USER_ID = "User with id [%s] was permanently DELETED by user with id [%s].";
     private static final String NEW_USER_EMAIL_SUBJECT = "Welcome to ClientFlow!";
     private static final String NEW_USER_EMAIL_BODY = "%s,\nYou have been invited to join your team at https://clientflow.com.\nYour password is %s";
+    private static final String NEW_PASSWORD_EMAIL_SUBJECT = "ClientFlow Update";
+    private static final String NEW_PASSWORD_EMAIL_BODY = "%s,\nYour password have been changed.\nYour new password is %s";
+    private static final String NEW_ROLE_TOPIC = "New role assigned.";
+    private static final String NEW_ROLE_BODY = "You have been assigned a new user role of %s.";
 
 
     private final UserRepository userRepository;
@@ -53,19 +59,22 @@ public class UserService implements UserDetailsService {
     private final AccountService accountService;
     private final PlanProperties planProperties;
     private final NotificationService notificationService;
+    private final InAppNotificationEventPublisher inAppNotificationEventPublisher;
 
     @Autowired
     public UserService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        AccountService accountService,
                        PlanProperties planProperties,
-                       NotificationService notificationService) {
+                       NotificationService notificationService,
+                       InAppNotificationEventPublisher inAppNotificationEventPublisher) {
 
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.accountService = accountService;
         this.planProperties = planProperties;
         this.notificationService = notificationService;
+        this.inAppNotificationEventPublisher = inAppNotificationEventPublisher;
     }
 
     @Override
@@ -80,9 +89,9 @@ public class UserService implements UserDetailsService {
     public void registerAccountOwner(UserRequest userRequest) {
 
         Account account = accountService.createNew(userRequest);
-
-        User user = register(userRequest, account.getId());
-        user.setUserRole(UserRole.PRIMARY_ADMIN);
+        UUID accountId = account.getId();
+        userRequest.setUserRoleString("PRIMARY_ADMIN");
+        User user = register(userRequest, accountId);
         userRepository.save(user);
 
         accountService.insertOwnerId(account.getId(), user.getId());
@@ -101,10 +110,16 @@ public class UserService implements UserDetailsService {
             user.setUserRole(UserRole.valueOf(userRequest.getUserRoleString()));
         }
         userRepository.save(user);
-        notificationService.sendNotification(user.getId(),
-                user.getEmail(),
-                NEW_USER_EMAIL_SUBJECT,
-                NEW_USER_EMAIL_BODY.formatted(userRequest.getFirstName(), userRequest.getPassword()));
+
+        if (!user.getUserRole().equals(UserRole.PRIMARY_ADMIN)) {
+            Account account = accountService.getById(accountId);
+            User accountOwner = getById(account.getOwnerId());
+            notificationService.sendNotification(accountOwner.getId(),
+                    user.getEmail(),
+                    NEW_USER_EMAIL_SUBJECT,
+                    NEW_USER_EMAIL_BODY.formatted(userRequest.getFirstName(), userRequest.getPassword()));
+        }
+
 
         log.info(REGISTERED_NEW_USER_WITH_ID.formatted(user.getId()));
         return user;
@@ -147,15 +162,26 @@ public class UserService implements UserDetailsService {
         }
 
         String newPassword = editUserRequest.getPassword();
+        boolean isPasswordChanged = false;
         if (newPassword != null && !newPassword.isBlank()) {
             user.setPassword(passwordEncoder.encode(editUserRequest.getPassword()));
+            isPasswordChanged = true;
         }
 
-        if (!user.getUserRole().equals(UserRole.PRIMARY_ADMIN)) {
+        if (!user.getUserRole().equals(UserRole.PRIMARY_ADMIN) && !user.getUserRole().toString().equals(editUserRequest.getUserRoleString())) {
             user.setUserRole(UserRole.valueOf(editUserRequest.getUserRoleString()));
+            InAppNotificationEvent event = new InAppNotificationEvent(user.getId(), NEW_ROLE_TOPIC, NEW_ROLE_BODY.formatted(editUserRequest.getUserRoleString()), LocalDateTime.now());
+            inAppNotificationEventPublisher.send(event);
         }
         user.setDateUpdated(LocalDateTime.now());
         userRepository.save(user);
+
+        if (isPasswordChanged) {
+            notificationService.sendNotification(editor.getId(),
+                    user.getEmail(),
+                    NEW_PASSWORD_EMAIL_SUBJECT,
+                    NEW_PASSWORD_EMAIL_BODY.formatted(editUserRequest.getFirstName(), editUserRequest.getPassword()));
+        }
 
         log.info(USER_ID_MODIFIED_BY_USER_ID.formatted(id, editorId));
     }

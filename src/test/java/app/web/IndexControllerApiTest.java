@@ -3,7 +3,9 @@ package app.web;
 import app.account.model.Account;
 import app.account.service.AccountService;
 import app.configuration.WebMvcConfiguration;
+import app.contact.service.ContactService;
 import app.exception.EmailAlreadyInUseException;
+import app.notification.service.NotificationService;
 import app.plan.model.Plan;
 import app.plan.model.PlanName;
 import app.plan.service.PlanService;
@@ -45,6 +47,10 @@ public class IndexControllerApiTest {
     private TaskService taskService;
     @MockitoBean
     private AccountService accountService;
+    @MockitoBean
+    private ContactService contactService;
+    @MockitoBean
+    private NotificationService notificationService;
 
     @Autowired
     private MockMvc mockMvc;
@@ -207,7 +213,7 @@ public class IndexControllerApiTest {
         mockMvc.perform(get("/dashboard").with(user(data)))
                 .andExpect(status().isOk())
                 .andExpect(view().name("dashboard"))
-                .andExpect(model().attributeExists("user","tasksDueToday"));
+                .andExpect(model().attributeExists("user","contactsCount", "tasksDueTodayCount", "notificationsCounts"));
         verify(userService, times(1)).getById(any());
         verify(accountService, times(1)).getById(any());
     }

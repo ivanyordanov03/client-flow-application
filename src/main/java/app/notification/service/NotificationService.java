@@ -1,5 +1,6 @@
 package app.notification.service;
 
+import app.exception.NotificationServiceFeignCallException;
 import app.notification.client.NotificationClient;
 import app.notification.client.dto.Notification;
 import app.notification.client.dto.NotificationRequest;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,9 +36,10 @@ public class NotificationService {
 
         NotificationRequest notificationRequest = NotificationRequest.builder()
                 .userId(userId)
-                .subject(emailSubject)
+                .topic(emailSubject)
                 .body(emailBody)
                 .email(email)
+                .dateCreated(LocalDateTime.now())
                 .build();
 
         ResponseEntity<Void> httpResponse;
@@ -55,8 +58,32 @@ public class NotificationService {
         try {
             notificationClient.archiveUserNotifications(userId);
         } catch (Exception e) {
-            log.error("Unable to call notification-svc for clear notification history.".formatted(userId));
-            throw new IllegalStateException(); //NotificationServiceFeignCallException(clearHistoryFailedMessage);
+            log.error("Unable to access notification-svc to archive notification list for user with id [%s].".formatted(userId));
+            throw new NotificationServiceFeignCallException("Unable to access notification-svc to archive notification list for user with id [%s].".formatted(userId));
+        }
+    }
+
+    public long newNotificationsCount(UUID userId) {
+
+        long count = 0;
+        try {
+            count = getNotifications(userId).stream()
+                    .filter(Notification::isUnread)
+                    .count();
+        } catch (Exception e) {
+            log.warn("Unable to access notification-svc to get new notifications count for user with id [%s].".formatted(userId));
+        }
+
+        return count;
+    }
+
+    public void markAllAsRead(UUID userId) {
+
+        try {
+            notificationClient.markAllAsRead(userId);
+        } catch (Exception e) {
+            log.error("Unable to access notification-svc to mark notifications as read for user with id [%s].".formatted(userId));
+            throw new NotificationServiceFeignCallException("Unable to access notification-svc to mark notifications as read for user with id [%s].".formatted(userId));
         }
     }
 }

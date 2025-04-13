@@ -25,7 +25,9 @@ public class NotificationController {
     }
 
     @GetMapping
-    public ModelAndView getNotificationsPage (@AuthenticationPrincipal AuthenticationMetadata data) {
+    public ModelAndView getNotificationsPage(@AuthenticationPrincipal AuthenticationMetadata data) {
+
+        notificationService.markAllAsRead(data.getUserId());
 
         ModelAndView modelAndView = new ModelAndView("notifications");
         modelAndView.addObject("user", userService.getById(data.getUserId()));
@@ -38,10 +40,6 @@ public class NotificationController {
     public ModelAndView processArchiveAllRequests(@AuthenticationPrincipal AuthenticationMetadata data) {
 
         notificationService.archiveAll(data.getUserId());
-        ModelAndView modelAndView = new ModelAndView("redirect:/notifications");
-        modelAndView.addObject("user", userService.getById(data.getUserId()));
-        modelAndView.addObject("notifications", notificationService.getNotifications(data.getUserId()));
-
-        return modelAndView;
+        return new ModelAndView("redirect:/notifications");
     }
 }

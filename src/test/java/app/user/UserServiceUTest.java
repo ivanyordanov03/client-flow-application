@@ -3,7 +3,9 @@ package app.user;
 import app.TestBuilder;
 import app.account.model.Account;
 import app.account.service.AccountService;
+import app.event.InAppNotificationEventPublisher;
 import app.exception.EmailAlreadyInUseException;
+import app.notification.service.NotificationService;
 import app.plan.model.Plan;
 import app.plan.model.PlanName;
 import app.plan.properties.PlanProperties;
@@ -40,6 +42,10 @@ public class UserServiceUTest {
     private PlanProperties planProperties;
     @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    NotificationService notificationService;
+    @Mock
+    InAppNotificationEventPublisher inAppNotificationEventPublisher;
 
     @InjectMocks
     private UserService userService;
@@ -79,10 +85,13 @@ public class UserServiceUTest {
                 .password("newPassword")
                 .userRoleString("USER")
                 .build();
+
         User loggedUser = TestBuilder.aRandomPrimaryAdmin();
         String currentPassword = loggedUser.getPassword();
         String currentRole = loggedUser.getUserRole().toString();
+
         when(userRepository.findById(loggedUser.getId())).thenReturn(Optional.of(loggedUser));
+//        doNothing().when(inAppNotificationEventPublisher).send(any());
 
         userService.edit(loggedUser.getId(), dto, loggedUser.getId());
 
@@ -90,6 +99,7 @@ public class UserServiceUTest {
         assertNotEquals(currentPassword, loggedUser.getPassword());
         assertEquals("boyan@gmail.com", loggedUser.getEmail());
         verify(userRepository, times(1)).save(loggedUser);
+        verify(inAppNotificationEventPublisher, never()).send(any());
     }
 
     @Test

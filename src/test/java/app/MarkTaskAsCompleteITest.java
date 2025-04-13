@@ -1,5 +1,6 @@
 package app;
 
+import app.event.InAppNotificationEventPublisher;
 import app.plan.service.PlanInit;
 import app.task.model.Task;
 import app.task.service.TaskService;
@@ -29,7 +30,8 @@ public class MarkTaskAsCompleteITest {
     private TaskService taskService;
     @Autowired
     private PlanInit planInit;
-
+    @Autowired
+    private InAppNotificationEventPublisher inAppNotificationEventPublisher;
 
     @Test
     void deleteMarkedCompleteTaskWithoutPriority_happyPath() {
